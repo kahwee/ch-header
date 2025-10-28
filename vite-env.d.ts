@@ -1,5 +1,9 @@
 /// <reference types="vite/client" />
 
+interface HTMLButtonElement {
+  popovertarget?: string;
+}
+
 declare module '*.svg?raw' {
   const content: string
   export default content
