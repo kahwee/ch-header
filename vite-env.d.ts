@@ -1,7 +1,7 @@
 /// <reference types="vite/client" />
 
 interface HTMLButtonElement {
-  popovertarget?: string;
+  popovertarget?: string
 }
 
 declare module '*.svg?raw' {
