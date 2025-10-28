@@ -51,7 +51,7 @@ jobs:
         run: npm ci
 
       - name: Generate coverage report
-        run: npm run test -- --coverage
+        run: npm run test:coverage
 
       - name: Upload coverage to Codecov
         uses: codecov/codecov-action@v3
@@ -60,3 +60,10 @@ jobs:
           flags: unittests
           name: codecov-umbrella
           fail_ci_if_error: false
+
+      - name: Upload coverage to Coveralls
+        uses: coverallsapp/github-action@v2
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          files: ./coverage/lcov.info
+          fail-on-error: false
