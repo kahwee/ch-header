@@ -18,6 +18,7 @@ ChHeader ("we," "us," "our," or "the Extension") is committed to protecting your
 We do not collect any personal data.
 
 The Extension does not:
+
 - Track your browsing activity
 - Collect your IP address or location
 - Record which websites you visit
@@ -31,7 +32,7 @@ ChHeader allows users to **voluntarily create and store** the following data **l
 
 - **Profile names** (e.g., "Development", "Production")
 - **Profile colors and notes** (user-provided metadata)
-- **URL matchers** (patterns users specify, e.g., "localhost:3000", "*.example.com")
+- **URL matchers** (patterns users specify, e.g., "localhost:3000", "\*.example.com")
 - **Header names and values** (e.g., "Authorization: Bearer token123")
 - **Active profile selection** (which profile is currently enabled)
 - **User preferences** (if any are added in future versions)
@@ -53,6 +54,7 @@ The Extension uses locally-stored user data **only** to:
 ### No Transmission
 
 User-created data is **never**:
+
 - Sent to external servers
 - Shared with third parties
 - Used for analytics or marketing
@@ -73,6 +75,7 @@ User-created data is **never**:
 - ❌ No other extensions or services
 
 The only party that can access user-stored data is the user themselves through:
+
 - The ChHeader Extension interface
 - Chrome's local storage (viewable in DevTools)
 - JSON export files (user-initiated)
@@ -111,29 +114,34 @@ The only party that can access user-stored data is the user themselves through:
 Users have complete control over their data:
 
 ### View Data
+
 - See all stored profiles in the Extension popup
 - View profile details and header configurations
 - Inspect raw storage via Chrome DevTools
 
 ### Export Data
+
 - Export profiles as JSON files
 - Back up data locally
 - Migrate to other systems
 - Share profiles with colleagues (if desired)
 
 ### Modify Data
+
 - Edit profile names, colors, and notes
 - Change URL matchers
 - Update header values
 - Reorder or reorganize profiles
 
 ### Delete Data
+
 - Delete individual profiles
 - Clear all profiles at once
 - Uninstall the Extension to remove all data
 - Data deletion is permanent and immediate
 
 ### Revoke Access
+
 - Disable the Extension in Chrome
 - Remove the Extension completely
 - Revoke optional permissions at any time
@@ -157,11 +165,13 @@ ChHeader does **not** use any third-party services:
 ## 7. Data Retention
 
 ### Local Data
+
 - User-created profiles are stored indefinitely in Chrome's local storage
 - Data persists until the user manually deletes it or uninstalls the Extension
 - Users have full control over data retention
 
 ### Automatic Deletion
+
 - If Chrome is uninstalled, all Extension data is deleted
 - If Chrome profile is removed, all Extension data is deleted
 - Disabling the Extension does not delete data
@@ -198,24 +208,28 @@ For questions about this Privacy Policy or ChHeader's privacy practices:
 ChHeader complies with:
 
 ✅ **Chrome Web Store Developer Program Policies**
+
 - No deceptive or hidden functionality
 - Transparent permission use
 - Single, clear purpose
 - User control emphasized
 
 ✅ **GDPR** (General Data Protection Regulation)
+
 - No personal data collection or processing
 - Users have full data control
 - No data sharing with third parties
 - Easy data deletion and portability
 
 ✅ **CCPA** (California Consumer Privacy Act)
+
 - No personal information collection
 - No data sales
 - Users can delete data at any time
 - Complete transparency
 
 ✅ **Chrome Extension Best Practices**
+
 - Manifest V3 (most secure)
 - Minimal permissions
 - No unnecessary data access
@@ -225,18 +239,18 @@ ChHeader complies with:
 
 ## 12. Summary: What You Need to Know
 
-| Question | Answer |
-|----------|--------|
-| Does ChHeader collect my data? | ❌ No |
-| Does ChHeader track my browsing? | ❌ No |
-| Does ChHeader sell my data? | ❌ No (we don't collect it) |
-| Where is my data stored? | 📍 Locally on your computer |
-| Can I delete my data? | ✅ Yes, anytime |
-| Can ChHeader access my data without permission? | ❌ No |
-| Does ChHeader use analytics? | ❌ No |
-| Does ChHeader use ads? | ❌ No |
-| Is my data encrypted? | ✅ Yes (Chrome handles it) |
-| Can ChHeader see websites I visit? | ❌ No (only modifies headers you configure) |
+| Question                                        | Answer                                      |
+| ----------------------------------------------- | ------------------------------------------- |
+| Does ChHeader collect my data?                  | ❌ No                                       |
+| Does ChHeader track my browsing?                | ❌ No                                       |
+| Does ChHeader sell my data?                     | ❌ No (we don't collect it)                 |
+| Where is my data stored?                        | 📍 Locally on your computer                 |
+| Can I delete my data?                           | ✅ Yes, anytime                             |
+| Can ChHeader access my data without permission? | ❌ No                                       |
+| Does ChHeader use analytics?                    | ❌ No                                       |
+| Does ChHeader use ads?                          | ❌ No                                       |
+| Is my data encrypted?                           | ✅ Yes (Chrome handles it)                  |
+| Can ChHeader see websites I visit?              | ❌ No (only modifies headers you configure) |
 
 ---
 
@@ -276,4 +290,4 @@ This Privacy Policy is provided as-is. While we strive for accuracy and complete
 
 ---
 
-*Questions? Review the CHROME_WEBSTORE_PRIVACY.md and DISTRIBUTION.md files for additional context and technical details.*
+_Questions? Review the CHROME_WEBSTORE_PRIVACY.md and DISTRIBUTION.md files for additional context and technical details._
