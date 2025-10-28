@@ -2,6 +2,9 @@
 
 A profile-based HTTP header editor Chrome extension with Manifest V3 using declarativeNetRequest and advanced matcher format support.
 
+[![CI Status](https://github.com/kahwee/ch-header/workflows/ChHeader%20CI/badge.svg)](https://github.com/kahwee/ch-header/actions)
+[![Coverage Status](https://coveralls.io/repos/github/kahwee/ch-header/badge.svg?branch=main)](https://coveralls.io/github/kahwee/ch-header?branch=main)
+
 ## Features
 
 - **Profile Management**: Create and manage multiple header profiles with custom colors
