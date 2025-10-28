@@ -198,7 +198,9 @@ describe('matcherRow', () => {
       expect(html).toContain('class="flex-[2] rounded-md bg-white/5')
 
       // Resource type select should have flex-1 for balanced space
-      expect(html).toContain('class="flex-1 rounded-md bg-white/5 px-3 py-2 text-sm text-text outline-1')
+      expect(html).toContain(
+        'class="flex-1 rounded-md bg-white/5 px-3 py-2 text-sm text-text outline-1'
+      )
     })
 
     it('should have consistent focus styles', () => {

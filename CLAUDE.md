@@ -173,12 +173,13 @@ Business logic layer with no DOM dependencies. Handles:
 Reusable template functions for consistent UI:
 
 ```typescript
-export function getPopupTemplate(): string        // Main extension UI
-export function profileListItem(p, isActive): string  // Profile list items
-export function customCheckbox(options): string   // Checkbox wrapper
+export function getPopupTemplate(): string // Main extension UI
+export function profileListItem(p, isActive): string // Profile list items
+export function customCheckbox(options): string // Checkbox wrapper
 ```
 
 **Component templates** (in src/ui/components/):
+
 - `button.ts`: `actionButton()` - Flexible button with variants (primary, secondary, danger, delete)
 - `matcher-row.ts`: `matcherRow()` - URL matcher row with resource type filter
 - `header-row.ts`: `headerRow()` - Header name/value input row
