@@ -300,6 +300,45 @@ function setupEventListeners(): void {
   }
 
   // Handle dropdown menu actions (sort/clear)
+  const actionHandlers: Record<string, () => void> = {
+    sortReqHeaders: () => {
+      if (state.current) {
+        state.current.requestHeaders.sort((a, b) => a.header.localeCompare(b.header))
+        syncAndRender()
+      }
+    },
+    clearReqHeaders: () => {
+      if (state.current) {
+        state.current.requestHeaders = []
+        syncAndRender()
+      }
+    },
+    sortResHeaders: () => {
+      if (state.current) {
+        state.current.responseHeaders.sort((a, b) => a.header.localeCompare(b.header))
+        syncAndRender()
+      }
+    },
+    clearResHeaders: () => {
+      if (state.current) {
+        state.current.responseHeaders = []
+        syncAndRender()
+      }
+    },
+    sortMatchers: () => {
+      if (state.current) {
+        state.current.matchers.sort((a, b) => a.urlFilter.localeCompare(b.urlFilter))
+        syncAndRender()
+      }
+    },
+    clearMatchers: () => {
+      if (state.current) {
+        state.current.matchers = []
+        syncAndRender()
+      }
+    },
+  }
+
   document.addEventListener(
     'click',
     (e) => {
@@ -307,53 +346,9 @@ function setupEventListeners(): void {
       if (!btn) return
 
       const action = (btn as any).dataset.action
-
-      if (action === 'sortReqHeaders') {
-        if (state.current) {
-          state.current.requestHeaders.sort((a, b) => a.header.localeCompare(b.header))
-          syncAndRender()
-        }
-        return
-      }
-
-      if (action === 'clearReqHeaders') {
-        if (state.current) {
-          state.current.requestHeaders = []
-          syncAndRender()
-        }
-        return
-      }
-
-      if (action === 'sortResHeaders') {
-        if (state.current) {
-          state.current.responseHeaders.sort((a, b) => a.header.localeCompare(b.header))
-          syncAndRender()
-        }
-        return
-      }
-
-      if (action === 'clearResHeaders') {
-        if (state.current) {
-          state.current.responseHeaders = []
-          syncAndRender()
-        }
-        return
-      }
-
-      if (action === 'sortMatchers') {
-        if (state.current) {
-          state.current.matchers.sort((a, b) => a.urlFilter.localeCompare(b.urlFilter))
-          syncAndRender()
-        }
-        return
-      }
-
-      if (action === 'clearMatchers') {
-        if (state.current) {
-          state.current.matchers = []
-          syncAndRender()
-        }
-        return
+      const handler = actionHandlers[action]
+      if (handler) {
+        handler()
       }
     },
     true

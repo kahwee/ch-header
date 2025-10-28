@@ -21,6 +21,24 @@ export class PopupController {
   ) {}
 
   /**
+   * Guard utility: ensures current profile exists before executing callback
+   * Returns silently if no current profile
+   */
+  private withCurrentProfile<T>(cb: (p: Profile) => T): T | void {
+    const p = this.state.current
+    if (!p) return
+    return cb(p)
+  }
+
+  /**
+   * Get the appropriate header array (request or response)
+   */
+  private getHeaderArray(isRequest: boolean): Profile['requestHeaders'] {
+    const p = this.state.current!
+    return isRequest ? p.requestHeaders : p.responseHeaders
+  }
+
+  /**
    * Handle profile list item click
    */
   onProfileItemClick(id: string): void {
@@ -50,90 +68,83 @@ export class PopupController {
    * Handle add header button click
    */
   onAddHeader(isRequest: boolean): void {
-    const p = this.state.current
-    if (!p) return
-
-    const arr = isRequest ? p.requestHeaders : p.responseHeaders
-    arr.push({ id: crypto.randomUUID(), header: '', value: '' })
-    this.callbacks.syncAndRender()
+    this.withCurrentProfile(() => {
+      const arr = this.getHeaderArray(isRequest)
+      arr.push({ id: crypto.randomUUID(), header: '', value: '' })
+      this.callbacks.syncAndRender()
+    })
   }
 
   /**
    * Handle sort headers button click
    */
   onSortHeaders(isRequest: boolean): void {
-    const p = this.state.current
-    if (!p) return
-
-    const key = isRequest ? 'requestHeaders' : 'responseHeaders'
-    p[key] = p[key].sort((a, b) => a.header.localeCompare(b.header))
-    this.callbacks.syncAndRender()
+    this.withCurrentProfile(() => {
+      const arr = this.getHeaderArray(isRequest)
+      arr.sort((a, b) => a.header.localeCompare(b.header))
+      this.callbacks.syncAndRender()
+    })
   }
 
   /**
    * Handle clear headers button click
    */
   onClearHeaders(isRequest: boolean): void {
-    const p = this.state.current
-    if (!p) return
-
-    const key = isRequest ? 'requestHeaders' : 'responseHeaders'
-    p[key] = []
-    this.callbacks.syncAndRender()
+    this.withCurrentProfile((p) => {
+      const key = isRequest ? 'requestHeaders' : 'responseHeaders'
+      p[key] = []
+      this.callbacks.syncAndRender()
+    })
   }
 
   /**
    * Handle remove header button click
    */
   onRemoveHeader(headerId: string, isRequest: boolean): void {
-    const p = this.state.current
-    if (!p) return
-
-    const key = isRequest ? 'requestHeaders' : 'responseHeaders'
-    p[key] = p[key].filter((x) => x.id !== headerId)
-    this.callbacks.syncAndRender()
+    this.withCurrentProfile(() => {
+      const arr = this.getHeaderArray(isRequest)
+      const idx = arr.findIndex((x) => x.id === headerId)
+      if (idx !== -1) {
+        arr.splice(idx, 1)
+        this.callbacks.syncAndRender()
+      }
+    })
   }
 
   /**
    * Handle add matcher button click
    */
   onAddMatcher(): void {
-    const p = this.state.current
-    if (!p) return
-
-    p.matchers.push({ id: crypto.randomUUID(), urlFilter: '*', resourceTypes: [] })
-    this.callbacks.syncAndRender()
+    this.withCurrentProfile((p) => {
+      p.matchers.push({ id: crypto.randomUUID(), urlFilter: '*', resourceTypes: [] })
+      this.callbacks.syncAndRender()
+    })
   }
 
   /**
    * Handle remove matcher button click
    */
   onRemoveMatcher(matcherId: string): void {
-    const p = this.state.current
-    if (!p) return
-
-    p.matchers = p.matchers.filter((x) => x.id !== matcherId)
-    this.callbacks.syncAndRender()
+    this.withCurrentProfile((p) => {
+      const idx = p.matchers.findIndex((x) => x.id === matcherId)
+      if (idx !== -1) {
+        p.matchers.splice(idx, 1)
+        this.callbacks.syncAndRender()
+      }
+    })
   }
 
   /**
    * Handle duplicate profile button click
    */
   onDuplicateProfile(): void {
-    const src = this.state.current
-    if (!src) return
-
-    const copy = JSON.parse(JSON.stringify(src)) as Profile
-    copy.id = crypto.randomUUID()
-    copy.name = `${src.name} (copy)`
-    copy.enabled = false
-    copy.matchers = copy.matchers.map((m) => ({ ...m, id: crypto.randomUUID() }))
-    copy.requestHeaders = copy.requestHeaders.map((h) => ({ ...h, id: crypto.randomUUID() }))
-    copy.responseHeaders = copy.responseHeaders.map((h) => ({ ...h, id: crypto.randomUUID() }))
-
-    this.state.profiles.unshift(copy)
-    this.callbacks.syncAndRender()
-    this.callbacks.select(copy.id)
+    this.withCurrentProfile((src) => {
+      const copy = this.deepCloneProfile(src)
+      copy.name = `${src.name} (copy)`
+      this.state.profiles.unshift(copy)
+      this.callbacks.syncAndRender()
+      this.callbacks.select(copy.id)
+    })
   }
 
   /**
@@ -169,69 +180,64 @@ export class PopupController {
    * Handle profile name input change
    */
   onProfileNameChange(value: string): void {
-    const p = this.state.current
-    if (!p) return
-
-    p.name = value
-    this.callbacks.syncAndRender()
+    this.withCurrentProfile((p) => {
+      p.name = value
+      this.callbacks.syncAndRender()
+    })
   }
 
   /**
    * Handle profile color input change
    */
   onProfileColorChange(value: string): void {
-    const p = this.state.current
-    if (!p) return
-
-    p.color = value
-    this.callbacks.syncAndRender()
+    this.withCurrentProfile((p) => {
+      p.color = value
+      this.callbacks.syncAndRender()
+    })
   }
 
   /**
    * Handle profile notes textarea change
    */
   onProfileNotesChange(value: string): void {
-    const p = this.state.current
-    if (!p) return
-
-    p.notes = value
-    this.callbacks.syncAndRender()
+    this.withCurrentProfile((p) => {
+      p.notes = value
+      this.callbacks.syncAndRender()
+    })
   }
 
   /**
    * Handle profile enabled checkbox change
    */
   onProfileEnabledChange(checked: boolean): void {
-    const p = this.state.current
-    if (!p) return
-
-    p.enabled = checked
-    this.setActiveProfile(p.id, checked)
+    this.withCurrentProfile((p) => {
+      p.enabled = checked
+      this.setActiveProfile(p.id, checked)
+    })
   }
 
   /**
    * Handle matcher field change
    */
   onMatcherChange(matcherId: string, field: 'urlFilter' | 'types', value: string): void {
-    const p = this.state.current
-    if (!p) return
+    this.withCurrentProfile((p) => {
+      const m = p.matchers.find((x) => x.id === matcherId)
+      if (!m) return
 
-    const m = p.matchers.find((x) => x.id === matcherId)
-    if (!m) return
-
-    if (field === 'urlFilter') {
-      // Empty URL filter matches all domains
-      m.urlFilter = value || '*'
-    } else if (field === 'types') {
-      // Empty resource types means all request types
-      if (!value) {
-        m.resourceTypes = []
-      } else {
-        m.resourceTypes = [value]
+      if (field === 'urlFilter') {
+        // Empty URL filter matches all domains
+        m.urlFilter = value || '*'
+      } else if (field === 'types') {
+        // Empty resource types means all request types
+        if (!value) {
+          m.resourceTypes = []
+        } else {
+          m.resourceTypes = [value]
+        }
       }
-    }
 
-    this.callbacks.syncAndRender({ listOnly: true })
+      this.callbacks.syncAndRender({ listOnly: true })
+    })
   }
 
   /**
@@ -243,22 +249,21 @@ export class PopupController {
     field: 'header' | 'value' | 'enabled',
     value: string | boolean
   ): void {
-    const p = this.state.current
-    if (!p) return
+    this.withCurrentProfile(() => {
+      const arr = this.getHeaderArray(isRequest)
+      const h = arr.find((x) => x.id === headerId)
+      if (!h) return
 
-    const arr = isRequest ? p.requestHeaders : p.responseHeaders
-    const h = arr.find((x) => x.id === headerId)
-    if (!h) return
+      if (field === 'header') {
+        h.header = value as string
+      } else if (field === 'value') {
+        h.value = value as string
+      } else if (field === 'enabled') {
+        h.enabled = value as boolean
+      }
 
-    if (field === 'header') {
-      h.header = value as string
-    } else if (field === 'value') {
-      h.value = value as string
-    } else if (field === 'enabled') {
-      h.enabled = value as boolean
-    }
-
-    this.callbacks.syncAndRender({ listOnly: true })
+      this.callbacks.syncAndRender({ listOnly: true })
+    })
   }
 
   /**
@@ -277,36 +282,35 @@ export class PopupController {
    * Import headers from JSON
    */
   onImportHeaders(data: unknown): void {
-    const p = this.state.current
-    if (!p) return
+    this.withCurrentProfile((p) => {
+      try {
+        const headers = Array.isArray(data) ? data : [data]
+        const importedHeaders = headers.filter(
+          (h) => h && typeof h === 'object' && 'header' in h && 'value' in h
+        )
 
-    try {
-      const headers = Array.isArray(data) ? data : [data]
-      const importedHeaders = headers.filter(
-        (h) => h && typeof h === 'object' && 'header' in h && 'value' in h
-      )
+        if (importedHeaders.length === 0) {
+          alert('No valid headers found in the imported file.')
+          return
+        }
 
-      if (importedHeaders.length === 0) {
-        alert('No valid headers found in the imported file.')
-        return
+        // Add imported headers to request headers
+        p.requestHeaders.push(
+          ...importedHeaders.map((h: any) => ({
+            id: crypto.randomUUID(),
+            header: h.header || '',
+            value: h.value || '',
+            enabled: h.enabled !== false,
+          }))
+        )
+
+        this.callbacks.syncAndRender()
+        alert(`Imported ${importedHeaders.length} header(s).`)
+      } catch (err) {
+        console.error('Failed to import headers:', err)
+        alert('Failed to import headers. Make sure the JSON is valid.')
       }
-
-      // Add imported headers to request headers
-      p.requestHeaders.push(
-        ...importedHeaders.map((h: any) => ({
-          id: crypto.randomUUID(),
-          header: h.header || '',
-          value: h.value || '',
-          enabled: h.enabled !== false,
-        }))
-      )
-
-      this.callbacks.syncAndRender()
-      alert(`Imported ${importedHeaders.length} header(s).`)
-    } catch (err) {
-      console.error('Failed to import headers:', err)
-      alert('Failed to import headers. Make sure the JSON is valid.')
-    }
+    })
   }
 
   /**
@@ -340,31 +344,60 @@ export class PopupController {
     }
   }
 
+  /**
+   * Deep clone a profile with new IDs for all nested items
+   */
+  private deepCloneProfile(src: Profile): Profile {
+    return {
+      id: crypto.randomUUID(),
+      name: src.name,
+      color: src.color,
+      notes: src.notes,
+      enabled: false, // Always disabled by default
+      matchers: src.matchers.map((m) => ({ ...m, id: crypto.randomUUID() })),
+      requestHeaders: src.requestHeaders.map((h) => ({ ...h, id: crypto.randomUUID() })),
+      responseHeaders: src.responseHeaders.map((h) => ({ ...h, id: crypto.randomUUID() })),
+    }
+  }
+
+  /**
+   * Generic validation for arrays of items with ID generation
+   */
+  private validateItems<T extends { id?: unknown }>(
+    data: unknown,
+    requiredField: string,
+    transform: (item: any) => Omit<T, 'id'>
+  ): Array<T & { id: string }> {
+    if (!Array.isArray(data)) return []
+
+    return data
+      .filter((item) => item && typeof item === 'object' && requiredField in item)
+      .map(
+        (item: any) =>
+          ({
+            id: crypto.randomUUID(),
+            ...transform(item),
+          }) as T & { id: string }
+      )
+  }
+
   private validateMatchers(
     data: unknown
   ): Array<{ id: string; urlFilter: string; resourceTypes?: string[] }> {
-    if (!Array.isArray(data)) return []
-    return data
-      .filter((m) => m && typeof m === 'object' && 'urlFilter' in m)
-      .map((m: any) => ({
-        id: crypto.randomUUID(),
-        urlFilter: m.urlFilter || '*',
-        resourceTypes: Array.isArray(m.resourceTypes) ? m.resourceTypes : [],
-      }))
+    return this.validateItems(data, 'urlFilter', (m: any) => ({
+      urlFilter: m.urlFilter || '*',
+      resourceTypes: Array.isArray(m.resourceTypes) ? m.resourceTypes : [],
+    }))
   }
 
   private validateHeaders(
     data: unknown
   ): Array<{ id: string; header: string; value: string; enabled?: boolean }> {
-    if (!Array.isArray(data)) return []
-    return data
-      .filter((h) => h && typeof h === 'object' && 'header' in h)
-      .map((h: any) => ({
-        id: crypto.randomUUID(),
-        header: h.header || '',
-        value: h.value || '',
-        enabled: h.enabled !== false,
-      }))
+    return this.validateItems(data, 'header', (h: any) => ({
+      header: h.header || '',
+      value: h.value || '',
+      enabled: h.enabled !== false,
+    }))
   }
 
   /**
