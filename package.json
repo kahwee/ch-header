@@ -25,7 +25,7 @@
     "@storybook/html-vite": "^9.1.15",
     "@tailwindcss/postcss": "^4.1.16",
     "@types/chrome": "^0.1.24",
-    "@types/node": "^22.0.0",
+    "@types/node": "^24.9.1",
     "@vitest/browser": "^4.0.3",
     "@vitest/browser-playwright": "^4.0.3",
     "@vitest/ui": "^4.0.3",
@@ -38,7 +38,7 @@
     "tailwindcss": "^4.1.16",
     "terser": "^5.44.0",
     "typescript": "^5.5.4",
-    "vite": "^5.4.11",
+    "vite": "^7.1.12",
     "vitest": "^4.0.3"
   },
   "dependencies": {
