@@ -1,0 +1,24 @@
+@import 'tailwindcss';
+
+@theme {
+  --color-bg: #1c1919;
+  --color-panel: #171923;
+  --color-muted: #9aa3b2;
+  --color-text: #e6e9ef;
+  --color-primary: #6b4eff;
+  --color-danger: #ff5277;
+}
+
+@layer components {
+  body {
+    @apply text-text bg-bg;
+  }
+
+  el-disclosure {
+    @apply block;
+  }
+
+  el-disclosure[hidden] {
+    @apply hidden;
+  }
+}
