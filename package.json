@@ -44,5 +44,8 @@
   },
   "dependencies": {
     "@tailwindplus/elements": "^1.0.18"
+  },
+  "optionalDependencies": {
+    "@rollup/rollup-linux-x64-gnu": "*"
   }
 }
