@@ -6,3 +6,11 @@ coverage/
 .env
 .env.local
 src/ui/icons-generated.ts
+
+# Extension distribution artifacts
+*.zip
+*.crx
+*.pem
+*.key
+*.p12
+private-key.xml
