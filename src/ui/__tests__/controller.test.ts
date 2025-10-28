@@ -53,7 +53,6 @@ describe('PopupController - Refactored Methods', () => {
   describe('Guard Utility (withCurrentProfile)', () => {
     it('should not call callback if current profile is null', () => {
       state.current = null
-      const mockFn = vi.fn()
 
       // Try to call a method that uses the guard
       controller.onAddHeader(true)
