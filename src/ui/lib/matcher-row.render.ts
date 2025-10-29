@@ -52,6 +52,7 @@ export function buildMatcherRowHTML(m: MatcherRowOptions): string {
           action: 'removeMatcher',
           title: 'Remove matcher',
           variant: 'delete',
+          circle: true,
         })}
       </td>
     </tr>

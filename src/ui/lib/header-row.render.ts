@@ -59,6 +59,7 @@ export function buildHeaderRowHTML(h: HeaderRowOptions): string {
           action: 'removeHeader',
           title: 'Delete header',
           variant: 'delete',
+          circle: true,
         })}
       </td>
     </tr>
