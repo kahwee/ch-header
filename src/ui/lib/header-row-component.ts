@@ -1,0 +1,109 @@
+/**
+ * HeaderRowComponent - Encapsulates header row rendering and event handling
+ * Extends the base Component class for lifecycle management
+ */
+
+import { Component } from './component'
+import { HeaderOp } from '../../lib/types'
+import { escapeHtml } from '../utils'
+import trashIcon from '../icons/trash.svg?raw'
+
+export interface HeaderRowCallbacks {
+  onChange: (id: string, field: 'header' | 'value' | 'enabled', value: string | boolean) => void
+  onDelete: (id: string) => void
+}
+
+export class HeaderRowComponent extends Component {
+  constructor(
+    private header: HeaderOp,
+    private callbacks: HeaderRowCallbacks,
+    private isRequest: boolean = true
+  ) {
+    super(`header-row-${header.id}`)
+  }
+
+  render(): string {
+    const kind = this.isRequest ? 'req' : 'res'
+    const isEnabled = this.header.enabled !== false
+
+    return `
+      <div class="flex items-center gap-2 rounded-lg bg-white/3 hover:bg-white/5 p-3 transition-colors" data-hid="${this.header.id}" data-kind="${kind}">
+        <input
+          type="checkbox"
+          class="w-4 h-4 rounded cursor-pointer accent-primary flex-shrink-0"
+          data-role="enabled"
+          ${isEnabled ? 'checked' : ''}
+          title="Enable/disable this header"
+        >
+        <input
+          type="text"
+          class="flex-1 rounded-md bg-white/5 px-3 py-2 text-sm text-text outline-1 -outline-offset-1 outline-gray-700 placeholder:text-gray-500 focus:outline-2 focus:-outline-offset-2 focus:outline-blue-500"
+          data-role="header"
+          placeholder="Header name (e.g. X-Custom-Header)"
+          value="${escapeHtml(this.header.header || '')}"
+        >
+        <input
+          type="text"
+          class="flex-1 rounded-md bg-white/5 px-3 py-2 text-sm text-text outline-1 -outline-offset-1 outline-gray-700 placeholder:text-gray-500 focus:outline-2 focus:-outline-offset-2 focus:outline-blue-500"
+          data-role="value"
+          placeholder="Value"
+          value="${escapeHtml(this.header.value || '')}"
+        >
+        <button
+          class="flex-shrink-0 p-2 rounded-md bg-transparent hover:bg-white/10 text-text hover:text-danger transition-all focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-500"
+          data-action="removeHeader"
+          title="Delete header"
+        >
+          <span class="inline-flex items-center justify-center w-4 h-4">${trashIcon}</span>
+        </button>
+      </div>
+    `
+  }
+
+  protected setupHandlers(): void {
+    // Handle enabled/disabled toggle
+    this.on('change', '[data-role="enabled"]', (e) => {
+      const checked = (e.target as HTMLInputElement).checked
+      this.callbacks.onChange(this.header.id, 'enabled', checked)
+    })
+
+    // Handle header name changes
+    this.on('input', '[data-role="header"]', (e) => {
+      const value = (e.target as HTMLInputElement).value
+      this.callbacks.onChange(this.header.id, 'header', value)
+    })
+
+    // Handle header value changes
+    this.on('input', '[data-role="value"]', (e) => {
+      const value = (e.target as HTMLInputElement).value
+      this.callbacks.onChange(this.header.id, 'value', value)
+    })
+
+    // Handle delete button
+    this.on('click', '[data-action="removeHeader"]', () => {
+      this.callbacks.onDelete(this.header.id)
+    })
+  }
+
+  /**
+   * Update header data and re-render
+   */
+  updateHeader(header: HeaderOp): void {
+    this.header = header
+    this.updateContent(this.render())
+  }
+
+  /**
+   * Get the current header data
+   */
+  getHeader(): HeaderOp {
+    return this.header
+  }
+
+  /**
+   * Get whether this is a request or response header
+   */
+  isRequestHeader(): boolean {
+    return this.isRequest
+  }
+}
