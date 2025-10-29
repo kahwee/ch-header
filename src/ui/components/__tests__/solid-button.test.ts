@@ -5,10 +5,10 @@ describe('solidButton', () => {
   describe('variants', () => {
     it('should render primary variant with correct classes', () => {
       const html = solidButton({ variant: 'primary', text: 'Click me' })
-      expect(html).toContain('bg-blue-500')
+      expect(html).toContain('bg-blue-700')
       expect(html).toContain('text-white')
-      expect(html).toContain('hover:bg-blue-400')
-      expect(html).toContain('focus-visible:outline-blue-500')
+      expect(html).toContain('hover:bg-blue-600')
+      expect(html).toContain('focus-visible:outline-blue-700')
     })
 
     it('should render secondary variant with correct classes', () => {
@@ -21,7 +21,7 @@ describe('solidButton', () => {
 
     it('should default to primary variant when not specified', () => {
       const html = solidButton({ text: 'Click me' })
-      expect(html).toContain('bg-blue-500')
+      expect(html).toContain('bg-blue-700')
     })
   })
 
@@ -189,7 +189,7 @@ describe('solidButton', () => {
         action: 'add',
       })
 
-      expect(html).toContain('bg-blue-500')
+      expect(html).toContain('bg-blue-700')
       expect(html).toContain('id="add-btn"')
       expect(html).toContain('title="Add new item"')
       expect(html).toContain('data-action="add"')
@@ -227,7 +227,7 @@ describe('solidButton', () => {
       })
 
       expect(html).toContain('id="addMatcher"')
-      expect(html).toContain('bg-blue-500')
+      expect(html).toContain('bg-blue-700')
       // Icon-only uses reduced padding
       expect(html).toContain('p-1')
     })
@@ -285,7 +285,7 @@ describe('solidButton', () => {
     it('should handle empty text string', () => {
       const html = solidButton({ text: '', variant: 'primary' })
       expect(html).toContain('type="button"')
-      expect(html).toContain('bg-blue-500')
+      expect(html).toContain('bg-blue-700')
     })
 
     it('should handle icon with special characters', () => {
@@ -297,7 +297,7 @@ describe('solidButton', () => {
     it('should handle all undefined options as defaults', () => {
       const html = solidButton({})
       expect(html).toContain('type="button"')
-      expect(html).toContain('bg-blue-500')
+      expect(html).toContain('bg-blue-700')
       expect(html).toContain('rounded-md')
       // Icon-only (no text) uses reduced padding: p-1.5
       expect(html).toContain('p-1.5')

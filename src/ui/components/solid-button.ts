@@ -24,7 +24,7 @@ export function solidButton(options: {
   } = options
 
   const variantClasses = {
-    primary: 'bg-blue-500 text-white hover:bg-blue-400 focus-visible:outline-blue-500',
+    primary: 'bg-blue-700 text-white hover:bg-blue-600 focus-visible:outline-blue-700',
     secondary: 'bg-stone-700 text-text hover:bg-stone-600 focus-visible:outline-stone-500',
   }
 

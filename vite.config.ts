@@ -1,6 +1,15 @@
 import { defineConfig } from 'vite'
 import { resolve } from 'path'
-import { copyFileSync, mkdirSync, existsSync, renameSync, rmSync, cpSync, readFileSync, writeFileSync } from 'fs'
+import {
+  copyFileSync,
+  mkdirSync,
+  existsSync,
+  renameSync,
+  rmSync,
+  cpSync,
+  readFileSync,
+  writeFileSync,
+} from 'fs'
 
 const srcDir = resolve(__dirname, 'src')
 const publicDir = resolve(__dirname, 'public')

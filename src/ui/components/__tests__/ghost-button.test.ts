@@ -194,7 +194,7 @@ describe('ghostButton', () => {
       expect(html).toContain('transition-all')
       expect(html).toContain('focus-visible:outline-2')
       expect(html).toContain('focus-visible:outline-offset-2')
-      expect(html).toContain('focus-visible:outline-blue-500')
+      expect(html).toContain('focus-visible:outline-blue-700')
     })
   })
 
@@ -257,8 +257,8 @@ describe('ghostButton', () => {
       })
 
       // Both should have same focus styling
-      expect(deleteHtml).toContain('focus-visible:outline-blue-500')
-      expect(defaultHtml).toContain('focus-visible:outline-blue-500')
+      expect(deleteHtml).toContain('focus-visible:outline-blue-700')
+      expect(defaultHtml).toContain('focus-visible:outline-blue-700')
     })
 
     it('should have consistent background hover effect', () => {

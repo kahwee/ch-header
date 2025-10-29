@@ -26,7 +26,7 @@ export function ghostButton(options: GhostButtonOptions): string {
 
   return `
     <button
-      class="flex items-center justify-center bg-transparent hover:bg-white/10 ${shapeClasses} ${variantClasses} transition-all focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-500"
+      class="flex items-center justify-center bg-transparent hover:bg-white/10 ${shapeClasses} ${variantClasses} transition-all focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-700"
       data-action="${escapeHtml(action)}"
       title="${escapeHtml(title)}"
     >

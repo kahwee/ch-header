@@ -122,7 +122,7 @@ export function getSidebarTemplate(): string {
     </el-command-palette>
 
     <div class="flex flex-wrap items-center bg-stone-800/50 px-4 py-2.5 text-xs text-gray-300 shrink-0 border-t border-gray-700">
-      <button id="footerNewProfile" type="button" class="flex items-center gap-1.5 rounded-md bg-stone-700 px-2.5 py-1.5 text-xs font-semibold text-white hover:bg-blue-400 transition-colors flex-shrink-0 whitespace-nowrap" title="Add new profile">
+      <button id="footerNewProfile" type="button" class="flex items-center gap-1.5 rounded-md bg-stone-700 px-2.5 py-1.5 text-xs font-semibold text-white hover:bg-stone-600 transition-colors flex-shrink-0 whitespace-nowrap" title="Add new profile">
         <span class="inline-flex items-center justify-center w-4 h-4">${plusIcon}</span>
         New
       </button>
@@ -140,7 +140,7 @@ export function getPopupTemplate(): string {
           <h3 class="mt-2 text-sm font-semibold text-text">No profiles</h3>
           <p class="mt-1 text-sm text-muted">Get started by creating a new profile.</p>
           <div class="mt-6">
-            <button id="newProfileEmpty" type="button" class="inline-flex items-center rounded-md bg-primary px-3 py-2 text-sm font-semibold text-white hover:bg-blue-400 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary">
+            <button id="newProfileEmpty" type="button" class="inline-flex items-center rounded-md bg-blue-700 px-3 py-2 text-sm font-semibold text-white hover:bg-blue-600 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-700">
               <span class="mr-1.5 -ml-0.5 w-5 h-5 flex items-center justify-center">${plusIcon}</span>
               New Profile
             </button>
@@ -148,14 +148,14 @@ export function getPopupTemplate(): string {
         </div>
         <form id="detail" class="p-4 grid gap-3 hidden">
           <div class="flex gap-2 items-stretch">
-            <button id="profileAvatarBtn" type="button" popovertarget="colorPickerPopover" class="flex shrink-0 items-center justify-center w-8 h-8 rounded-md font-semibold text-white text-sm font-mono focus:relative focus:outline-2 focus:-outline-offset-2 focus:outline-blue-500 cursor-pointer transition-all border border-white/10 hover:border-white/20 group" style="background-color: #7e22ce;" title="Click to choose color">
+            <button id="profileAvatarBtn" type="button" popovertarget="colorPickerPopover" class="flex shrink-0 items-center justify-center w-8 h-8 rounded-md font-semibold text-white text-sm font-mono focus:relative focus:outline-2 focus:-outline-offset-2 focus:outline-blue-700 cursor-pointer transition-all border border-white/10 hover:border-white/20 group" style="background-color: #7e22ce;" title="Click to choose color">
               <span id="profileAvatarInitials" style="text-shadow: 0 1px 3px rgba(0,0,0,0.5);">P</span>
             </button>
             <div class="grid grow grid-cols-1 focus-within:relative">
-              <input id="profileName" type="text" name="profileName" placeholder="Profile name" class="col-start-1 row-start-1 block w-full bg-white/5 py-1.5 px-3 text-base text-text font-semibold outline-1 -outline-offset-1 outline-gray-700 placeholder:text-gray-500 focus:outline-2 focus:-outline-offset-2 focus:outline-blue-500 rounded-md sm:text-sm/6" required />
+              <input id="profileName" type="text" name="profileName" placeholder="Profile name" class="col-start-1 row-start-1 block w-full bg-white/5 py-1.5 px-3 text-base text-text font-semibold outline-1 -outline-offset-1 outline-gray-700 placeholder:text-gray-500 focus:outline-2 focus:-outline-offset-2 focus:outline-blue-700 rounded-md sm:text-sm/6" required />
             </div>
             <el-dropdown class="inline-block">
-              <button type="button" class="inline-flex items-center gap-x-1.5 rounded-md bg-white/10 px-3 py-1.5 text-sm font-semibold text-white hover:bg-white/20 focus:relative focus:outline-2 focus:-outline-offset-2 focus:outline-blue-500 cursor-pointer transition-colors">
+              <button type="button" class="inline-flex items-center gap-x-1.5 rounded-md bg-white/10 px-3 py-1.5 text-sm font-semibold text-white hover:bg-white/20 focus:relative focus:outline-2 focus:-outline-offset-2 focus:outline-blue-700 cursor-pointer transition-colors">
                 Options
                 <svg viewBox="0 0 20 20" fill="currentColor" aria-hidden="true" class="-mr-1 size-5 text-gray-400">
                   <path d="M5.22 8.22a.75.75 0 0 1 1.06 0L10 11.94l3.72-3.72a.75.75 0 1 1 1.06 1.06l-4.25 4.25a.75.75 0 0 1-1.06 0L5.22 9.28a.75.75 0 0 1 0-1.06Z" clip-rule="evenodd" fill-rule="evenodd" />
@@ -183,7 +183,7 @@ export function getPopupTemplate(): string {
                     type="button"
                     data-color="${color.tailwind}"
                     data-hex="${color.hex}"
-                    class="w-8 h-8 rounded-full transition-transform hover:scale-110 focus:outline-2 focus:-outline-offset-2 focus:outline-blue-500 cursor-pointer color-option"
+                    class="w-8 h-8 rounded-full transition-transform hover:scale-110 focus:outline-2 focus:-outline-offset-2 focus:outline-blue-700 cursor-pointer color-option"
                     style="background-color: ${color.hex}; border: 2px solid rgba(255,255,255,0.2)"
                     title="${color.name}"
                     popovertarget="colorPickerPopover"
@@ -199,14 +199,14 @@ export function getPopupTemplate(): string {
                   type="text"
                   maxlength="1"
                   placeholder="A"
-                  class="w-full rounded-md bg-white/10 px-3 py-2 text-center text-lg font-bold text-text outline-1 -outline-offset-1 outline-gray-600 placeholder:text-gray-500 focus:outline-2 focus:-outline-offset-2 focus:outline-blue-500 hover:bg-white/15 transition-colors"
+                  class="w-full rounded-md bg-white/10 px-3 py-2 text-center text-lg font-bold text-text outline-1 -outline-offset-1 outline-gray-600 placeholder:text-gray-500 focus:outline-2 focus:-outline-offset-2 focus:outline-blue-700 hover:bg-white/15 transition-colors"
                 />
               </div>
             </div>
           </el-popover>
           <input type="file" id="importFile" accept=".json" style="display: none;" />
           <div>
-            <textarea id="profileNotes" name="profileNotes" rows="4" class="block w-full rounded-md bg-white/5 px-3 py-1.5 text-base text-text outline-1 -outline-offset-1 outline-white/10 placeholder:text-gray-500 focus:outline-2 focus:-outline-offset-2 focus:outline-blue-500 sm:text-sm/6" placeholder="Notes (optional)" style="font-family: inherit"></textarea>
+            <textarea id="profileNotes" name="profileNotes" rows="4" class="block w-full rounded-md bg-white/5 px-3 py-1.5 text-base text-text outline-1 -outline-offset-1 outline-white/10 placeholder:text-gray-500 focus:outline-2 focus:-outline-offset-2 focus:outline-blue-700 sm:text-sm/6" placeholder="Notes (optional)" style="font-family: inherit"></textarea>
           </div>
 
           ${headersSection('req', 'Request headers', '')}
