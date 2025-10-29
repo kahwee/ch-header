@@ -130,7 +130,7 @@ export function getPopupTemplate(): string {
             <div class="flex flex-col gap-4 p-5 bg-stone-800/95 backdrop-blur-sm rounded-xl border border-gray-600/50 shadow-2xl">
               <div class="grid grid-cols-7 gap-3">
                 ${COLOR_PALETTE.map(
-                  (color) => `
+    (color) => `
                   <button
                     type="button"
                     data-color="${color.tailwind}"
@@ -142,7 +142,7 @@ export function getPopupTemplate(): string {
                     popovertargetaction="hide"
                   ></button>
                 `
-                ).join('')}
+  ).join('')}
               </div>
               <div class="flex flex-col gap-1.5">
                 <label for="profileInitials" class="text-xs font-medium text-gray-400">Avatar (optional, emoji ok!)</label>
@@ -187,16 +187,8 @@ export function getPopupTemplate(): string {
             <div class="mt-4 flow-root">
               <div class="-mx-4 -my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
                 <div class="inline-block min-w-full py-2 align-middle sm:px-6 lg:px-8">
-                  <table class="min-w-full divide-y divide-white/15">
-                    <thead>
-                      <tr class="divide-x divide-white/10">
-                        <th scope="col" class="py-3.5 pr-4 pl-4 text-left text-sm font-semibold text-white sm:pl-0 w-12"></th>
-                        <th scope="col" class="px-4 py-3.5 text-left text-sm font-semibold text-white">Header</th>
-                        <th scope="col" class="px-4 py-3.5 text-left text-sm font-semibold text-white">Value</th>
-                        <th scope="col" class="py-3.5 pr-4 pl-4 text-left text-sm font-semibold text-white sm:pr-0 w-12"></th>
-                      </tr>
-                    </thead>
-                    <tbody id="reqHeaders" class="divide-y divide-white/10 bg-gray-900"></tbody>
+                  <table class="min-w-full">
+                    <tbody id="reqHeaders"></tbody>
                   </table>
                 </div>
               </div>
@@ -229,16 +221,8 @@ export function getPopupTemplate(): string {
             <div class="mt-4 flow-root">
               <div class="-mx-4 -my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
                 <div class="inline-block min-w-full py-2 align-middle sm:px-6 lg:px-8">
-                  <table class="min-w-full divide-y divide-white/15">
-                    <thead>
-                      <tr class="divide-x divide-white/10">
-                        <th scope="col" class="py-3.5 pr-4 pl-4 text-left text-sm font-semibold text-white sm:pl-0 w-12"></th>
-                        <th scope="col" class="px-4 py-3.5 text-left text-sm font-semibold text-white">Header</th>
-                        <th scope="col" class="px-4 py-3.5 text-left text-sm font-semibold text-white">Value</th>
-                        <th scope="col" class="py-3.5 pr-4 pl-4 text-left text-sm font-semibold text-white sm:pr-0 w-12"></th>
-                      </tr>
-                    </thead>
-                    <tbody id="resHeaders" class="divide-y divide-white/10 bg-gray-900"></tbody>
+                  <table class="min-w-full">
+                    <tbody id="resHeaders"></tbody>
                   </table>
                 </div>
               </div>

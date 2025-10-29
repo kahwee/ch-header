@@ -1,6 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/html'
 import { headerRow } from '../components/header-row'
 import { profileListItem } from '../popup-template'
+import '../components/checkbox-element'
 
 const meta = {
   title: 'ChHeader/Components',
@@ -18,13 +19,21 @@ export const HeaderRow: Story = {
     wrapper.style.width = '600px'
     wrapper.style.padding = '20px'
     wrapper.style.background = '#0f1115'
-    wrapper.innerHTML = headerRow({
+
+    const table = document.createElement('table')
+    table.className = 'min-w-full'
+
+    const tbody = document.createElement('tbody')
+    tbody.innerHTML = headerRow({
       id: 'h1',
       header: 'authorization',
       value: 'Bearer token123',
       op: 'set',
       enabled: true,
     })
+
+    table.appendChild(tbody)
+    wrapper.appendChild(table)
     return wrapper
   },
 }
@@ -35,7 +44,12 @@ export const HeaderRowDisabled: Story = {
     wrapper.style.width = '600px'
     wrapper.style.padding = '20px'
     wrapper.style.background = '#0f1115'
-    wrapper.innerHTML = headerRow({
+
+    const table = document.createElement('table')
+    table.className = 'min-w-full'
+
+    const tbody = document.createElement('tbody')
+    tbody.innerHTML = headerRow({
       id: 'h1',
       header: 'x-custom',
       value: 'custom-value',
@@ -43,9 +57,8 @@ export const HeaderRowDisabled: Story = {
       enabled: false,
     })
 
-    const item = wrapper.querySelector('.ch-header-item') as HTMLElement
-    if (item) item.style.opacity = '0.6'
-
+    table.appendChild(tbody)
+    wrapper.appendChild(table)
     return wrapper
   },
 }
