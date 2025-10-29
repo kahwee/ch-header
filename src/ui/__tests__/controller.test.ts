@@ -27,7 +27,7 @@ describe('PopupController - Refactored Methods', () => {
     return {
       id: 'test-1',
       name: 'Test Profile',
-      color: '#3b82f6',
+      color: 'blue-700',
       enabled: false,
       notes: 'Test notes',
       matchers: [{ id: 'matcher-1', urlFilter: 'localhost:3000', resourceTypes: [] }],

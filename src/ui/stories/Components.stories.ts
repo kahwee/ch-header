@@ -73,7 +73,7 @@ export const ProfileListItem: Story = {
       {
         id: 'prod-1',
         name: 'Production',
-        color: '#6b4eff',
+        color: 'purple-700',
         notes: 'Auth headers',
         enabled: true,
       },

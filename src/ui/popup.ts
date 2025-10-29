@@ -1,7 +1,6 @@
 import { STORAGE_KEYS, Profile, State } from '../lib/types'
 import { PopupController } from './controller'
-import { profileListItem, getPopupTemplate } from './popup-template'
-import { tailwindToHex, hexToTailwind } from './utils'
+import { profileListItem, getPopupTemplate, COLOR_PALETTE } from './popup-template'
 import { MatcherTableComponent } from './lib/matcher-table.component'
 import { HeaderTableComponent } from './lib/header-table.component'
 import './components/checkbox-element'
@@ -264,7 +263,10 @@ function select(id: string | null): void {
   el.detailPane?.classList.remove('hidden')
 
   if (el.name) el.name.value = p.name || ''
-  if (el.profileAvatarBtn) el.profileAvatarBtn.style.backgroundColor = p.color || '#7e22ce'
+  if (el.profileAvatarBtn) {
+    const colorEntry = COLOR_PALETTE.find((c) => c.tailwind === (p.color || 'purple-700'))
+    el.profileAvatarBtn.style.backgroundColor = colorEntry?.hex || '#7e22ce'
+  }
   if (el.initials) el.initials.value = p.initials || ''
   if (el.notes) el.notes.value = p.notes || ''
   if (el.enabled) el.enabled.checked = !!p.enabled
@@ -272,8 +274,8 @@ function select(id: string | null): void {
   // Update the initials preview in the profile avatar
   updateAvatarPreview(p.name, p.initials)
 
-  // Highlight the selected color in the color picker (convert hex to Tailwind name)
-  const tailwindColor = hexToTailwind(p.color || '#7e22ce')
+  // Highlight the selected color in the color picker
+  const tailwindColor = p.color || 'purple-700'
   updateSelectedColorIndicator(tailwindColor)
 
   renderMatchers()
@@ -364,11 +366,11 @@ function setupEventListeners(): void {
     if (colorBtn) {
       const tailwindColor = colorBtn.getAttribute('data-color')
       if (tailwindColor) {
-        const hexColor = tailwindToHex(tailwindColor)
-        controller.onProfileColorChange(hexColor)
+        controller.onProfileColorChange(tailwindColor)
         // Update the profile avatar background
-        if (el.profileAvatarBtn) {
-          el.profileAvatarBtn.style.backgroundColor = hexColor
+        const colorEntry = COLOR_PALETTE.find((c) => c.tailwind === tailwindColor)
+        if (el.profileAvatarBtn && colorEntry) {
+          el.profileAvatarBtn.style.backgroundColor = colorEntry.hex
         }
         // Update the selected color visual indicator
         updateSelectedColorIndicator(tailwindColor)

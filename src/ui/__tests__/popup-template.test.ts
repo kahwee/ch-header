@@ -138,7 +138,7 @@ describe('popup-template', () => {
     const testProfile = {
       id: 'profile-123',
       name: 'Test Profile',
-      color: '#3b82f6',
+      color: 'blue-700',
       enabled: true,
     }
 
