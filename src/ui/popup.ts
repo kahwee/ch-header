@@ -1,13 +1,14 @@
-import { STORAGE_KEYS, Matcher, HeaderOp, Profile, State } from '../lib/types'
+import { STORAGE_KEYS, Profile, State } from '../lib/types'
 import { PopupController } from './controller'
 import { profileListItem, getPopupTemplate } from './popup-template'
-import { escapeHtml, tailwindToHex, hexToTailwind } from './utils'
+import { tailwindToHex, hexToTailwind } from './utils'
+import { MatcherListComponent } from './lib/matcher-list-component'
+import { HeaderListComponent } from './lib/header-list-component'
 import './components/checkbox-element'
 import '@tailwindplus/elements'
 import searchIcon from './icons/search.svg?raw'
 import plusIcon from './icons/plus.svg?raw'
 import folderPlusIcon from './icons/folder-plus.svg?raw'
-import trashIcon from './icons/trash.svg?raw'
 
 const K = STORAGE_KEYS
 
@@ -86,6 +87,11 @@ const state: State = {
 // Controller instance initialized after load()
 let controller: PopupController
 
+// Component instances initialized after elements are available
+let matcherList: MatcherListComponent
+let headerListReq: HeaderListComponent
+let headerListRes: HeaderListComponent
+
 // Inject SVG icons into static HTML elements
 function injectIcons(): void {
   // Search icon in sidebar command palette (overlayed on input)
@@ -145,6 +151,37 @@ async function load(): Promise<void> {
     saveProfiles,
     syncAndRender,
   })
+
+  // Initialize MatcherListComponent
+  if (el.matchers) {
+    matcherList = new MatcherListComponent(el.matchers, {
+      onChange: (id, field, value) => controller.onMatcherChange(id, field, value),
+      onDelete: (id) => controller.onRemoveMatcher(id),
+    })
+  }
+
+  // Initialize HeaderListComponents (request and response)
+  if (el.req) {
+    headerListReq = new HeaderListComponent(
+      el.req,
+      {
+        onChange: (id, field, value) => controller.onHeaderChange(id, true, field, value),
+        onDelete: (id) => controller.onRemoveHeader(id, true),
+      },
+      true
+    )
+  }
+
+  if (el.res) {
+    headerListRes = new HeaderListComponent(
+      el.res,
+      {
+        onChange: (id, field, value) => controller.onHeaderChange(id, false, field, value),
+        onDelete: (id) => controller.onRemoveHeader(id, false),
+      },
+      false
+    )
+  }
 
   select(state.activeId)
   renderList()
@@ -242,53 +279,17 @@ function select(id: string | null): void {
 
 function renderMatchers(): void {
   const p = state.current
-  if (!p || !el.matchers) return
+  if (!p || !matcherList) return
 
-  el.matchers.innerHTML = (p.matchers || []).map((m) => matcherRow(m)).join('')
-}
-
-function matcherRow(m: Matcher): string {
-  const selectedTypes = m.resourceTypes || []
-  // If urlFilter is "*", show empty in UI (means "all domains")
-  const displayUrlFilter = m.urlFilter === '*' ? '' : m.urlFilter
-
-  return `
-    <div class="group flex gap-2 items-center p-3 rounded-lg bg-white/3 hover:bg-white/5 transition-colors" data-mid="${m.id}">
-      <input class="flex-[2] rounded-md bg-white/5 px-3 py-2 text-sm text-text outline-1 -outline-offset-1 outline-gray-700 placeholder:text-gray-500 focus:outline-2 focus:-outline-offset-2 focus:outline-blue-500" data-role="urlFilter" placeholder="Leave empty for all domains" value="${escapeHtml(displayUrlFilter)}">
-      <select class="flex-1 rounded-md bg-white/5 px-3 py-2 text-sm text-text outline-1 -outline-offset-1 outline-gray-700 focus:outline-2 focus:-outline-offset-2 focus:outline-blue-500 cursor-pointer" data-role="types">
-        <option value="">All request types</option>
-        <option value="xmlhttprequest" ${selectedTypes.includes('xmlhttprequest') ? 'selected' : ''}>XHR/Fetch</option>
-        <option value="script" ${selectedTypes.includes('script') ? 'selected' : ''}>Scripts</option>
-        <option value="stylesheet" ${selectedTypes.includes('stylesheet') ? 'selected' : ''}>Stylesheets</option>
-        <option value="image" ${selectedTypes.includes('image') ? 'selected' : ''}>Images</option>
-        <option value="font" ${selectedTypes.includes('font') ? 'selected' : ''}>Fonts</option>
-        <option value="document" ${selectedTypes.includes('document') ? 'selected' : ''}>Documents</option>
-        <option value="sub_frame" ${selectedTypes.includes('sub_frame') ? 'selected' : ''}>Iframes</option>
-      </select>
-      <button class="flex-shrink-0 p-2 rounded-md bg-transparent hover:bg-white/10 text-text hover:text-danger transition-all focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-500" data-action="removeMatcher" title="Remove matcher">
-        <span class="inline-flex items-center justify-center w-4 h-4">${trashIcon}</span>
-      </button>
-    </div>
-  `
+  matcherList.render(p.matchers || [])
 }
 
 function renderHeaders(): void {
   const p = state.current
   if (!p) return
 
-  if (el.req) el.req.innerHTML = (p.requestHeaders || []).map((h) => headerRow(h, true)).join('')
-  if (el.res) el.res.innerHTML = (p.responseHeaders || []).map((h) => headerRow(h, false)).join('')
-}
-
-function headerRow(h: HeaderOp, isReq: boolean): string {
-  return `
-    <div class="flex items-center gap-2 rounded-lg bg-white/3 hover:bg-white/5 p-3 transition-colors" data-hid="${h.id}" data-kind="${isReq ? 'req' : 'res'}">
-      <input type="checkbox" class="w-4 h-4 rounded cursor-pointer accent-primary flex-shrink-0" data-role="enabled" ${h.enabled !== false ? 'checked' : ''}>
-      <input type="text" class="flex-1 rounded-md bg-white/5 px-3 py-2 text-sm text-text outline-1 -outline-offset-1 outline-gray-700 placeholder:text-gray-500 focus:outline-2 focus:-outline-offset-2 focus:outline-blue-500" data-role="header" placeholder="Header name (e.g. X-Custom-Header)" value="${escapeHtml(h.header || '')}">
-      <input type="text" class="flex-1 rounded-md bg-white/5 px-3 py-2 text-sm text-text outline-1 -outline-offset-1 outline-gray-700 placeholder:text-gray-500 focus:outline-2 focus:-outline-offset-2 focus:outline-blue-500" data-role="value" placeholder="Value" value="${escapeHtml(h.value || '')}">
-      <button class="flex-shrink-0 p-2 rounded-md bg-transparent hover:bg-white/10 text-text hover:text-danger transition-all focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-500" data-action="removeHeader" title="Delete"><span class="inline-flex items-center justify-center w-4 h-4">${trashIcon}</span></button>
-    </div>
-  `
+  if (headerListReq) headerListReq.render(p.requestHeaders || [])
+  if (headerListRes) headerListRes.render(p.responseHeaders || [])
 }
 
 // Set up event listeners (called after elements are initialized)
@@ -446,19 +447,6 @@ document.addEventListener('click', (e) => {
   if (action === 'delete') {
     return controller.onDeleteProfile()
   }
-
-  if (action === 'removeMatcher') {
-    const row = btn.closest('[data-mid]') as HTMLElement | null
-    const mid = (row as any)?.dataset.mid
-    if (mid) controller.onRemoveMatcher(mid)
-  }
-
-  if (action === 'removeHeader') {
-    const wrap = btn.closest('[data-hid]') as HTMLElement | null
-    const hid = (wrap as any)?.dataset.hid
-    const kind = (wrap as any)?.dataset.kind
-    if (hid && kind) controller.onRemoveHeader(hid, kind === 'req')
-  }
 })
 
 document.addEventListener('input', (e) => {
@@ -491,44 +479,6 @@ document.addEventListener('input', (e) => {
 
   if (target === el.notes) {
     controller.onProfileNotesChange((el.notes as HTMLTextAreaElement)?.value || '')
-    return
-  }
-
-  // Matcher fields
-  if (target.closest("[data-role='urlFilter']")) {
-    const row = target.closest('[data-mid]') as HTMLElement | null
-    const mid = (row as any)?.dataset.mid
-    const value = (row?.querySelector("[data-role='urlFilter']") as HTMLInputElement)?.value || ''
-    if (mid) controller.onMatcherChange(mid, 'urlFilter', value)
-    return
-  }
-
-  if (target.closest("[data-role='types']")) {
-    const row = target.closest('[data-mid]') as HTMLElement | null
-    const mid = (row as any)?.dataset.mid
-    const value = (row?.querySelector("[data-role='types']") as HTMLInputElement)?.value || ''
-    if (mid) controller.onMatcherChange(mid, 'types', value)
-    return
-  }
-
-  // Header fields
-  if (target.closest('[data-hid]')) {
-    const item = target.closest('[data-hid]') as HTMLElement | null
-    const kind = (item as any)?.dataset.kind
-    const isReq = kind === 'req'
-    const hid = (item as any)?.dataset.hid
-
-    if (target.closest("[data-role='header']")) {
-      const value = (item?.querySelector("[data-role='header']") as HTMLInputElement)?.value || ''
-      if (hid) controller.onHeaderChange(hid, isReq, 'header', value)
-    } else if (target.closest("[data-role='value']")) {
-      const value = (item?.querySelector("[data-role='value']") as HTMLInputElement)?.value || ''
-      if (hid) controller.onHeaderChange(hid, isReq, 'value', value)
-    } else if (target.closest("[data-role='enabled']")) {
-      const checked =
-        (item?.querySelector("[data-role='enabled']") as HTMLInputElement)?.checked ?? true
-      if (hid) controller.onHeaderChange(hid, isReq, 'enabled', checked)
-    }
     return
   }
 

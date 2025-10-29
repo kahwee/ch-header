@@ -155,9 +155,7 @@ describe('MatcherRowComponent', () => {
       option.selected = true
       select.dispatchEvent(new Event('change', { bubbles: true }))
 
-      expect(callbacks.onChange).toHaveBeenCalledWith('matcher-1', 'resourceTypes', [
-        'xmlhttprequest',
-      ])
+      expect(callbacks.onChange).toHaveBeenCalledWith('matcher-1', 'types', 'xmlhttprequest')
     })
 
     it('should handle selecting different resource type', () => {
@@ -165,16 +163,15 @@ describe('MatcherRowComponent', () => {
       ;(select.querySelector('option[value="stylesheet"]') as HTMLOptionElement).selected = true
       select.dispatchEvent(new Event('change', { bubbles: true }))
 
-      expect(callbacks.onChange).toHaveBeenCalledWith('matcher-1', 'resourceTypes', ['stylesheet'])
+      expect(callbacks.onChange).toHaveBeenCalledWith('matcher-1', 'types', 'stylesheet')
     })
 
-    it('should filter out empty string from resource types', () => {
+    it('should select empty string when "All request types" is selected', () => {
       const select = container.querySelector('[data-role="types"]') as HTMLSelectElement
       ;(select.querySelector('option[value=""]') as HTMLOptionElement).selected = true
-      ;(select.querySelector('option[value="image"]') as HTMLOptionElement).selected = true
       select.dispatchEvent(new Event('change', { bubbles: true }))
 
-      expect(callbacks.onChange).toHaveBeenCalledWith('matcher-1', 'resourceTypes', ['image'])
+      expect(callbacks.onChange).toHaveBeenCalledWith('matcher-1', 'types', '')
     })
 
     it('should call onDelete when delete button clicked', () => {

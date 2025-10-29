@@ -8,7 +8,7 @@ import { Matcher } from '../../lib/types'
 import { matcherRow } from '../components/matcher-row'
 
 export interface MatcherRowCallbacks {
-  onChange: (id: string, field: 'urlFilter' | 'resourceTypes', value: string | string[]) => void
+  onChange: (id: string, field: 'urlFilter' | 'types', value: string) => void
   onDelete: (id: string) => void
 }
 
@@ -36,11 +36,8 @@ export class MatcherRowComponent extends Component {
     // Handle resource type changes
     this.on('change', '[data-role="types"]', (e) => {
       const select = e.target as HTMLSelectElement
-      // Get all selected options
-      const selected: string[] = Array.from(select.selectedOptions).map((opt) => opt.value)
-      // Filter out empty string (which means "all types")
-      const resourceTypes = selected.filter((t) => t !== '')
-      this.callbacks.onChange(this.matcher.id, 'resourceTypes', resourceTypes)
+      const value = select.value || ''
+      this.callbacks.onChange(this.matcher.id, 'types', value)
     })
 
     // Handle delete button
