@@ -4,7 +4,6 @@ import {
   getSidebarTemplate,
   getPopupTemplate,
   profileListItem,
-  customCheckbox,
 } from '../popup-template'
 
 describe('popup-template', () => {
@@ -142,58 +141,6 @@ describe('popup-template', () => {
       const html = getSidebarTemplate()
       expect(html).toContain('aria-hidden')
       expect(html).toContain('aria-')
-    })
-  })
-
-  describe('customCheckbox', () => {
-    it('should render ch-checkbox element', () => {
-      const html = customCheckbox({})
-      expect(html).toContain('<ch-checkbox')
-      expect(html).toContain('</ch-checkbox>')
-    })
-
-    it('should include id when provided', () => {
-      const html = customCheckbox({ id: 'test-checkbox' })
-      expect(html).toContain('id="test-checkbox"')
-    })
-
-    it('should not include id when not provided', () => {
-      const html = customCheckbox({})
-      expect(html).not.toMatch(/id="/i)
-    })
-
-    it('should include data-role when provided', () => {
-      const html = customCheckbox({ dataRole: 'enabled' })
-      expect(html).toContain('data-role="enabled"')
-    })
-
-    it('should include checked attribute when checked is true', () => {
-      const html = customCheckbox({ checked: true })
-      expect(html).toContain('checked')
-    })
-
-    it('should not include checked attribute when checked is false', () => {
-      const html = customCheckbox({ checked: false })
-      expect(html).not.toContain('checked')
-    })
-
-    it('should include disabled attribute when disabled is true', () => {
-      const html = customCheckbox({ disabled: true })
-      expect(html).toContain('disabled')
-    })
-
-    it('should handle all options together', () => {
-      const html = customCheckbox({
-        id: 'profile-enabled',
-        dataRole: 'enabled',
-        checked: true,
-        disabled: false,
-      })
-
-      expect(html).toContain('id="profile-enabled"')
-      expect(html).toContain('data-role="enabled"')
-      expect(html).toContain('checked')
-      expect(html).not.toContain('disabled')
     })
   })
 

@@ -238,24 +238,6 @@ export function getPopupTemplate(): string {
 }
 
 /**
- * Render a custom checkbox component using the web component
- */
-export function customCheckbox(options: {
-  dataRole?: string
-  checked?: boolean
-  disabled?: boolean
-  id?: string
-}): string {
-  const { dataRole, checked = false, disabled = false, id } = options
-  const idAttr = id ? `id="${id}"` : ''
-  const dataRoleAttr = dataRole ? `data-role="${dataRole}"` : ''
-  const checkedAttr = checked ? 'checked' : ''
-  const disabledAttr = disabled ? 'disabled' : ''
-
-  return `<ch-checkbox ${idAttr} ${dataRoleAttr} ${checkedAttr} ${disabledAttr}></ch-checkbox>`
-}
-
-/**
  * Render a profile list item
  */
 export function profileListItem(
