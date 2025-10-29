@@ -1,22 +1,18 @@
 # ChHeader
 
-A profile-based HTTP header editor Chrome extension with Manifest V3 using declarativeNetRequest and advanced matcher format support.
+A profile-based HTTP header editor for Chrome using Manifest V3 and declarativeNetRequest.
 
 [![CI Status](https://github.com/kahwee/ch-header/workflows/ChHeader%20CI/badge.svg)](https://github.com/kahwee/ch-header/actions)
 [![Coverage Status](https://coveralls.io/repos/github/kahwee/ch-header/badge.svg?branch=main)](https://coveralls.io/github/kahwee/ch-header?branch=main)
 
 ## Features
 
-- **Profile Management**: Create and manage multiple header profiles with custom colors
-- **Advanced URL Matchers**: Three levels of matching complexity:
-  - **Simple**: Just type a domain (e.g., `localhost:3002`)
-  - **Wildcard**: Use `*` for flexible patterns (e.g., `localhost:300*`)
-  - **Regex**: Full regex support with `regex:` prefix (e.g., `regex:localhost:30(0[0-9])`)
-- **Resource Type Filtering**: Apply headers to specific request types (XHR/Fetch, Scripts, Stylesheets, Images, Fonts, Documents, Iframes)
-- **Request & Response Headers**: Modify both request and response headers with intelligent set/replace logic
-- **Beautiful UI**: Modern interface with search, profile switching, and quick identification via colors
-- **Live Rules**: Changes apply instantly using Chrome's declarativeNetRequest API
-- **Smart Defaults**: Empty matcher applies to all domains and request types
+- Multiple header profiles with search and filtering
+- Three matcher formats: simple domains, wildcards, and regex patterns
+- Apply headers to specific request types (XHR, scripts, stylesheets, images, fonts, documents, iframes)
+- Modify request and response headers
+- Profile colors for quick identification
+- Declarative rules for immediate application
 
 ## Installation
 
@@ -51,65 +47,63 @@ Watch mode builds the extension automatically. Reload the extension in `chrome:/
 
 ### Creating a Profile
 
-1. Click **New** to create a new profile
-2. Enter a profile name, select a color (21 Tailwind colors available for quick identification), and optional notes
-3. Add matchers to specify which sites the headers apply to
+1. Click **New** to create a profile
+2. Enter a profile name, optional notes, and select a color
+3. Add matchers to specify which URLs the headers apply to
 4. Add request and/or response headers
-5. Toggle **Enable this profile** and click **Apply** to activate
+5. Toggle **Enable this profile** and click **Apply**
 
-### URL Matchers - Three Levels
+### URL Matchers
 
-#### Level 1: Simple (Default)
+The extension supports three matcher formats:
 
-Perfect for most users. Just type a domain and it automatically matches all paths:
+**Simple Format**
 
-```
-localhost:3002         → Matches localhost:3002 and all paths
-api.example.com        → Matches api.example.com and all paths
-```
-
-Leave empty to match **all domains**.
-
-#### Level 2: Wildcard (Intermediate)
-
-Use `*` to match any characters:
+Type a domain to match that domain and all its paths:
 
 ```
-localhost:300*         → Matches localhost:3000-3009
-*.api.example.com      → Matches all subdomains of api.example.com
-example.com/api/*      → Matches only /api/* paths
+localhost:3002         → localhost:3002 and all paths
+api.example.com        → api.example.com and all paths
 ```
 
-#### Level 3: Regex (Advanced)
+Empty matcher applies to all domains.
 
-Use `regex:` prefix for full regex support:
+**Wildcard Format**
+
+Use `*` for flexible matching:
 
 ```
-regex:localhost:30(0[0-9])           → Matches localhost:3000-3009
-regex:(staging|prod)\.example\.com   → Matches staging or prod
-regex:^https://.*\.example\.com/api  → Protocol and path specific
+localhost:300*         → localhost:3000-3009
+*.api.example.com      → All subdomains
+example.com/api/*      → Only /api/* paths
 ```
 
-### Resource Type Filtering
+**Regex Format**
 
-Control which types of requests are affected:
+Use `regex:` prefix for regular expressions:
 
-- **All request types** (default)
-- **XHR/Fetch** - AJAX requests
-- **Scripts** - JavaScript files
-- **Stylesheets** - CSS files
-- **Images** - Image requests
-- **Fonts** - Font files
-- **Documents** - Full page loads
-- **Iframes** - Embedded frames
+```
+regex:localhost:30(0[0-9])
+regex:(staging|prod)\.example\.com
+regex:^https://.*\.example\.com/api
+```
 
-### Header Operations
+### Request Type Filtering
 
-Headers use intelligent set/replace logic:
+Headers can be filtered by request type:
 
-- If the header doesn't exist, it's added (set)
-- If the header exists, it's replaced with the new value
-- This keeps the UI simple while handling both cases automatically
+- All request types (default)
+- XHR/Fetch
+- Scripts
+- Stylesheets
+- Images
+- Fonts
+- Documents
+- Iframes
+
+### Header Modification
+
+Headers are added if they don't exist, or replaced if they do. Both request and response headers are supported.
 
 ## Development
 
@@ -170,46 +164,28 @@ src/
 └── icons/                    # Extension icons (16, 32, 128px PNGs)
 ```
 
-### Key Files
+## Implementation
 
-- **background.ts**: Service worker that manages declarativeNetRequest rules and enforces matcher format validation
-- **popup.ts**: Runtime event handling and DOM manipulation
-- **controller.ts**: Business logic for profile and header management (fully testable, no DOM dependencies)
-- **matcher.ts**: Matcher format parsing and validation with three levels (simple/wildcard/regex)
-- **popup-template.ts**: Reusable template functions for building the UI consistently
-- **styles.css**: Tailwind v4 with custom theme colors (blue-500 primary, stone secondary)
+### APIs Used
 
-## Technical Details
-
-### Manifest V3 Features
-
-- Uses `declarativeNetRequest` API for header modification with FNV-1a hash-based rule IDs
+- `declarativeNetRequest` for header modification
+- `chrome.storage.local` for profile persistence
+- `chrome.runtime.sendMessage` for inter-process communication
 - Service worker for background processing
-- `chrome.storage.local` for persistent profile storage
-- `chrome.runtime.sendMessage` for popup-to-background communication
 
-### Type Safety
+### Code Structure
 
-- Full TypeScript implementation with strict mode (`strict: true`)
-- `@types/chrome` for Chrome API types
-- Zero `any` types - fully typed codebase
-- Generic types for reusable components
+- **popup.ts**: UI event handling and DOM manipulation
+- **controller.ts**: Business logic (no DOM dependencies, fully testable)
+- **matcher.ts**: Matcher format parsing and validation
+- **dnr-rules.ts**: Declarative rule generation
+- **background.ts**: Service worker for rule management
 
-### Matcher Format System
+### Language & Type Safety
 
-The matcher system provides three levels of complexity to balance user-friendliness with power:
-
-1. **Format Auto-Detection**: The system automatically detects which format you're using
-2. **Validation**: Invalid patterns are caught before creating DNR rules
-3. **Testing**: Comprehensive test suite with 38 dedicated matcher tests
-4. **Documentation**: Includes testing guides and quick reference
-
-### Architecture
-
-- **Separation of Concerns**: UI (popup.ts) is separate from business logic (controller.ts)
-- **Testability**: Controller has no DOM dependencies, making it fully unit-testable
-- **Composability**: Template functions create consistent UI components
-- **State Management**: Central state object with clear structure
+- TypeScript with strict mode
+- Zero `any` types
+- Full Chrome API type definitions
 
 ## License
 
