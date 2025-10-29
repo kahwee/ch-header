@@ -2,7 +2,7 @@
   "manifest_version": 3,
   "name": "ChHeader",
   "description": "Profile-based HTTP header editor with Manifest V3",
-  "version": "0.1.0",
+  "version": "0.1.2",
   "action": {
     "default_popup": "ui/popup.html",
     "default_title": "ChHeader"

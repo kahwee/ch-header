@@ -1,6 +1,6 @@
 import { defineConfig } from 'vite'
 import { resolve } from 'path'
-import { copyFileSync, mkdirSync, existsSync, renameSync, rmSync, cpSync } from 'fs'
+import { copyFileSync, mkdirSync, existsSync, renameSync, rmSync, cpSync, readFileSync, writeFileSync } from 'fs'
 
 const srcDir = resolve(__dirname, 'src')
 const publicDir = resolve(__dirname, 'public')
@@ -12,7 +12,18 @@ const copyPlugin = {
     try {
       const distDir = resolve(__dirname, 'dist')
       mkdirSync(distDir, { recursive: true })
-      copyFileSync(resolve(srcDir, 'manifest.json'), resolve(distDir, 'manifest.json'))
+
+      // Read package.json version
+      const packageJsonPath = resolve(__dirname, 'package.json')
+      const packageJson = JSON.parse(readFileSync(packageJsonPath, 'utf-8'))
+      const version = packageJson.version
+
+      // Read manifest.json, update version, and write to dist
+      const manifestPath = resolve(srcDir, 'manifest.json')
+      const manifest = JSON.parse(readFileSync(manifestPath, 'utf-8'))
+      manifest.version = version
+
+      writeFileSync(resolve(distDir, 'manifest.json'), JSON.stringify(manifest, null, 2) + '\n')
 
       // Copy icons from public folder
       const publicIconsDir = resolve(publicDir, 'icons')
