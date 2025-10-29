@@ -2,6 +2,7 @@
  * Shared header row HTML template
  * Single source of truth for header row rendering across components and templates
  */
+import { iconButton } from '../components/icon-button'
 import trashIcon from '../icons/trash.svg?raw'
 import { escapeHtml } from '../utils'
 
@@ -53,13 +54,12 @@ export function buildHeaderRowHTML(h: HeaderRowOptions): string {
         </div>
       </td>
       <td class="text-sm whitespace-nowrap sm:pr-0 w-10 items-center justify-center">
-        <button
-          class="p-1.5 rounded-md bg-transparent hover:bg-white/10 text-gray-400 hover:text-danger transition-all focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-500"
-          data-action="removeHeader"
-          title="Delete header"
-        >
-          <span class="inline-flex items-center justify-center w-4 h-4">${trashIcon}</span>
-        </button>
+        ${iconButton({
+          icon: trashIcon,
+          action: 'removeHeader',
+          title: 'Delete header',
+          variant: 'delete',
+        })}
       </td>
     </tr>
   `
