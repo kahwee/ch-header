@@ -28,13 +28,11 @@ export class HeaderRowComponent extends Component {
 
     return `
       <div class="flex items-center gap-2 rounded-lg bg-white/3 hover:bg-white/5 p-3 transition-colors" data-hid="${this.header.id}" data-kind="${kind}">
-        <input
-          type="checkbox"
-          class="w-4 h-4 rounded cursor-pointer accent-primary flex-shrink-0"
+        <ch-checkbox
           data-role="enabled"
           ${isEnabled ? 'checked' : ''}
           title="Enable/disable this header"
-        >
+        ></ch-checkbox>
         <input
           type="text"
           class="flex-1 rounded-md bg-white/5 px-3 py-2 text-sm text-text outline-1 -outline-offset-1 outline-gray-700 placeholder:text-gray-500 focus:outline-2 focus:-outline-offset-2 focus:outline-blue-500"

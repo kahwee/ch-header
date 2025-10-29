@@ -236,10 +236,7 @@ export function getPopupTemplate(): string {
           <footer class="flex items-center justify-between gap-4 p-4 border-t border-gray-700">
             <div class="flex items-center justify-between flex-1">
               <span class="text-sm font-medium text-text">Enable this profile</span>
-              <div class="group relative inline-flex w-11 shrink-0 rounded-full bg-white/5 p-0.5 ring-1 ring-white/10 outline-offset-2 outline-blue-500 transition-colors duration-200 ease-in-out has-checked:bg-blue-500 has-focus-visible:outline-2">
-                <span class="size-5 rounded-full bg-white shadow-xs ring-1 ring-gray-900/5 transition-transform duration-200 ease-in-out group-has-checked:translate-x-5"></span>
-                <input id="enabled" type="checkbox" class="absolute inset-0 appearance-none focus:outline-hidden" />
-              </div>
+              <ch-checkbox id="enabled" data-role="enabled"></ch-checkbox>
             </div>
             <div class="flex gap-2">
               ${actionButton({ id: 'apply', text: 'Apply', type: 'submit', variant: 'primary' })}

@@ -6,6 +6,8 @@
 import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest'
 import { HeaderRowComponent, HeaderRowCallbacks } from '../header-row-component'
 import { HeaderOp } from '../../../lib/types'
+import '../../components/checkbox-element'
+import type { CheckboxElement } from '../../components/checkbox-element'
 
 function createTestHeader(overrides: Partial<HeaderOp> = {}): HeaderOp {
   return {
@@ -67,7 +69,7 @@ describe('HeaderRowComponent', () => {
     it('should show enabled checkbox when header is enabled', () => {
       component.mount(container)
 
-      const checkbox = container.querySelector('[data-role="enabled"]') as HTMLInputElement
+      const checkbox = container.querySelector('[data-role="enabled"]') as CheckboxElement
       expect(checkbox.checked).toBe(true)
     })
 
@@ -76,7 +78,7 @@ describe('HeaderRowComponent', () => {
       component = new HeaderRowComponent(header, callbacks, true)
       component.mount(container)
 
-      const checkbox = container.querySelector('[data-role="enabled"]') as HTMLInputElement
+      const checkbox = container.querySelector('[data-role="enabled"]') as CheckboxElement
       expect(checkbox.checked).toBe(false)
     })
 
@@ -85,7 +87,7 @@ describe('HeaderRowComponent', () => {
       component = new HeaderRowComponent(header, callbacks, true)
       component.mount(container)
 
-      const checkbox = container.querySelector('[data-role="enabled"]') as HTMLInputElement
+      const checkbox = container.querySelector('[data-role="enabled"]') as CheckboxElement
       expect(checkbox.checked).toBe(true)
     })
 
@@ -256,7 +258,7 @@ describe('HeaderRowComponent', () => {
 
       component.updateHeader(newHeader)
 
-      const checkbox = container.querySelector('[data-role="enabled"]') as HTMLInputElement
+      const checkbox = container.querySelector('[data-role="enabled"]') as CheckboxElement
       expect(checkbox.checked).toBe(false)
     })
 

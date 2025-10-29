@@ -4,6 +4,8 @@
  */
 
 import { describe, it, expect, beforeEach } from 'vitest'
+import '../components/checkbox-element'
+import type { CheckboxElement } from '../components/checkbox-element'
 
 describe('ChHeader Popup UI - DOM Components', () => {
   beforeEach(() => {
@@ -54,10 +56,10 @@ describe('ChHeader Popup UI - DOM Components', () => {
               </div>
 
               <footer class="ch-footer">
-                <label class="ch-switch">
-                  <input id="enabled" type="checkbox" />
-                  <span>Enable this profile</span>
-                </label>
+                <div class="flex items-center justify-between flex-1">
+                  <span class="text-sm font-medium text-text">Enable this profile</span>
+                  <ch-checkbox id="enabled" data-role="enabled"></ch-checkbox>
+                </div>
                 <div class="spacer"></div>
                 <button id="duplicate" class="ch-btn">Duplicate</button>
                 <button id="delete" class="ch-btn danger">Delete</button>
@@ -242,22 +244,22 @@ describe('ChHeader Popup UI - DOM Components', () => {
     })
 
     it('should render enable/disable checkbox', () => {
-      const checkbox = document.getElementById('enabled') as HTMLInputElement
+      const checkbox = document.getElementById('enabled') as CheckboxElement
       expect(checkbox).toBeTruthy()
-      expect(checkbox.type).toBe('checkbox')
+      expect(checkbox.tagName).toBe('CH-CHECKBOX')
       expect(checkbox.checked).toBe(false)
     })
 
     it('should toggle checkbox state', () => {
-      const checkbox = document.getElementById('enabled') as HTMLInputElement
+      const checkbox = document.getElementById('enabled') as CheckboxElement
       expect(checkbox.checked).toBe(false)
       checkbox.checked = true
       expect(checkbox.checked).toBe(true)
     })
 
     it('should have descriptive label', () => {
-      const label = document.querySelector('.ch-switch')
-      expect(label?.textContent).toContain('Enable this profile')
+      const footer = document.querySelector('footer')
+      expect(footer?.textContent).toContain('Enable this profile')
     })
   })
 

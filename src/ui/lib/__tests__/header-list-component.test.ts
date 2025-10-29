@@ -7,6 +7,8 @@
 import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest'
 import { HeaderListComponent } from '../header-list-component'
 import { HeaderOp } from '../../../lib/types'
+import '../../components/checkbox-element'
+import type { CheckboxElement } from '../../components/checkbox-element'
 
 function createTestHeader(overrides: Partial<HeaderOp> = {}): HeaderOp {
   return {
@@ -343,9 +345,9 @@ describe('HeaderListComponent', () => {
       expect(component.getCount()).toBe(3)
 
       const checkboxes = container.querySelectorAll('[data-role="enabled"]')
-      expect((checkboxes[0] as HTMLInputElement).checked).toBe(true)
-      expect((checkboxes[1] as HTMLInputElement).checked).toBe(false)
-      expect((checkboxes[2] as HTMLInputElement).checked).toBe(true)
+      expect((checkboxes[0] as CheckboxElement).checked).toBe(true)
+      expect((checkboxes[1] as CheckboxElement).checked).toBe(false)
+      expect((checkboxes[2] as CheckboxElement).checked).toBe(true)
     })
 
     it('should maintain component identity during updates', () => {
