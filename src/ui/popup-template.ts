@@ -3,6 +3,7 @@
  * Used by both popup.html (rendered) and Storybook stories (with mocks)
  */
 import { solidButton } from './components/solid-button'
+import { sectionHeader } from './components/section-header'
 import { renderAvatar } from './components/avatar'
 import { escapeHtml } from './utils'
 import plusIcon from './icons/plus.svg?raw'
@@ -38,44 +39,43 @@ export const COLOR_PALETTE = [
 
 /**
  * Build a headers section (Request or Response)
- * Generates consistent markup for both request and response header sections
+ * Uses sectionHeader component with dynamic menu items
  */
 function headersSection(type: 'req' | 'res', title: string, description: string): string {
-  const sortAction = type === 'req' ? 'sortReqHeaders' : 'sortResHeaders'
-  const clearAction = type === 'req' ? 'clearReqHeaders' : 'clearResHeaders'
-  const addButtonId = type === 'req' ? 'addReq' : 'addRes'
-  const containerElementId = type === 'req' ? 'reqHeaders' : 'resHeaders'
-  const optionsTitle = type === 'req' ? 'Request headers options' : 'Response headers options'
+  const config = {
+    req: {
+      addButtonId: 'addReq',
+      containerId: 'reqHeaders',
+      sortAction: 'sortReqHeaders',
+      clearAction: 'clearReqHeaders',
+    },
+    res: {
+      addButtonId: 'addRes',
+      containerId: 'resHeaders',
+      sortAction: 'sortResHeaders',
+      clearAction: 'clearResHeaders',
+    },
+  }
+
+  const { addButtonId, containerId, sortAction, clearAction } = config[type]
 
   return `
     <div class="pb-4">
-      <div class="sm:flex sm:items-center mb-4">
-        <div class="sm:flex-auto">
-          <h2 class="text-base font-semibold text-white">${title}</h2>
-          <p class="mt-2 text-sm text-gray-300">${description}</p>
-        </div>
-        <div class="mt-4 sm:mt-0 sm:ml-16 flex items-center gap-2">
-          ${solidButton({ id: addButtonId, icon: plusIcon, title: 'Add header', variant: 'primary', size: 'sm' })}
-          <el-dropdown class="inline-block">
-            <button class="flex items-center rounded-md text-gray-400 hover:text-gray-300 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-500 p-1" title="${optionsTitle}">
-              <svg viewBox="0 0 20 20" fill="currentColor" class="size-5">
-                <path d="M10 3a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3ZM10 8.5a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3ZM11.5 15.5a1.5 1.5 0 1 0-3 0 1.5 1.5 0 0 0 3 0Z" />
-              </svg>
-            </button>
-            <el-menu anchor="bottom end" popover class="w-48 origin-top-right rounded-md bg-stone-800 outline-1 -outline-offset-1 outline-white/10 transition transition-discrete [--anchor-gap:--spacing(2)] data-closed:scale-95 data-closed:transform data-closed:opacity-0 data-enter:duration-100 data-enter:ease-out data-leave:duration-75 data-leave:ease-in">
-              <div class="py-1">
-                <button type="button" data-action="${sortAction}" class="block w-full px-4 py-2 text-left text-sm text-gray-300 hover:bg-white/5 hover:text-white focus:bg-white/5 focus:text-white focus:outline-hidden">Sort A-Z</button>
-                <button type="button" data-action="${clearAction}" class="block w-full px-4 py-2 text-left text-sm text-gray-300 hover:bg-white/5 hover:text-white focus:bg-white/5 focus:text-white focus:outline-hidden">Clear all</button>
-              </div>
-            </el-menu>
-          </el-dropdown>
-        </div>
-      </div>
+      <p class="mb-4 text-sm text-gray-300">${description}</p>
+      ${sectionHeader({
+        title,
+        addButtonId,
+        addButtonTitle: 'Add header',
+        menuItems: [
+          { label: 'Sort A-Z', action: sortAction },
+          { label: 'Clear all', action: clearAction },
+        ],
+      })}
       <div class="mt-4 flow-root">
         <div class="-mx-4 -my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
           <div class="inline-block min-w-full py-2 align-middle sm:px-6 lg:px-8">
             <table class="min-w-full">
-              <tbody id="${containerElementId}"></tbody>
+              <tbody id="${containerId}"></tbody>
             </table>
           </div>
         </div>
@@ -213,26 +213,12 @@ export function getPopupTemplate(): string {
           ${headersSection('res', 'Response headers', 'HTTP headers to add or modify in responses from matching requests.')}
 
           <div class="space-y-2 pb-4">
-            <div class="relative flex items-center justify-between">
-              <span class="bg-bg pr-3 text-sm font-semibold text-white whitespace-nowrap">Matchers</span>
-              <div class="flex w-full items-center gap-2">
-                <div aria-hidden="true" class="w-full border-t border-white/15"></div>
-                ${solidButton({ id: 'addMatcher', icon: plusIcon, title: 'Add matcher', variant: 'primary', size: 'sm' })}
-                <el-dropdown class="inline-block">
-                  <button class="flex items-center rounded-md text-gray-400 hover:text-gray-300 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-500 p-1" title="Matchers options">
-                    <svg viewBox="0 0 20 20" fill="currentColor" class="size-5">
-                      <path d="M10 3a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3ZM10 8.5a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3ZM11.5 15.5a1.5 1.5 0 1 0-3 0 1.5 1.5 0 0 0 3 0Z" />
-                    </svg>
-                  </button>
-                  <el-menu anchor="bottom end" popover class="w-48 origin-top-right rounded-md bg-stone-800 outline-1 -outline-offset-1 outline-white/10 transition transition-discrete [--anchor-gap:--spacing(2)] data-closed:scale-95 data-closed:transform data-closed:opacity-0 data-enter:duration-100 data-enter:ease-out data-leave:duration-75 data-leave:ease-in">
-                    <div class="py-1">
-                      <button type="button" data-action="sortMatchers" class="block w-full px-4 py-2 text-left text-sm text-gray-300 hover:bg-white/5 hover:text-white focus:bg-white/5 focus:text-white focus:outline-hidden">Sort A-Z</button>
-                      <button type="button" data-action="clearMatchers" class="block w-full px-4 py-2 text-left text-sm text-gray-300 hover:bg-white/5 hover:text-white focus:bg-white/5 focus:text-white focus:outline-hidden">Clear all</button>
-                    </div>
-                  </el-menu>
-                </el-dropdown>
-              </div>
-            </div>
+            ${sectionHeader({
+              title: 'Matchers',
+              addButtonId: 'addMatcher',
+              addButtonTitle: 'Add matcher',
+              menuItems: [{ label: 'Clear all', action: 'clearMatchers' }],
+            })}
             <div id="matchers"></div>
           </div>
 
