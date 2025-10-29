@@ -44,19 +44,9 @@ describe('popup-template', () => {
     })
 
     it('should include standard Tailwind colors', () => {
-      const expectedColors = [
-        'Red',
-        'Orange',
-        'Yellow',
-        'Green',
-        'Blue',
-        'Purple',
-        'Pink',
-      ]
+      const expectedColors = ['Red', 'Orange', 'Yellow', 'Green', 'Blue', 'Purple', 'Pink']
       expectedColors.forEach((expectedColor) => {
-        expect(
-          COLOR_PALETTE.some((color) => color.name === expectedColor)
-        ).toBe(true)
+        expect(COLOR_PALETTE.some((color) => color.name === expectedColor)).toBe(true)
       })
     })
   })

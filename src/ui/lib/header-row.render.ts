@@ -6,7 +6,7 @@ import { ghostButton } from '../components/ghost-button'
 import trashIcon from '../icons/trash.svg?raw'
 import { escapeHtml } from '../utils'
 
-export interface HeaderRowOptions {
+interface HeaderRowOptions {
   id: string
   header: string
   value?: string

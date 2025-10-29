@@ -4,15 +4,11 @@
  * Eliminates duplication across MatcherTableComponent and HeaderTableComponent
  */
 
-export interface TableRowComponent {
+interface TableRowComponent {
   mount(container: HTMLElement): void
   unmount(): void
   isMounted(): boolean
   getElement(): HTMLElement | null
-}
-
-export interface TableRowUpdatable<T> extends TableRowComponent {
-  update(data: T): void
 }
 
 /**

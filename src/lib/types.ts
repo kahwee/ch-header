@@ -27,15 +27,10 @@ export interface Profile {
   responseHeaders: HeaderOp[]
 }
 
-export interface StorageKeys {
-  PROFILES: 'profiles'
-  ACTIVE_PROFILE_ID: 'activeProfileId'
-}
-
-export const STORAGE_KEYS: StorageKeys = {
+export const STORAGE_KEYS = {
   PROFILES: 'profiles',
   ACTIVE_PROFILE_ID: 'activeProfileId',
-}
+} as const
 
 export interface State {
   profiles: Profile[]

@@ -6,7 +6,7 @@ import { ghostButton } from '../components/ghost-button'
 import trashIcon from '../icons/trash.svg?raw'
 import { escapeHtml } from '../utils'
 
-export interface MatcherRowOptions {
+interface MatcherRowOptions {
   id: string
   urlFilter: string
   resourceTypes?: string[]

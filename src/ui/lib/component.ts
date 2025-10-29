@@ -3,7 +3,7 @@
  * Provides lifecycle management and event delegation without framework overhead
  */
 
-export type EventHandler = (e: Event) => void
+type EventHandler = (e: Event) => void
 type EventListener = { eventType: string; selector: string; handler: EventHandler }
 
 export abstract class Component {

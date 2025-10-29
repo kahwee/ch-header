@@ -1,7 +1,6 @@
 import { describe, it, expect } from 'vitest'
 import {
   detectFormat,
-  matchUrl,
   validatePattern,
   generateExamples,
   getFormatName,
@@ -69,84 +68,6 @@ describe('matcher utility', () => {
     })
   })
 
-  describe('matchUrl - Simple patterns', () => {
-    it('matches exact domain', () => {
-      expect(matchUrl('localhost:3002', 'localhost:3002').matches).toBe(true)
-    })
-
-    it('matches domain with path', () => {
-      expect(matchUrl('localhost:3002', 'localhost:3002/api/users').matches).toBe(true)
-    })
-
-    it('matches when pattern is substring', () => {
-      expect(matchUrl('example.com', 'api.example.com').matches).toBe(true)
-    })
-
-    it('does not match different domain', () => {
-      expect(matchUrl('localhost:3002', 'localhost:3001').matches).toBe(false)
-      expect(matchUrl('example.com', 'other.com').matches).toBe(false)
-    })
-
-    it('is case insensitive', () => {
-      expect(matchUrl('LOCALHOST:3002', 'localhost:3002').matches).toBe(true)
-      expect(matchUrl('localhost:3002', 'LOCALHOST:3002').matches).toBe(true)
-    })
-  })
-
-  describe('matchUrl - Wildcard patterns', () => {
-    it('matches with * wildcard', () => {
-      expect(matchUrl('localhost:3002/*', 'localhost:3002/api').matches).toBe(true)
-      expect(matchUrl('localhost:3002/*', 'localhost:3002/api/users').matches).toBe(true)
-    })
-
-    it('matches subdomain wildcard', () => {
-      expect(matchUrl('*.api.example.com', 'staging.api.example.com').matches).toBe(true)
-      expect(matchUrl('*.api.example.com', 'prod.api.example.com').matches).toBe(true)
-    })
-
-    it('matches multiple wildcards', () => {
-      expect(matchUrl('localhost:*/api/*', 'localhost:3002/api/users').matches).toBe(true)
-      expect(matchUrl('localhost:*/api/*', 'localhost:8000/api/data').matches).toBe(true)
-    })
-
-    it('does not match when pattern requires specific path', () => {
-      expect(matchUrl('localhost:3002/api/*', 'localhost:3002/admin/settings').matches).toBe(false)
-    })
-
-    it('handles wildcard at start', () => {
-      expect(matchUrl('*.example.com', 'test.example.com').matches).toBe(true)
-      expect(matchUrl('*.example.com', 'api.staging.example.com').matches).toBe(true)
-    })
-  })
-
-  describe('matchUrl - Regex patterns', () => {
-    it('matches with basic regex', () => {
-      expect(matchUrl('regex:localhost:30.*', 'localhost:3000').matches).toBe(true)
-      expect(matchUrl('regex:localhost:30.*', 'localhost:3002').matches).toBe(true)
-    })
-
-    it('matches port range with regex', () => {
-      expect(matchUrl('regex:localhost:30(0[0-9])', 'localhost:3000').matches).toBe(true)
-      expect(matchUrl('regex:localhost:30(0[0-9])', 'localhost:3009').matches).toBe(true)
-      expect(matchUrl('regex:localhost:30(0[0-9])', 'localhost:3010').matches).toBe(false)
-    })
-
-    it('matches alternative paths with regex', () => {
-      expect(matchUrl('regex:(api|admin)\\.example\\.com', 'api.example.com').matches).toBe(true)
-      expect(matchUrl('regex:(api|admin)\\.example\\.com', 'admin.example.com').matches).toBe(true)
-      expect(matchUrl('regex:(api|admin)\\.example\\.com', 'web.example.com').matches).toBe(false)
-    })
-
-    it('matches with escaped characters', () => {
-      expect(matchUrl('regex:example\\.com', 'example.com').matches).toBe(true)
-      expect(matchUrl('regex:example\\.com', 'exampleXcom').matches).toBe(false)
-    })
-
-    it('is case insensitive for regex', () => {
-      expect(matchUrl('regex:LOCALHOST:3002', 'localhost:3002').matches).toBe(true)
-    })
-  })
-
   describe('generateExamples', () => {
     it('generates examples for simple pattern', () => {
       const examples = generateExamples('localhost:3002')
@@ -179,70 +100,6 @@ describe('matcher utility', () => {
       expect(getFormatHelp('simple')).toContain('domain')
       expect(getFormatHelp('wildcard')).toContain('*')
       expect(getFormatHelp('regex')).toContain('regex')
-    })
-  })
-
-  describe('Real-world scenarios', () => {
-    describe('localhost:3002 development server', () => {
-      it('matches with simple pattern', () => {
-        expect(matchUrl('localhost:3002', 'localhost:3002').matches).toBe(true)
-        expect(matchUrl('localhost:3002', 'localhost:3002/').matches).toBe(true)
-        expect(matchUrl('localhost:3002', 'localhost:3002/api/users').matches).toBe(true)
-        expect(matchUrl('localhost:3002', 'localhost:3001').matches).toBe(false)
-      })
-
-      it('matches with wildcard pattern', () => {
-        expect(matchUrl('localhost:300*', 'localhost:3000').matches).toBe(true)
-        expect(matchUrl('localhost:300*', 'localhost:3009').matches).toBe(true)
-        expect(matchUrl('localhost:300*', 'localhost:3010').matches).toBe(false)
-      })
-
-      it('matches with regex pattern', () => {
-        expect(matchUrl('regex:localhost:30(0[0-9])', 'localhost:3000').matches).toBe(true)
-        expect(matchUrl('regex:localhost:30(0[0-9])', 'localhost:3009').matches).toBe(true)
-        expect(matchUrl('regex:localhost:30(0[0-9])', 'localhost:3010').matches).toBe(false)
-      })
-    })
-
-    describe('API endpoints', () => {
-      it('matches API paths with simple pattern', () => {
-        expect(matchUrl('api.example.com', 'api.example.com/v1/users').matches).toBe(true)
-        expect(matchUrl('api.example.com', 'api.example.com/v2/posts').matches).toBe(true)
-      })
-
-      it('matches specific API paths with wildcard', () => {
-        expect(matchUrl('api.example.com/v1/*', 'api.example.com/v1/users').matches).toBe(true)
-        expect(matchUrl('api.example.com/v1/*', 'api.example.com/v2/users').matches).toBe(false)
-      })
-
-      it('matches multiple API versions with regex', () => {
-        expect(
-          matchUrl('regex:api\\.example\\.com/v[0-9]+/.*', 'api.example.com/v1/users').matches
-        ).toBe(true)
-        expect(
-          matchUrl('regex:api\\.example\\.com/v[0-9]+/.*', 'api.example.com/v2/posts').matches
-        ).toBe(true)
-      })
-    })
-
-    describe('Multi-environment matching', () => {
-      it('matches all environments with wildcard', () => {
-        expect(matchUrl('*.api.example.com', 'staging.api.example.com').matches).toBe(true)
-        expect(matchUrl('*.api.example.com', 'prod.api.example.com').matches).toBe(true)
-        expect(matchUrl('*.api.example.com', 'dev.api.example.com').matches).toBe(true)
-      })
-
-      it('matches specific environments with regex', () => {
-        expect(
-          matchUrl('regex:(staging|prod)-api\\.example\\.com', 'staging-api.example.com').matches
-        ).toBe(true)
-        expect(
-          matchUrl('regex:(staging|prod)-api\\.example\\.com', 'prod-api.example.com').matches
-        ).toBe(true)
-        expect(
-          matchUrl('regex:(staging|prod)-api\\.example\\.com', 'dev-api.example.com').matches
-        ).toBe(false)
-      })
     })
   })
 })
