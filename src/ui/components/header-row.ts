@@ -12,11 +12,19 @@ export function headerRow(h: {
   enabled?: boolean
 }): string {
   return `
-    <div class="flex items-center gap-2 rounded-lg bg-white/3 hover:bg-white/5 p-3 transition-colors" data-hid="${h.id}" data-kind="req">
-      <ch-checkbox data-role="enabled" ${h.enabled !== false ? 'checked' : ''}></ch-checkbox>
-      <input type="text" data-role="header" placeholder="Header name (e.g. X-Custom-Header)" value="${escapeHtml(h.header || '')}" class="flex-1 rounded-md bg-white/5 px-3 py-2 text-sm text-text outline-1 -outline-offset-1 outline-gray-700 placeholder:text-gray-500 focus:outline-2 focus:-outline-offset-2 focus:outline-blue-500" />
-      <input type="text" data-role="value" placeholder="Value" value="${escapeHtml(h.value || '')}" class="flex-1 rounded-md bg-white/5 px-3 py-2 text-sm text-text outline-1 -outline-offset-1 outline-gray-700 placeholder:text-gray-500 focus:outline-2 focus:-outline-offset-2 focus:outline-blue-500" />
-      <button data-action="removeHeader" title="Delete" class="flex-shrink-0 p-2 rounded-md bg-transparent hover:bg-white/10 text-text hover:text-danger transition-all focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-500"><span class="inline-flex items-center justify-center w-4 h-4">${trashIcon}</span></button>
-    </div>
+    <tr class="divide-x divide-white/10 hover:bg-white/3 transition-colors" data-hid="${h.id}" data-kind="req">
+      <td class="py-4 pr-4 pl-4 text-sm whitespace-nowrap sm:pl-0 w-12 flex items-center justify-center">
+        <ch-checkbox data-role="enabled" ${h.enabled !== false ? 'checked' : ''}></ch-checkbox>
+      </td>
+      <td class="p-4 text-sm">
+        <input type="text" data-role="header" placeholder="Header name (e.g. X-Custom-Header)" value="${escapeHtml(h.header || '')}" class="w-full rounded-md bg-white/5 px-3 py-2 text-sm text-text outline-1 -outline-offset-1 outline-gray-700 placeholder:text-gray-500 focus:outline-2 focus:-outline-offset-2 focus:outline-blue-500" />
+      </td>
+      <td class="p-4 text-sm">
+        <input type="text" data-role="value" placeholder="Value" value="${escapeHtml(h.value || '')}" class="w-full rounded-md bg-white/5 px-3 py-2 text-sm text-text outline-1 -outline-offset-1 outline-gray-700 placeholder:text-gray-500 focus:outline-2 focus:-outline-offset-2 focus:outline-blue-500" />
+      </td>
+      <td class="py-4 pr-4 pl-4 text-sm whitespace-nowrap sm:pr-0 w-12 flex items-center justify-center">
+        <button data-action="removeHeader" title="Delete" class="p-1.5 rounded-md bg-transparent hover:bg-white/10 text-gray-400 hover:text-danger transition-all focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-500"><span class="inline-flex items-center justify-center w-4 h-4">${trashIcon}</span></button>
+      </td>
+    </tr>
   `
 }

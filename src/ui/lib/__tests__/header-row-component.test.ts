@@ -33,8 +33,11 @@ describe('HeaderRowComponent', () => {
   let component: HeaderRowComponent
 
   beforeEach(() => {
-    container = document.createElement('div')
-    document.body.appendChild(container)
+    const table = document.createElement('table')
+    const tbody = document.createElement('tbody')
+    container = tbody
+    table.appendChild(tbody)
+    document.body.appendChild(table)
     header = createTestHeader()
     callbacks = createMockCallbacks()
     component = new HeaderRowComponent(header, callbacks, true)
@@ -42,7 +45,10 @@ describe('HeaderRowComponent', () => {
 
   afterEach(() => {
     component.unmount()
-    document.body.removeChild(container)
+    const table = container.parentElement
+    if (table?.parentElement) {
+      table.parentElement.removeChild(table)
+    }
   })
 
   describe('rendering', () => {
@@ -432,10 +438,15 @@ describe('HeaderRowComponent', () => {
 
   describe('multiple instances', () => {
     it('should manage separate state for multiple headers', () => {
-      const container1 = document.createElement('div')
-      const container2 = document.createElement('div')
-      document.body.appendChild(container1)
-      document.body.appendChild(container2)
+      const table1 = document.createElement('table')
+      const tbody1 = document.createElement('tbody')
+      table1.appendChild(tbody1)
+      document.body.appendChild(table1)
+
+      const table2 = document.createElement('table')
+      const tbody2 = document.createElement('tbody')
+      table2.appendChild(tbody2)
+      document.body.appendChild(table2)
 
       const header1 = createTestHeader({ id: 'h1', header: 'Authorization' })
       const header2 = createTestHeader({ id: 'h2', header: 'X-Custom' })
@@ -443,19 +454,19 @@ describe('HeaderRowComponent', () => {
       const comp1 = new HeaderRowComponent(header1, createMockCallbacks(), true)
       const comp2 = new HeaderRowComponent(header2, createMockCallbacks(), true)
 
-      comp1.mount(container1)
-      comp2.mount(container2)
+      comp1.mount(tbody1)
+      comp2.mount(tbody2)
 
-      const input1 = container1.querySelector('[data-role="header"]') as HTMLInputElement
-      const input2 = container2.querySelector('[data-role="header"]') as HTMLInputElement
+      const input1 = tbody1.querySelector('[data-role="header"]') as HTMLInputElement
+      const input2 = tbody2.querySelector('[data-role="header"]') as HTMLInputElement
 
       expect(input1.value).toBe('Authorization')
       expect(input2.value).toBe('X-Custom')
 
       comp1.unmount()
       comp2.unmount()
-      document.body.removeChild(container1)
-      document.body.removeChild(container2)
+      document.body.removeChild(table1)
+      document.body.removeChild(table2)
     })
   })
 })

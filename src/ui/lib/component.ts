@@ -27,14 +27,25 @@ export abstract class Component {
    */
   mount(parent: HTMLElement): void {
     const html = this.render()
-    const temp = document.createElement('div')
-    temp.innerHTML = html
-    this.el = temp.firstElementChild as HTMLElement
 
-    if (!this.el) {
+    // For table rows, use a temporary table/tbody to parse correctly
+    let el: HTMLElement | null = null
+    if (html.trim().startsWith('<tr')) {
+      const tbody = document.createElement('tbody')
+      document.createElement('table').appendChild(tbody) // Ensure proper DOM context
+      tbody.innerHTML = html
+      el = tbody.firstElementChild as HTMLElement
+    } else {
+      const temp = document.createElement('div')
+      temp.innerHTML = html
+      el = temp.firstElementChild as HTMLElement
+    }
+
+    if (!el) {
       throw new Error(`Component ${this.id}: render() must return valid HTML string`)
     }
 
+    this.el = el
     this.el.setAttribute('data-component', this.id)
     parent.appendChild(this.el)
     this.setupHandlers()
@@ -69,10 +80,18 @@ export abstract class Component {
   protected updateContent(html: string): void {
     if (!this.el) return
 
-    // Create temp element from new HTML
-    const temp = document.createElement('div')
-    temp.innerHTML = html
-    const newEl = temp.firstElementChild
+    // Create temp element from new HTML (handle table rows specially)
+    let newEl: Element | null = null
+    if (html.trim().startsWith('<tr')) {
+      const tbody = document.createElement('tbody')
+      document.createElement('table').appendChild(tbody) // Ensure proper DOM context
+      tbody.innerHTML = html
+      newEl = tbody.firstElementChild
+    } else {
+      const temp = document.createElement('div')
+      temp.innerHTML = html
+      newEl = temp.firstElementChild
+    }
 
     if (!newEl) {
       console.warn(`Component ${this.id}: updateContent() received invalid HTML`)

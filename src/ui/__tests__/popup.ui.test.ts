@@ -44,14 +44,18 @@ describe('ChHeader Popup UI - DOM Components', () => {
                     <h3>Request headers</h3>
                     <button id="addReq" class="ch-btn sm">Add</button>
                   </div>
-                  <div id="reqHeaders"></div>
+                  <table>
+                    <tbody id="reqHeaders"></tbody>
+                  </table>
                 </div>
                 <div class="ch-group">
                   <div class="ch-group-head">
                     <h3>Response headers</h3>
                     <button id="addRes" class="ch-btn sm">Add</button>
                   </div>
-                  <div id="resHeaders"></div>
+                  <table>
+                    <tbody id="resHeaders"></tbody>
+                  </table>
                 </div>
               </div>
 

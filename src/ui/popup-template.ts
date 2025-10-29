@@ -161,11 +161,13 @@ export function getPopupTemplate(): string {
             <textarea id="profileNotes" name="profileNotes" rows="4" class="block w-full rounded-md bg-white/5 px-3 py-1.5 text-base text-text outline-1 -outline-offset-1 outline-white/10 placeholder:text-gray-500 focus:outline-2 focus:-outline-offset-2 focus:outline-blue-500 sm:text-sm/6" placeholder="Notes (optional)" style="font-family: inherit"></textarea>
           </div>
 
-          <div class="space-y-2 pb-4">
-            <div class="relative flex items-center justify-between">
-              <span class="bg-bg pr-3 text-sm font-semibold text-white whitespace-nowrap">Request headers</span>
-              <div class="flex w-full items-center gap-2">
-                <div aria-hidden="true" class="w-full border-t border-white/15"></div>
+          <div class="pb-4">
+            <div class="sm:flex sm:items-center mb-4">
+              <div class="sm:flex-auto">
+                <h2 class="text-base font-semibold text-white">Request headers</h2>
+                <p class="mt-2 text-sm text-gray-300">HTTP headers to add or modify in requests matching this profile.</p>
+              </div>
+              <div class="mt-4 sm:mt-0 sm:ml-16 flex items-center gap-2">
                 ${actionButton({ id: 'addReq', icon: plusIcon, title: 'Add header', variant: 'primary', size: 'sm' })}
                 <el-dropdown class="inline-block">
                   <button class="flex items-center rounded-md text-gray-400 hover:text-gray-300 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-500 p-1" title="Request headers options">
@@ -182,14 +184,32 @@ export function getPopupTemplate(): string {
                 </el-dropdown>
               </div>
             </div>
-            <div id="reqHeaders" class="space-y-2"></div>
+            <div class="mt-4 flow-root">
+              <div class="-mx-4 -my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
+                <div class="inline-block min-w-full py-2 align-middle sm:px-6 lg:px-8">
+                  <table class="min-w-full divide-y divide-white/15">
+                    <thead>
+                      <tr class="divide-x divide-white/10">
+                        <th scope="col" class="py-3.5 pr-4 pl-4 text-left text-sm font-semibold text-white sm:pl-0 w-12"></th>
+                        <th scope="col" class="px-4 py-3.5 text-left text-sm font-semibold text-white">Header</th>
+                        <th scope="col" class="px-4 py-3.5 text-left text-sm font-semibold text-white">Value</th>
+                        <th scope="col" class="py-3.5 pr-4 pl-4 text-left text-sm font-semibold text-white sm:pr-0 w-12"></th>
+                      </tr>
+                    </thead>
+                    <tbody id="reqHeaders" class="divide-y divide-white/10 bg-gray-900"></tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
           </div>
 
-          <div class="space-y-2 pb-4">
-            <div class="relative flex items-center justify-between">
-              <span class="bg-bg pr-3 text-sm font-semibold text-white whitespace-nowrap">Response headers</span>
-              <div class="flex w-full items-center gap-2">
-                <div aria-hidden="true" class="w-full border-t border-white/15"></div>
+          <div class="pb-4">
+            <div class="sm:flex sm:items-center mb-4">
+              <div class="sm:flex-auto">
+                <h2 class="text-base font-semibold text-white">Response headers</h2>
+                <p class="mt-2 text-sm text-gray-300">HTTP headers to add or modify in responses from matching requests.</p>
+              </div>
+              <div class="mt-4 sm:mt-0 sm:ml-16 flex items-center gap-2">
                 ${actionButton({ id: 'addRes', icon: plusIcon, title: 'Add header', variant: 'primary', size: 'sm' })}
                 <el-dropdown class="inline-block">
                   <button class="flex items-center rounded-md text-gray-400 hover:text-gray-300 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-500 p-1" title="Response headers options">
@@ -206,7 +226,23 @@ export function getPopupTemplate(): string {
                 </el-dropdown>
               </div>
             </div>
-            <div id="resHeaders" class="space-y-2"></div>
+            <div class="mt-4 flow-root">
+              <div class="-mx-4 -my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
+                <div class="inline-block min-w-full py-2 align-middle sm:px-6 lg:px-8">
+                  <table class="min-w-full divide-y divide-white/15">
+                    <thead>
+                      <tr class="divide-x divide-white/10">
+                        <th scope="col" class="py-3.5 pr-4 pl-4 text-left text-sm font-semibold text-white sm:pl-0 w-12"></th>
+                        <th scope="col" class="px-4 py-3.5 text-left text-sm font-semibold text-white">Header</th>
+                        <th scope="col" class="px-4 py-3.5 text-left text-sm font-semibold text-white">Value</th>
+                        <th scope="col" class="py-3.5 pr-4 pl-4 text-left text-sm font-semibold text-white sm:pr-0 w-12"></th>
+                      </tr>
+                    </thead>
+                    <tbody id="resHeaders" class="divide-y divide-white/10 bg-gray-900"></tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
           </div>
 
           <div class="space-y-2 pb-4">

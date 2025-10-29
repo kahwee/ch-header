@@ -25,8 +25,11 @@ describe('HeaderListComponent', () => {
   let component: HeaderListComponent
 
   beforeEach(() => {
-    container = document.createElement('div')
-    document.body.appendChild(container)
+    const table = document.createElement('table')
+    const tbody = document.createElement('tbody')
+    container = tbody
+    table.appendChild(tbody)
+    document.body.appendChild(table)
     component = new HeaderListComponent(
       container,
       {
@@ -39,7 +42,10 @@ describe('HeaderListComponent', () => {
 
   afterEach(() => {
     component.unmountAll()
-    document.body.removeChild(container)
+    const table = container.parentElement
+    if (table?.parentElement) {
+      table.parentElement.removeChild(table)
+    }
   })
 
   describe('mounting and rendering', () => {
