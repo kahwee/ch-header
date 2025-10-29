@@ -212,14 +212,22 @@ export function getPopupTemplate(): string {
           ${headersSection('req', 'Request headers', '')}
           ${headersSection('res', 'Response headers', '')}
 
-          <div class="space-y-2 pb-4">
+          <div class="pb-4">
             ${sectionHeader({
               title: 'Matchers',
               addButtonId: 'addMatcher',
               addButtonTitle: 'Add matcher',
               menuItems: [{ label: 'Clear all', action: 'clearMatchers' }],
             })}
-            <div id="matchers"></div>
+            <div class="mt-4 flow-root">
+              <div class="-mx-4 -my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
+                <div class="inline-block min-w-full py-2 align-middle sm:px-6 lg:px-8">
+                  <table class="min-w-full">
+                    <tbody id="matchers"></tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
           </div>
 
           <footer class="flex items-center justify-between gap-4 p-4 border-t border-gray-700">
