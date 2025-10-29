@@ -13,13 +13,13 @@ export function headerRow(h: {
 }): string {
   return `
     <tr class="divide-x divide-white/10 hover:bg-white/3 transition-colors" data-hid="${h.id}" data-kind="req">
-      <td class="py-4 pr-4 pl-4 text-sm whitespace-nowrap sm:pl-0 w-12 flex items-center justify-center">
+      <td class="border-r border-white/10 py-4 pr-4 pl-4 text-sm whitespace-nowrap sm:pl-0 w-12 flex items-center justify-center">
         <ch-checkbox data-role="enabled" ${h.enabled !== false ? 'checked' : ''}></ch-checkbox>
       </td>
-      <td class="p-4 text-sm">
+      <td class="border-r border-white/10 p-4 text-sm">
         <input type="text" data-role="header" placeholder="Header name (e.g. X-Custom-Header)" value="${escapeHtml(h.header || '')}" class="w-full rounded-md bg-white/5 px-3 py-2 text-sm text-text outline-1 -outline-offset-1 outline-gray-700 placeholder:text-gray-500 focus:outline-2 focus:-outline-offset-2 focus:outline-blue-500" />
       </td>
-      <td class="p-4 text-sm">
+      <td class="border-r border-white/10 p-4 text-sm">
         <input type="text" data-role="value" placeholder="Value" value="${escapeHtml(h.value || '')}" class="w-full rounded-md bg-white/5 px-3 py-2 text-sm text-text outline-1 -outline-offset-1 outline-gray-700 placeholder:text-gray-500 focus:outline-2 focus:-outline-offset-2 focus:outline-blue-500" />
       </td>
       <td class="py-4 pr-4 pl-4 text-sm whitespace-nowrap sm:pr-0 w-12 flex items-center justify-center">

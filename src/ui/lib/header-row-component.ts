@@ -28,14 +28,14 @@ export class HeaderRowComponent extends Component {
 
     return `
       <tr class="divide-x divide-white/10 hover:bg-white/3 transition-colors" data-hid="${this.header.id}" data-kind="${kind}">
-        <td class="py-4 pr-4 pl-4 text-sm whitespace-nowrap sm:pl-0 w-12 flex items-center justify-center">
+        <td class="border-r border-white/10 py-4 pr-4 pl-4 text-sm whitespace-nowrap sm:pl-0 w-12 flex items-center justify-center">
           <ch-checkbox
             data-role="enabled"
             ${isEnabled ? 'checked' : ''}
             title="Enable/disable this header"
           ></ch-checkbox>
         </td>
-        <td class="p-4 text-sm">
+        <td class="border-r border-white/10 p-4 text-sm">
           <input
             type="text"
             class="w-full rounded-md bg-white/5 px-3 py-2 text-sm text-text outline-1 -outline-offset-1 outline-gray-700 placeholder:text-gray-500 focus:outline-2 focus:-outline-offset-2 focus:outline-blue-500"
@@ -44,7 +44,7 @@ export class HeaderRowComponent extends Component {
             value="${escapeHtml(this.header.header || '')}"
           >
         </td>
-        <td class="p-4 text-sm">
+        <td class="border-r border-white/10 p-4 text-sm">
           <input
             type="text"
             class="w-full rounded-md bg-white/5 px-3 py-2 text-sm text-text outline-1 -outline-offset-1 outline-gray-700 placeholder:text-gray-500 focus:outline-2 focus:-outline-offset-2 focus:outline-blue-500"
