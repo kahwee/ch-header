@@ -61,7 +61,7 @@ function headersSection(type: 'req' | 'res', title: string, description: string)
 
   return `
     <div class="pb-4">
-      <p class="mb-4 text-sm text-gray-300">${description}</p>
+      ${description ? `<p class="mb-4 text-sm text-gray-300">${description}</p>` : ''}
       ${sectionHeader({
         title,
         addButtonId,
@@ -209,8 +209,8 @@ export function getPopupTemplate(): string {
             <textarea id="profileNotes" name="profileNotes" rows="4" class="block w-full rounded-md bg-white/5 px-3 py-1.5 text-base text-text outline-1 -outline-offset-1 outline-white/10 placeholder:text-gray-500 focus:outline-2 focus:-outline-offset-2 focus:outline-blue-500 sm:text-sm/6" placeholder="Notes (optional)" style="font-family: inherit"></textarea>
           </div>
 
-          ${headersSection('req', 'Request headers', 'HTTP headers to add or modify in requests matching this profile.')}
-          ${headersSection('res', 'Response headers', 'HTTP headers to add or modify in responses from matching requests.')}
+          ${headersSection('req', 'Request headers', '')}
+          ${headersSection('res', 'Response headers', '')}
 
           <div class="space-y-2 pb-4">
             ${sectionHeader({
