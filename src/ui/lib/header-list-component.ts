@@ -5,7 +5,7 @@
  */
 
 import { HeaderOp } from '../../lib/types'
-import { HeaderRowComponent, HeaderRowCallbacks } from './header-row-component'
+import { HeaderRowComponent, HeaderRowCallbacks } from './header-row.component'
 
 export class HeaderListComponent {
   private headers = new Map<string, HeaderRowComponent>()

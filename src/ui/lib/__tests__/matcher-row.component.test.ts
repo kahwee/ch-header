@@ -4,7 +4,7 @@
  */
 
 import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest'
-import { MatcherRowComponent, MatcherRowCallbacks } from '../matcher-row-component'
+import { MatcherRowComponent, MatcherRowCallbacks } from '../matcher-row.component'
 import { Matcher } from '../../../lib/types'
 
 function createTestMatcher(overrides: Partial<Matcher> = {}): Matcher {

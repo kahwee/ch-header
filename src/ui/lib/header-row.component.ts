@@ -5,7 +5,7 @@
 
 import { Component } from './component'
 import { HeaderOp } from '../../lib/types'
-import { buildHeaderRowHTML } from './header-row-template'
+import { buildHeaderRowHTML } from './header-row.render'
 
 export interface HeaderRowCallbacks {
   onChange: (id: string, field: 'header' | 'value' | 'enabled', value: string | boolean) => void

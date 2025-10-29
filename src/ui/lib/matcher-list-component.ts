@@ -4,7 +4,7 @@
  */
 
 import { Matcher } from '../../lib/types'
-import { MatcherRowComponent, MatcherRowCallbacks } from './matcher-row-component'
+import { MatcherRowComponent, MatcherRowCallbacks } from './matcher-row.component'
 
 export class MatcherListComponent {
   private matchers = new Map<string, MatcherRowComponent>()

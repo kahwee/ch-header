@@ -142,15 +142,32 @@ src/
 │   ├── controller.ts          # Business logic controller (testable)
 │   ├── utils.ts              # Utility functions (escapeHtml, color helpers)
 │   ├── styles.css            # Tailwind v4 styles
-│   ├── components/           # Reusable UI components
-│   │   ├── button.ts         # Action button component
-│   │   ├── matcher-row.ts    # Matcher row template
-│   │   ├── header-row.ts     # Header row template
+│   ├── components/           # Reusable UI template functions
+│   │   ├── button.ts         # Action button template
+│   │   ├── matcher-row.ts    # Matcher row template (uses matcher-row.render.ts)
+│   │   ├── header-row.ts     # Header row template (uses header-row.render.ts)
 │   │   ├── avatar.ts         # Avatar component
-│   │   └── checkbox-element.ts
-│   ├── __tests__/            # UI component tests
+│   │   └── checkbox-element.ts # Custom checkbox element
+│   ├── lib/                  # Component classes and shared rendering
+│   │   ├── component.ts      # Base Component class (lifecycle management)
+│   │   ├── matcher-row.render.ts  # Shared buildMatcherRowHTML() function
+│   │   ├── matcher-row.component.ts # MatcherRowComponent
+│   │   ├── header-row.render.ts    # Shared buildHeaderRowHTML() function
+│   │   ├── header-row.component.ts # HeaderRowComponent
+│   │   ├── matcher-list-component.ts # MatcherListComponent
+│   │   ├── header-list-component.ts  # HeaderListComponent
+│   │   ├── profile-card-component.ts # ProfileCard
+│   │   └── __tests__/        # Component tests
+│   │       ├── component.test.ts
+│   │       ├── matcher-row.component.test.ts
+│   │       ├── header-row.component.test.ts
+│   │       ├── matcher-list-component.test.ts
+│   │       ├── header-list-component.test.ts
+│   │       └── profile-card-component.test.ts
+│   ├── __tests__/            # UI tests
 │   │   ├── matcher-row.test.ts
-│   │   └── popup.ui.test.ts
+│   │   ├── popup.ui.test.ts
+│   │   └── controller.test.ts
 │   └── stories/              # Storybook component stories
 ├── lib/
 │   ├── types.ts              # TypeScript type definitions
@@ -163,6 +180,25 @@ src/
 │       └── types.test.ts     # Type validation tests
 └── icons/                    # Extension icons (16, 32, 128px PNGs)
 ```
+
+### File Naming Convention
+
+The codebase uses a consistent naming convention for UI components:
+
+- **`{name}.render.ts`** - Shared HTML builder function (single source of truth)
+  - Example: `matcher-row.render.ts` exports `buildMatcherRowHTML()`
+  - Used by both template functions and component classes
+
+- **`{name}.ts`** (in `components/`) - Template function for Storybook
+  - Example: `components/matcher-row.ts` imports from `matcher-row.render.ts`
+  - Delegates to the shared builder function
+
+- **`{name}.component.ts`** (in `lib/`) - Interactive Component class
+  - Example: `lib/matcher-row.component.ts` extends `Component` base class
+  - Handles event listeners and lifecycle management
+
+- **`{name}.component.test.ts`** - Component tests
+  - Tests the interactive component behavior
 
 ## Implementation
 

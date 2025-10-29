@@ -57,6 +57,46 @@ npm run typecheck
 - **matcher.ts**: Matcher format parsing and validation
 - **background.ts**: Service worker for DNR rule management
 
+### File Naming Convention
+
+The project uses a consistent naming convention across UI components to maintain clarity and DRY principles:
+
+**Pattern:**
+```
+{name}.render.ts    = Shared HTML builder function (single source of truth)
+{name}.ts           = Template function in components/ (delegates to .render)
+{name}.component.ts = Interactive Component class (lifecycle management)
+{name}.component.test.ts = Component tests
+```
+
+**Examples:**
+
+- `matcher-row.render.ts` - Shared `buildMatcherRowHTML()` function (single source of truth)
+  - Used by both the component class and template function
+  - Handles HTML generation, escaping, and conditional rendering
+
+- `src/ui/components/matcher-row.ts` - Template function
+  - Imports from `matcher-row.render.ts`
+  - Delegates to `buildMatcherRowHTML()` for HTML generation
+  - Exported for use in Storybook stories
+
+- `src/ui/lib/matcher-row.component.ts` - Interactive component class
+  - Extends `Component` base class
+  - Imports from `matcher-row.render.ts`
+  - Handles event listeners and state management
+  - Can be mounted to DOM with lifecycle management
+
+- `src/ui/lib/__tests__/matcher-row.component.test.ts` - Component tests
+  - Tests the interactive component class
+  - Tests event handling, rendering, and updates
+
+**Benefits:**
+- Clear separation between shared rendering logic (`.render.ts`) and component implementations
+- Both template functions and component classes use the same HTML builder
+- Eliminates duplication of HTML markup
+- Easy to identify file purposes at a glance
+- `.component.ts` suffix clearly indicates a Component class with lifecycle management
+
 ### Core Concepts
 
 #### 1. Matcher Format System (Three Levels)
@@ -134,15 +174,17 @@ src/
 │   │   └── checkbox-element.ts   # Custom checkbox element
 │   ├── lib/                      # Component classes (Component Pattern)
 │   │   ├── component.ts          # Base Component class (lifecycle management)
-│   │   ├── matcher-row-component.ts      # MatcherRowComponent
-│   │   ├── header-row-component.ts      # HeaderRowComponent
+│   │   ├── matcher-row.render.ts # Shared buildMatcherRowHTML() function
+│   │   ├── matcher-row.component.ts     # MatcherRowComponent
+│   │   ├── header-row.render.ts  # Shared buildHeaderRowHTML() function
+│   │   ├── header-row.component.ts      # HeaderRowComponent
 │   │   ├── matcher-list-component.ts    # MatcherListComponent (manages multiple matchers)
 │   │   ├── header-list-component.ts     # HeaderListComponent (manages multiple headers)
 │   │   ├── profile-card-component.ts    # ProfileCard (example component)
 │   │   └── __tests__/
 │   │       ├── component.test.ts        # 30 tests for base Component class
-│   │       ├── matcher-row-component.test.ts    # 30 tests
-│   │       ├── header-row-component.test.ts     # 37 tests
+│   │       ├── matcher-row.component.test.ts    # 30 tests
+│   │       ├── header-row.component.test.ts     # 37 tests
 │   │       ├── matcher-list-component.test.ts   # 25 tests
 │   │       ├── header-list-component.test.ts    # 23 tests
 │   │       └── profile-card-component.test.ts   # 38 tests
@@ -194,9 +236,10 @@ abstract class Component {
 
 ### Component Hierarchy
 
-**MatcherRowComponent** (src/ui/lib/matcher-row-component.ts)
+**MatcherRowComponent** (src/ui/lib/matcher-row.component.ts)
 
 - Renders single matcher row with URL filter and resource type filter
+- Uses shared `buildMatcherRowHTML()` from `matcher-row.render.ts`
 - Callbacks: onChange (urlFilter, types), onDelete
 - Auto-converts empty string to "\*" for "all domains"
 
@@ -206,9 +249,10 @@ abstract class Component {
 - Smart mounting/updating/unmounting based on data changes
 - Preserves component instances across re-renders
 
-**HeaderRowComponent** (src/ui/lib/header-row-component.ts)
+**HeaderRowComponent** (src/ui/lib/header-row.component.ts)
 
 - Renders single header row with name, value, enabled checkbox
+- Uses shared `buildHeaderRowHTML()` from `header-row.render.ts`
 - Tracks request vs response via isRequest parameter
 - Callbacks: onChange (header, value, enabled), onDelete
 

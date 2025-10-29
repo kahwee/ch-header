@@ -2,7 +2,7 @@
  * Header row template function
  * Uses shared buildHeaderRowHTML for DRY rendering
  */
-import { buildHeaderRowHTML } from '../lib/header-row-template'
+import { buildHeaderRowHTML } from '../lib/header-row.render'
 
 export function headerRow(h: {
   id: string
