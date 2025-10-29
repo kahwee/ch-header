@@ -4,7 +4,7 @@
  */
 
 import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest'
-import { MatcherTableComponent } from '../matcher-table-component'
+import { MatcherTableComponent } from '../matcher-table.component'
 import { Matcher } from '../../../lib/types'
 
 function createTestMatcher(overrides: Partial<Matcher> = {}): Matcher {

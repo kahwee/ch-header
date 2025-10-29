@@ -5,7 +5,7 @@
  */
 
 import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest'
-import { HeaderTableComponent } from '../header-table-component'
+import { HeaderTableComponent } from '../header-table.component'
 import { HeaderOp } from '../../../lib/types'
 import '../../components/checkbox-element'
 import type { CheckboxElement } from '../../components/checkbox-element'
