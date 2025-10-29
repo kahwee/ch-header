@@ -1,0 +1,33 @@
+name: Release Build
+
+on:
+  release:
+    types: [created, published]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: oven-sh/setup-bun@v1
+
+      - run: bun install
+
+      - name: Type check
+        run: npm run typecheck
+
+      - name: Format check
+        run: npm run format:check
+
+      - name: Run tests
+        run: npm run test:run
+
+      - name: Build extension and create zip
+        run: npm run build:package
+
+      - name: Upload to Release
+        uses: softprops/action-gh-release@v1
+        with:
+          files: dist/ch-header.zip
