@@ -245,10 +245,13 @@ function select(id: string | null): void {
   const p = state.profiles.find((x) => x.id === id) || state.profiles[0]
   state.current = p || null
 
-  // Update list items with aria-selected
+  // Update list items with aria-selected and active class
   $$('a[data-id]').forEach((link) => {
     const isActive = link.dataset.id === p?.id
     link.setAttribute('aria-selected', isActive ? 'true' : 'false')
+    link.classList.toggle('active', isActive)
+    link.classList.toggle('bg-white/5', isActive)
+    link.classList.toggle('text-white', isActive)
   })
 
   if (!p) {

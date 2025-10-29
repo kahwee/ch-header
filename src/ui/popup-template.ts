@@ -297,7 +297,7 @@ export function profileListItem(
   const labelId = `profile-label-${p.id}`
 
   return `
-    <a href="#" aria-labelledby="${labelId}" aria-selected="${isActive}" data-id="${p.id}" class="group flex cursor-default rounded-lg p-2.5 select-none focus:outline-hidden aria-selected:bg-white/5 aria-selected:text-white">
+    <a href="#" aria-labelledby="${labelId}" aria-selected="${isActive}" data-id="${p.id}" class="group flex cursor-default rounded-lg p-2.5 select-none focus:outline-hidden ${isActive ? 'active bg-white/5 text-white' : ''}">
       ${renderAvatar(displayAvatar, p.color || '#7e22ce')}
       <div class="ml-3 flex-auto">
         <p id="${labelId}" class="text-sm font-medium text-gray-300">${escapeHtml(p.name)}</p>
