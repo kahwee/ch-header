@@ -154,15 +154,15 @@ src/
 │   │   ├── matcher-row.component.ts # MatcherRowComponent
 │   │   ├── header-row.render.ts    # Shared buildHeaderRowHTML() function
 │   │   ├── header-row.component.ts # HeaderRowComponent
-│   │   ├── matcher-list-component.ts # MatcherListComponent
-│   │   ├── header-list-component.ts  # HeaderListComponent
+│   │   ├── matcher-table-component.ts # MatcherTableComponent
+│   │   ├── header-table-component.ts  # HeaderTableComponent
 │   │   ├── profile-card-component.ts # ProfileCard
 │   │   └── __tests__/        # Component tests
 │   │       ├── component.test.ts
 │   │       ├── matcher-row.component.test.ts
 │   │       ├── header-row.component.test.ts
-│   │       ├── matcher-list-component.test.ts
-│   │       ├── header-list-component.test.ts
+│   │       ├── matcher-table-component.test.ts
+│   │       ├── header-table-component.test.ts
 │   │       └── profile-card-component.test.ts
 │   ├── __tests__/            # UI tests
 │   │   ├── matcher-row.test.ts

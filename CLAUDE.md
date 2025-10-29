@@ -178,15 +178,15 @@ src/
 │   │   ├── matcher-row.component.ts     # MatcherRowComponent
 │   │   ├── header-row.render.ts  # Shared buildHeaderRowHTML() function
 │   │   ├── header-row.component.ts      # HeaderRowComponent
-│   │   ├── matcher-list-component.ts    # MatcherListComponent (manages multiple matchers)
-│   │   ├── header-list-component.ts     # HeaderListComponent (manages multiple headers)
+│   │   ├── matcher-table-component.ts   # MatcherTableComponent (manages multiple matchers)
+│   │   ├── header-table-component.ts    # HeaderTableComponent (manages multiple headers)
 │   │   ├── profile-card-component.ts    # ProfileCard (example component)
 │   │   └── __tests__/
 │   │       ├── component.test.ts        # 30 tests for base Component class
 │   │       ├── matcher-row.component.test.ts    # 30 tests
 │   │       ├── header-row.component.test.ts     # 37 tests
-│   │       ├── matcher-list-component.test.ts   # 25 tests
-│   │       ├── header-list-component.test.ts    # 23 tests
+│   │       ├── matcher-table-component.test.ts  # 25 tests
+│   │       ├── header-table-component.test.ts   # 23 tests
 │   │       └── profile-card-component.test.ts   # 38 tests
 │   ├── __tests__/
 │   │   ├── matcher-row.test.ts   # 20 template function tests
@@ -243,9 +243,9 @@ abstract class Component {
 - Callbacks: onChange (urlFilter, types), onDelete
 - Auto-converts empty string to "\*" for "all domains"
 
-**MatcherListComponent** (src/ui/lib/matcher-list-component.ts)
+**MatcherTableComponent** (src/ui/lib/matcher-table-component.ts)
 
-- Manages multiple MatcherRowComponent instances
+- Manages multiple MatcherRowComponent instances in a table
 - Smart mounting/updating/unmounting based on data changes
 - Preserves component instances across re-renders
 
@@ -256,11 +256,11 @@ abstract class Component {
 - Tracks request vs response via isRequest parameter
 - Callbacks: onChange (header, value, enabled), onDelete
 
-**HeaderListComponent** (src/ui/lib/header-list-component.ts)
+**HeaderTableComponent** (src/ui/lib/header-table-component.ts)
 
-- Manages multiple HeaderRowComponent instances
+- Manages multiple HeaderRowComponent instances in a table
 - Separate instances for request and response headers
-- Same smart lifecycle management as MatcherListComponent
+- Same smart lifecycle management as MatcherTableComponent
 
 **ProfileCard** (src/ui/lib/profile-card-component.ts)
 

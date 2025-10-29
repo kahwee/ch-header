@@ -1,10 +1,10 @@
 /**
- * Tests for MatcherListComponent
+ * Tests for MatcherTableComponent
  * Covers rendering, component management, and lifecycle
  */
 
 import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest'
-import { MatcherListComponent } from '../matcher-list-component'
+import { MatcherTableComponent } from '../matcher-table-component'
 import { Matcher } from '../../../lib/types'
 
 function createTestMatcher(overrides: Partial<Matcher> = {}): Matcher {
@@ -16,14 +16,17 @@ function createTestMatcher(overrides: Partial<Matcher> = {}): Matcher {
   }
 }
 
-describe('MatcherListComponent', () => {
+describe('MatcherTableComponent', () => {
   let container: HTMLElement
-  let component: MatcherListComponent
+  let component: MatcherTableComponent
 
   beforeEach(() => {
-    container = document.createElement('div')
-    document.body.appendChild(container)
-    component = new MatcherListComponent(container, {
+    const table = document.createElement('table')
+    const tbody = document.createElement('tbody')
+    container = tbody
+    table.appendChild(tbody)
+    document.body.appendChild(table)
+    component = new MatcherTableComponent(container, {
       onChange: vi.fn(),
       onDelete: vi.fn(),
     })
@@ -31,7 +34,10 @@ describe('MatcherListComponent', () => {
 
   afterEach(() => {
     component.unmountAll()
-    document.body.removeChild(container)
+    const table = container.parentElement
+    if (table?.parentElement) {
+      table.parentElement.removeChild(table)
+    }
   })
 
   describe('mounting and rendering', () => {
@@ -390,10 +396,12 @@ describe('MatcherListComponent', () => {
 
   describe('container interaction', () => {
     it('should render matchers into correct container', () => {
-      const container2 = document.createElement('div')
-      document.body.appendChild(container2)
+      const table2 = document.createElement('table')
+      const tbody2 = document.createElement('tbody')
+      table2.appendChild(tbody2)
+      document.body.appendChild(table2)
 
-      const component2 = new MatcherListComponent(container2, {
+      const component2 = new MatcherTableComponent(tbody2, {
         onChange: vi.fn(),
         onDelete: vi.fn(),
       })
@@ -405,16 +413,16 @@ describe('MatcherListComponent', () => {
       component2.render([m2])
 
       expect(container.children.length).toBe(1)
-      expect(container2.children.length).toBe(1)
+      expect(tbody2.children.length).toBe(1)
 
       const input1 = container.querySelector('[data-role="urlFilter"]') as HTMLInputElement
-      const input2 = container2.querySelector('[data-role="urlFilter"]') as HTMLInputElement
+      const input2 = tbody2.querySelector('[data-role="urlFilter"]') as HTMLInputElement
 
       expect(input1.value).toBe(m1.urlFilter)
       expect(input2.value).toBe(m2.urlFilter)
 
       component2.unmountAll()
-      document.body.removeChild(container2)
+      document.body.removeChild(table2)
     })
 
     it('should clear container before rendering', () => {

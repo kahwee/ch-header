@@ -2,8 +2,8 @@ import { STORAGE_KEYS, Profile, State } from '../lib/types'
 import { PopupController } from './controller'
 import { profileListItem, getPopupTemplate } from './popup-template'
 import { tailwindToHex, hexToTailwind } from './utils'
-import { MatcherListComponent } from './lib/matcher-list-component'
-import { HeaderListComponent } from './lib/header-list-component'
+import { MatcherTableComponent } from './lib/matcher-table-component'
+import { HeaderTableComponent } from './lib/header-table-component'
 import './components/checkbox-element'
 import '@tailwindplus/elements'
 import searchIcon from './icons/search.svg?raw'
@@ -88,9 +88,9 @@ const state: State = {
 let controller: PopupController
 
 // Component instances initialized after elements are available
-let matcherList: MatcherListComponent
-let headerListReq: HeaderListComponent
-let headerListRes: HeaderListComponent
+let matcherList: MatcherTableComponent
+let headerListReq: HeaderTableComponent
+let headerListRes: HeaderTableComponent
 
 // Inject SVG icons into static HTML elements
 function injectIcons(): void {
@@ -152,17 +152,17 @@ async function load(): Promise<void> {
     syncAndRender,
   })
 
-  // Initialize MatcherListComponent
+  // Initialize MatcherTableComponent
   if (el.matchers) {
-    matcherList = new MatcherListComponent(el.matchers, {
+    matcherList = new MatcherTableComponent(el.matchers, {
       onChange: (id, field, value) => controller.onMatcherChange(id, field, value),
       onDelete: (id) => controller.onRemoveMatcher(id),
     })
   }
 
-  // Initialize HeaderListComponents (request and response)
+  // Initialize HeaderTableComponents (request and response)
   if (el.req) {
-    headerListReq = new HeaderListComponent(
+    headerListReq = new HeaderTableComponent(
       el.req,
       {
         onChange: (id, field, value) => controller.onHeaderChange(id, true, field, value),
@@ -173,7 +173,7 @@ async function load(): Promise<void> {
   }
 
   if (el.res) {
-    headerListRes = new HeaderListComponent(
+    headerListRes = new HeaderTableComponent(
       el.res,
       {
         onChange: (id, field, value) => controller.onHeaderChange(id, false, field, value),

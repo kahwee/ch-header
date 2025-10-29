@@ -178,14 +178,15 @@ describe('matcherRow', () => {
   })
 
   describe('styling and layout', () => {
-    it('should have correct CSS classes for layout', () => {
+    it('should have correct CSS classes for table row layout', () => {
       const html = matcherRow({
         id: 'matcher-1',
         urlFilter: 'example.com',
       })
 
-      expect(html).toContain('group flex gap-2 items-center p-3 rounded-lg')
-      expect(html).toContain('bg-white/3 hover:bg-white/5 transition-colors')
+      expect(html).toContain('hover:bg-white/3 transition-colors')
+      expect(html).toContain('<tr')
+      expect(html).toContain('<td')
     })
 
     it('should have proper input styling', () => {
@@ -194,13 +195,11 @@ describe('matcherRow', () => {
         urlFilter: 'example.com',
       })
 
-      // URL filter input should have flex-[2] for wider space
-      expect(html).toContain('class="flex-[2] rounded-md bg-white/5')
+      // URL filter input should be full-width in table cell with left-rounded corners
+      expect(html).toContain('w-full rounded-l-md bg-white/5')
 
-      // Resource type select should have flex-1 for balanced space
-      expect(html).toContain(
-        'class="flex-1 rounded-md bg-white/5 px-3 py-2 text-sm text-text outline-1'
-      )
+      // Resource type select should be full-width in table cell with right-rounded corners
+      expect(html).toContain('w-full rounded-r-md bg-white/5 px-3 py-2 text-sm text-text outline-1')
     })
 
     it('should have consistent focus styles', () => {
@@ -283,8 +282,10 @@ describe('matcherRow', () => {
       })
 
       // Verify structure contains required elements
-      expect(html).toContain('<div')
-      expect(html).toContain('</div>')
+      expect(html).toContain('<tr')
+      expect(html).toContain('</tr>')
+      expect(html).toContain('<td')
+      expect(html).toContain('</td>')
       expect(html).toContain('<input')
       expect(html).toContain('<select')
       expect(html).toContain('</select>')
@@ -292,9 +293,12 @@ describe('matcherRow', () => {
       expect(html).toContain('</button>')
 
       // Verify no unclosed tags
-      const openDivs = (html.match(/<div/g) || []).length
-      const closeDivs = (html.match(/<\/div>/g) || []).length
-      expect(openDivs).toBe(closeDivs)
+      const openTrs = (html.match(/<tr/g) || []).length
+      const closeTrs = (html.match(/<\/tr>/g) || []).length
+      expect(openTrs).toBe(closeTrs)
+      const openTds = (html.match(/<td/g) || []).length
+      const closeTds = (html.match(/<\/td>/g) || []).length
+      expect(openTds).toBe(closeTds)
     })
   })
 })

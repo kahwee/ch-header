@@ -1,12 +1,12 @@
 /**
- * MatcherListComponent - Manages multiple matcher row components
+ * MatcherTableComponent - Manages multiple matcher row components in a table
  * Handles mounting, updating, and unmounting individual matcher rows
  */
 
 import { Matcher } from '../../lib/types'
 import { MatcherRowComponent, MatcherRowCallbacks } from './matcher-row.component'
 
-export class MatcherListComponent {
+export class MatcherTableComponent {
   private matchers = new Map<string, MatcherRowComponent>()
 
   constructor(

@@ -1,5 +1,5 @@
 /**
- * HeaderListComponent - Manages multiple header row components
+ * HeaderTableComponent - Manages multiple header row components in a table
  * Handles mounting, updating, and unmounting individual header rows
  * Supports both request and response headers
  */
@@ -7,7 +7,7 @@
 import { HeaderOp } from '../../lib/types'
 import { HeaderRowComponent, HeaderRowCallbacks } from './header-row.component'
 
-export class HeaderListComponent {
+export class HeaderTableComponent {
   private headers = new Map<string, HeaderRowComponent>()
   private isRequest: boolean
 
@@ -86,7 +86,7 @@ export class HeaderListComponent {
   }
 
   /**
-   * Check if this list manages request or response headers
+   * Check if this table manages request or response headers
    */
   getHeaderType(): 'request' | 'response' {
     return this.isRequest ? 'request' : 'response'

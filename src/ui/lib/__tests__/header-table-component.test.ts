@@ -1,11 +1,11 @@
 /**
- * Tests for HeaderListComponent
+ * Tests for HeaderTableComponent
  * Covers rendering, component management, and lifecycle
  * Includes tests for both request and response header variants
  */
 
 import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest'
-import { HeaderListComponent } from '../header-list-component'
+import { HeaderTableComponent } from '../header-table-component'
 import { HeaderOp } from '../../../lib/types'
 import '../../components/checkbox-element'
 import type { CheckboxElement } from '../../components/checkbox-element'
@@ -20,9 +20,9 @@ function createTestHeader(overrides: Partial<HeaderOp> = {}): HeaderOp {
   }
 }
 
-describe('HeaderListComponent', () => {
+describe('HeaderTableComponent', () => {
   let container: HTMLElement
-  let component: HeaderListComponent
+  let component: HeaderTableComponent
 
   beforeEach(() => {
     const table = document.createElement('table')
@@ -30,7 +30,7 @@ describe('HeaderListComponent', () => {
     container = tbody
     table.appendChild(tbody)
     document.body.appendChild(table)
-    component = new HeaderListComponent(
+    component = new HeaderTableComponent(
       container,
       {
         onChange: vi.fn(),
@@ -280,7 +280,7 @@ describe('HeaderListComponent', () => {
     })
 
     it('should create response headers when specified', () => {
-      const resComponent = new HeaderListComponent(
+      const resComponent = new HeaderTableComponent(
         container,
         {
           onChange: vi.fn(),
@@ -382,7 +382,7 @@ describe('HeaderListComponent', () => {
       document.body.appendChild(reqContainer)
       document.body.appendChild(resContainer)
 
-      const reqComponent = new HeaderListComponent(
+      const reqComponent = new HeaderTableComponent(
         reqContainer,
         {
           onChange: vi.fn(),
@@ -391,7 +391,7 @@ describe('HeaderListComponent', () => {
         true
       )
 
-      const resComponent = new HeaderListComponent(
+      const resComponent = new HeaderTableComponent(
         resContainer,
         {
           onChange: vi.fn(),
