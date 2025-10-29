@@ -37,6 +37,54 @@ export const COLOR_PALETTE = [
 ]
 
 /**
+ * Build a headers section (Request or Response)
+ * Generates consistent markup for both request and response header sections
+ */
+function headersSection(type: 'req' | 'res', title: string, description: string): string {
+  const sortAction = type === 'req' ? 'sortReqHeaders' : 'sortResHeaders'
+  const clearAction = type === 'req' ? 'clearReqHeaders' : 'clearResHeaders'
+  const addButtonId = type === 'req' ? 'addReq' : 'addRes'
+  const containerElementId = type === 'req' ? 'reqHeaders' : 'resHeaders'
+  const optionsTitle = type === 'req' ? 'Request headers options' : 'Response headers options'
+
+  return `
+    <div class="pb-4">
+      <div class="sm:flex sm:items-center mb-4">
+        <div class="sm:flex-auto">
+          <h2 class="text-base font-semibold text-white">${title}</h2>
+          <p class="mt-2 text-sm text-gray-300">${description}</p>
+        </div>
+        <div class="mt-4 sm:mt-0 sm:ml-16 flex items-center gap-2">
+          ${actionButton({ id: addButtonId, icon: plusIcon, title: 'Add header', variant: 'primary', size: 'sm' })}
+          <el-dropdown class="inline-block">
+            <button class="flex items-center rounded-md text-gray-400 hover:text-gray-300 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-500 p-1" title="${optionsTitle}">
+              <svg viewBox="0 0 20 20" fill="currentColor" class="size-5">
+                <path d="M10 3a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3ZM10 8.5a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3ZM11.5 15.5a1.5 1.5 0 1 0-3 0 1.5 1.5 0 0 0 3 0Z" />
+              </svg>
+            </button>
+            <el-menu anchor="bottom end" popover class="w-48 origin-top-right rounded-md bg-stone-800 outline-1 -outline-offset-1 outline-white/10 transition transition-discrete [--anchor-gap:--spacing(2)] data-closed:scale-95 data-closed:transform data-closed:opacity-0 data-enter:duration-100 data-enter:ease-out data-leave:duration-75 data-leave:ease-in">
+              <div class="py-1">
+                <button type="button" data-action="${sortAction}" class="block w-full px-4 py-2 text-left text-sm text-gray-300 hover:bg-white/5 hover:text-white focus:bg-white/5 focus:text-white focus:outline-hidden">Sort A-Z</button>
+                <button type="button" data-action="${clearAction}" class="block w-full px-4 py-2 text-left text-sm text-gray-300 hover:bg-white/5 hover:text-white focus:bg-white/5 focus:text-white focus:outline-hidden">Clear all</button>
+              </div>
+            </el-menu>
+          </el-dropdown>
+        </div>
+      </div>
+      <div class="mt-4 flow-root">
+        <div class="-mx-4 -my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
+          <div class="inline-block min-w-full py-2 align-middle sm:px-6 lg:px-8">
+            <table class="min-w-full">
+              <tbody id="${containerElementId}"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  `
+}
+
+/**
  * Generate the sidebar command palette template
  * Used by both the extension popup and Storybook stories
  */
@@ -161,73 +209,8 @@ export function getPopupTemplate(): string {
             <textarea id="profileNotes" name="profileNotes" rows="4" class="block w-full rounded-md bg-white/5 px-3 py-1.5 text-base text-text outline-1 -outline-offset-1 outline-white/10 placeholder:text-gray-500 focus:outline-2 focus:-outline-offset-2 focus:outline-blue-500 sm:text-sm/6" placeholder="Notes (optional)" style="font-family: inherit"></textarea>
           </div>
 
-          <div class="pb-4">
-            <div class="sm:flex sm:items-center mb-4">
-              <div class="sm:flex-auto">
-                <h2 class="text-base font-semibold text-white">Request headers</h2>
-                <p class="mt-2 text-sm text-gray-300">HTTP headers to add or modify in requests matching this profile.</p>
-              </div>
-              <div class="mt-4 sm:mt-0 sm:ml-16 flex items-center gap-2">
-                ${actionButton({ id: 'addReq', icon: plusIcon, title: 'Add header', variant: 'primary', size: 'sm' })}
-                <el-dropdown class="inline-block">
-                  <button class="flex items-center rounded-md text-gray-400 hover:text-gray-300 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-500 p-1" title="Request headers options">
-                    <svg viewBox="0 0 20 20" fill="currentColor" class="size-5">
-                      <path d="M10 3a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3ZM10 8.5a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3ZM11.5 15.5a1.5 1.5 0 1 0-3 0 1.5 1.5 0 0 0 3 0Z" />
-                    </svg>
-                  </button>
-                  <el-menu anchor="bottom end" popover class="w-48 origin-top-right rounded-md bg-stone-800 outline-1 -outline-offset-1 outline-white/10 transition transition-discrete [--anchor-gap:--spacing(2)] data-closed:scale-95 data-closed:transform data-closed:opacity-0 data-enter:duration-100 data-enter:ease-out data-leave:duration-75 data-leave:ease-in">
-                    <div class="py-1">
-                      <button type="button" data-action="sortReqHeaders" class="block w-full px-4 py-2 text-left text-sm text-gray-300 hover:bg-white/5 hover:text-white focus:bg-white/5 focus:text-white focus:outline-hidden">Sort A-Z</button>
-                      <button type="button" data-action="clearReqHeaders" class="block w-full px-4 py-2 text-left text-sm text-gray-300 hover:bg-white/5 hover:text-white focus:bg-white/5 focus:text-white focus:outline-hidden">Clear all</button>
-                    </div>
-                  </el-menu>
-                </el-dropdown>
-              </div>
-            </div>
-            <div class="mt-4 flow-root">
-              <div class="-mx-4 -my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
-                <div class="inline-block min-w-full py-2 align-middle sm:px-6 lg:px-8">
-                  <table class="min-w-full">
-                    <tbody id="reqHeaders"></tbody>
-                  </table>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <div class="pb-4">
-            <div class="sm:flex sm:items-center mb-4">
-              <div class="sm:flex-auto">
-                <h2 class="text-base font-semibold text-white">Response headers</h2>
-                <p class="mt-2 text-sm text-gray-300">HTTP headers to add or modify in responses from matching requests.</p>
-              </div>
-              <div class="mt-4 sm:mt-0 sm:ml-16 flex items-center gap-2">
-                ${actionButton({ id: 'addRes', icon: plusIcon, title: 'Add header', variant: 'primary', size: 'sm' })}
-                <el-dropdown class="inline-block">
-                  <button class="flex items-center rounded-md text-gray-400 hover:text-gray-300 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-500 p-1" title="Response headers options">
-                    <svg viewBox="0 0 20 20" fill="currentColor" class="size-5">
-                      <path d="M10 3a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3ZM10 8.5a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3ZM11.5 15.5a1.5 1.5 0 1 0-3 0 1.5 1.5 0 0 0 3 0Z" />
-                    </svg>
-                  </button>
-                  <el-menu anchor="bottom end" popover class="w-48 origin-top-right rounded-md bg-stone-800 outline-1 -outline-offset-1 outline-white/10 transition transition-discrete [--anchor-gap:--spacing(2)] data-closed:scale-95 data-closed:transform data-closed:opacity-0 data-enter:duration-100 data-enter:ease-out data-leave:duration-75 data-leave:ease-in">
-                    <div class="py-1">
-                      <button type="button" data-action="sortResHeaders" class="block w-full px-4 py-2 text-left text-sm text-gray-300 hover:bg-white/5 hover:text-white focus:bg-white/5 focus:text-white focus:outline-hidden">Sort A-Z</button>
-                      <button type="button" data-action="clearResHeaders" class="block w-full px-4 py-2 text-left text-sm text-gray-300 hover:bg-white/5 hover:text-white focus:bg-white/5 focus:text-white focus:outline-hidden">Clear all</button>
-                    </div>
-                  </el-menu>
-                </el-dropdown>
-              </div>
-            </div>
-            <div class="mt-4 flow-root">
-              <div class="-mx-4 -my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
-                <div class="inline-block min-w-full py-2 align-middle sm:px-6 lg:px-8">
-                  <table class="min-w-full">
-                    <tbody id="resHeaders"></tbody>
-                  </table>
-                </div>
-              </div>
-            </div>
-          </div>
+          ${headersSection('req', 'Request headers', 'HTTP headers to add or modify in requests matching this profile.')}
+          ${headersSection('res', 'Response headers', 'HTTP headers to add or modify in responses from matching requests.')}
 
           <div class="space-y-2 pb-4">
             <div class="relative flex items-center justify-between">
