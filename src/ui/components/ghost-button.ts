@@ -1,10 +1,10 @@
 /**
- * Icon button template function
- * Reusable icon button with configurable icon and action
+ * Ghost button component with transparent background
+ * Used for secondary actions with icon only
  */
 import { escapeHtml } from '../utils'
 
-export interface IconButtonOptions {
+export interface GhostButtonOptions {
   icon: string // Raw SVG string
   action: string // data-action value
   title: string
@@ -13,10 +13,10 @@ export interface IconButtonOptions {
 }
 
 /**
- * Build an icon button with flexible icon and styling
+ * Build a ghost button with flexible icon and styling
  * Used for delete, action, and control buttons
  */
-export function iconButton(options: IconButtonOptions): string {
+export function ghostButton(options: GhostButtonOptions): string {
   const { icon, action, title, variant = 'default', circle = false } = options
 
   const variantClasses =

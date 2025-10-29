@@ -2,7 +2,7 @@
  * Shared popup HTML template
  * Used by both popup.html (rendered) and Storybook stories (with mocks)
  */
-import { actionButton } from './components/button'
+import { solidButton } from './components/solid-button'
 import { renderAvatar } from './components/avatar'
 import { escapeHtml } from './utils'
 import plusIcon from './icons/plus.svg?raw'
@@ -55,7 +55,7 @@ function headersSection(type: 'req' | 'res', title: string, description: string)
           <p class="mt-2 text-sm text-gray-300">${description}</p>
         </div>
         <div class="mt-4 sm:mt-0 sm:ml-16 flex items-center gap-2">
-          ${actionButton({ id: addButtonId, icon: plusIcon, title: 'Add header', variant: 'primary', size: 'sm' })}
+          ${solidButton({ id: addButtonId, icon: plusIcon, title: 'Add header', variant: 'primary', size: 'sm' })}
           <el-dropdown class="inline-block">
             <button class="flex items-center rounded-md text-gray-400 hover:text-gray-300 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-500 p-1" title="${optionsTitle}">
               <svg viewBox="0 0 20 20" fill="currentColor" class="size-5">
@@ -217,7 +217,7 @@ export function getPopupTemplate(): string {
               <span class="bg-bg pr-3 text-sm font-semibold text-white whitespace-nowrap">Matchers</span>
               <div class="flex w-full items-center gap-2">
                 <div aria-hidden="true" class="w-full border-t border-white/15"></div>
-                ${actionButton({ id: 'addMatcher', icon: plusIcon, title: 'Add matcher', variant: 'primary', size: 'sm' })}
+                ${solidButton({ id: 'addMatcher', icon: plusIcon, title: 'Add matcher', variant: 'primary', size: 'sm' })}
                 <el-dropdown class="inline-block">
                   <button class="flex items-center rounded-md text-gray-400 hover:text-gray-300 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-500 p-1" title="Matchers options">
                     <svg viewBox="0 0 20 20" fill="currentColor" class="size-5">
@@ -242,7 +242,7 @@ export function getPopupTemplate(): string {
               <ch-checkbox id="enabled" data-role="enabled"></ch-checkbox>
             </div>
             <div class="flex gap-2">
-              ${actionButton({ id: 'apply', text: 'Apply', type: 'submit', variant: 'primary' })}
+              ${solidButton({ id: 'apply', text: 'Apply', type: 'submit', variant: 'primary' })}
             </div>
           </footer>
         </form>

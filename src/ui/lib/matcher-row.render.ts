@@ -2,7 +2,7 @@
  * Shared matcher row HTML template
  * Single source of truth for matcher row rendering across components and templates
  */
-import { iconButton } from '../components/icon-button'
+import { ghostButton } from '../components/ghost-button'
 import trashIcon from '../icons/trash.svg?raw'
 import { escapeHtml } from '../utils'
 
@@ -47,7 +47,7 @@ export function buildMatcherRowHTML(m: MatcherRowOptions): string {
         </select>
       </td>
       <td class="text-sm whitespace-nowrap sm:pr-0 w-10 text-right align-middle pl-0.5">
-        ${iconButton({
+        ${ghostButton({
           icon: trashIcon,
           action: 'removeMatcher',
           title: 'Remove matcher',
