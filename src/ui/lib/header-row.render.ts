@@ -53,7 +53,7 @@ export function buildHeaderRowHTML(h: HeaderRowOptions): string {
           </div>
         </div>
       </td>
-      <td class="text-sm whitespace-nowrap sm:pr-0 w-10 text-right align-middle">
+      <td class="text-sm whitespace-nowrap sm:pr-0 w-10 text-right align-middle pl-0.5">
         ${iconButton({
           icon: trashIcon,
           action: 'removeHeader',

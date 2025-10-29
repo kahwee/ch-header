@@ -46,7 +46,7 @@ export function buildMatcherRowHTML(m: MatcherRowOptions): string {
           <option value="sub_frame" ${selectedTypes.includes('sub_frame') ? 'selected' : ''}>Iframes</option>
         </select>
       </td>
-      <td class="text-sm whitespace-nowrap sm:pr-0 w-10 text-right align-middle">
+      <td class="text-sm whitespace-nowrap sm:pr-0 w-10 text-right align-middle pl-0.5">
         ${iconButton({
           icon: trashIcon,
           action: 'removeMatcher',
