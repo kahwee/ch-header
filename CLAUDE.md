@@ -9,16 +9,17 @@ ChHeader is a profile-based HTTP header editor Chrome extension with Manifest V3
 - Runtime: Chrome Extension Manifest V3
 - Language: TypeScript (strict mode, zero `any`)
 - Styling: Tailwind CSS v4
-- Testing: Vitest with 86 tests (38 dedicated to matcher format)
-- UI: Vanilla DOM manipulation with template functions
+- Testing: Vitest with 304 tests across 12 files
+- UI: Component Pattern with vanilla DOM and template functions
 - Build: esbuild with watch mode
 
 **Key Stats:**
 
-- 106 tests passing (38 matcher, 20 matcher-row, 30 UI, 12 DNR, 6 types)
+- 304 tests passing across 12 test files
 - Zero `any` types in codebase
 - Fully typed Chrome API usage
 - 21 Tailwind profile colors
+- Component Pattern architecture with lifecycle management
 
 ## Quick Start
 
@@ -120,20 +121,36 @@ src/
 ├── background.ts                  # Service worker
 ├── ui/
 │   ├── popup.html                # Popup HTML
-│   ├── popup.ts                  # Runtime event handling
-│   ├── popup-template.ts         # Template functions (exports getPopupTemplate, profileListItem, customCheckbox)
+│   ├── popup.ts                  # Runtime event handling and component management
+│   ├── popup-template.ts         # Template functions (getPopupTemplate, profileListItem, customCheckbox)
 │   ├── controller.ts             # Business logic (fully testable, no DOM)
 │   ├── utils.ts                  # Utilities (escapeHtml, color helpers)
 │   ├── styles.css                # Tailwind v4 styles
-│   ├── components/               # Reusable UI components
-│   │   ├── button.ts             # Action button with multiple variants
+│   ├── components/               # Reusable UI template functions
+│   │   ├── button.ts             # Action button with variants
 │   │   ├── matcher-row.ts        # Matcher row template
 │   │   ├── header-row.ts         # Header row template
-│   │   └── avatar.ts             # Avatar component
+│   │   ├── avatar.ts             # Avatar component
+│   │   └── checkbox-element.ts   # Custom checkbox element
+│   ├── lib/                      # Component classes (Component Pattern)
+│   │   ├── component.ts          # Base Component class (lifecycle management)
+│   │   ├── matcher-row-component.ts      # MatcherRowComponent
+│   │   ├── header-row-component.ts      # HeaderRowComponent
+│   │   ├── matcher-list-component.ts    # MatcherListComponent (manages multiple matchers)
+│   │   ├── header-list-component.ts     # HeaderListComponent (manages multiple headers)
+│   │   ├── profile-card-component.ts    # ProfileCard (example component)
+│   │   └── __tests__/
+│   │       ├── component.test.ts        # 30 tests for base Component class
+│   │       ├── matcher-row-component.test.ts    # 30 tests
+│   │       ├── header-row-component.test.ts     # 37 tests
+│   │       ├── matcher-list-component.test.ts   # 25 tests
+│   │       ├── header-list-component.test.ts    # 23 tests
+│   │       └── profile-card-component.test.ts   # 38 tests
 │   ├── __tests__/
-│   │   ├── matcher-row.test.ts   # 20 component tests
-│   │   └── popup.ui.test.ts      # 30 UI integration tests
-│   └── stories/                  # Storybook stories
+│   │   ├── matcher-row.test.ts   # 20 template function tests
+│   │   ├── popup.ui.test.ts      # 30 UI integration tests
+│   │   └── controller.test.ts     # 15 controller tests
+│   └── stories/                  # Storybook component stories
 ├── lib/
 │   ├── types.ts                  # TypeScript definitions
 │   ├── matcher.ts                # Matcher format system
@@ -144,6 +161,87 @@ src/
 │       ├── dnr-rules.test.ts     # 12 DNR rule tests
 │       └── types.test.ts         # 6 type tests
 └── icons/                         # Extension icons (16, 32, 128px)
+```
+
+## Component Pattern Architecture
+
+The UI layer uses a lightweight Component Pattern for managing lifecycle, rendering, and event handling. This pattern eliminates scattered DOM manipulation and provides clear separation between data and presentation.
+
+### Base Component Class (src/ui/lib/component.ts)
+
+Abstract base class providing lifecycle management:
+
+```typescript
+abstract class Component {
+  constructor(id: string)
+  abstract render(): string
+  protected abstract setupHandlers(): void
+  mount(container: HTMLElement): void // Render and attach to DOM
+  updateContent(html: string): void // Update without re-mounting
+  unmount(): void // Cleanup and remove from DOM
+  isMounted(): boolean
+  getElement(): HTMLElement | null
+  protected on(eventType: string, selector: string, handler: EventListener): void
+}
+```
+
+**Key Features:**
+
+- Event delegation for dynamic elements
+- Automatic listener cleanup on unmount
+- updateContent() preserves element reference for stateful inputs
+- Fully testable without browser
+
+### Component Hierarchy
+
+**MatcherRowComponent** (src/ui/lib/matcher-row-component.ts)
+
+- Renders single matcher row with URL filter and resource type filter
+- Callbacks: onChange (urlFilter, types), onDelete
+- Auto-converts empty string to "\*" for "all domains"
+
+**MatcherListComponent** (src/ui/lib/matcher-list-component.ts)
+
+- Manages multiple MatcherRowComponent instances
+- Smart mounting/updating/unmounting based on data changes
+- Preserves component instances across re-renders
+
+**HeaderRowComponent** (src/ui/lib/header-row-component.ts)
+
+- Renders single header row with name, value, enabled checkbox
+- Tracks request vs response via isRequest parameter
+- Callbacks: onChange (header, value, enabled), onDelete
+
+**HeaderListComponent** (src/ui/lib/header-list-component.ts)
+
+- Manages multiple HeaderRowComponent instances
+- Separate instances for request and response headers
+- Same smart lifecycle management as MatcherListComponent
+
+**ProfileCard** (src/ui/lib/profile-card-component.ts)
+
+- Example component demonstrating pattern usage
+- Interactive profile card with actions (select, duplicate, delete)
+
+### Integration in popup.ts
+
+Components are instantiated in load() function and re-rendered in update cycles:
+
+```typescript
+let matcherList: MatcherListComponent
+let headerListReq: HeaderListComponent
+let headerListRes: HeaderListComponent
+
+// In load():
+matcherList = new MatcherListComponent(el.matchers, {
+  onChange: (id, field, value) => controller.onMatcherChange(id, field, value),
+  onDelete: (id) => controller.onRemoveMatcher(id),
+})
+
+// In render cycle:
+function renderMatchers(): void {
+  if (matcherList) matcherList.render(state.current?.matchers || [])
+}
 ```
 
 ## Key Components
@@ -203,20 +301,28 @@ function matchesRegex(pattern: string, url: string): boolean
 
 ### Test Organization
 
-**106 tests total across 5 test files:**
+**304 tests total across 12 test files:**
 
-- **38 matcher tests** (`src/lib/__tests__/matcher.test.ts`)
-  - 13 tests for simple format
-  - 13 tests for wildcard format
-  - 12 tests for regex format
-- **20 matcher-row tests** (`src/ui/__tests__/matcher-row.test.ts`)
-  - Basic rendering, URL filtering, resource types, styling, accessibility
-- **30 UI tests** (`src/ui/__tests__/popup.ui.test.ts`)
-  - Integration tests for popup functionality
-- **12 DNR rule tests** (`src/lib/__tests__/dnr-rules.test.ts`)
-  - Rule generation and validation
-- **6 type tests** (`src/lib/__tests__/types.test.ts`)
-  - Type definitions validation
+**Component Tests (183 tests):**
+
+- **30 tests** - Component base class (lifecycle, mount/unmount, event delegation)
+- **30 tests** - MatcherRowComponent (rendering, event handling, updates, edge cases)
+- **37 tests** - HeaderRowComponent (checkbox, header/value fields, enabled state)
+- **25 tests** - MatcherListComponent (smart mounting, updates, unmounting)
+- **23 tests** - HeaderListComponent (request/response separation, list management)
+- **38 tests** - ProfileCard component (example component, actions, state)
+
+**UI & Controller Tests (65 tests):**
+
+- **20 tests** - Template functions (matcher-row.test.ts)
+- **30 tests** - UI integration (popup.ui.test.ts)
+- **15 tests** - Controller business logic (controller.test.ts)
+
+**Core Library Tests (56 tests):**
+
+- **38 tests** - Matcher format system (simple/wildcard/regex)
+- **12 tests** - DNR rule generation and validation
+- **6 tests** - Type definitions validation
 
 ### Running Tests
 
@@ -232,6 +338,90 @@ npm run test:ui
 
 # Coverage report
 npm run test -- --coverage
+```
+
+## Type Safety Guidelines
+
+The codebase maintains **zero `any` types** through disciplined typing practices:
+
+### Generic Components
+
+Component classes use generics for flexible data types without relying on `any`:
+
+```typescript
+// ✅ Good - generic with constraint, reusable
+abstract class Component<T extends { id: string }> {
+  protected data: T
+}
+
+// ❌ Avoid - uses any
+abstract class Component {
+  protected data: any
+}
+```
+
+### Callback Interfaces
+
+All component callbacks are explicitly typed:
+
+```typescript
+// ✅ Good - callback types are clear
+export interface MatcherRowCallbacks {
+  onChange: (id: string, field: 'urlFilter' | 'types', value: string) => void
+  onDelete: (id: string) => void
+}
+
+// ❌ Avoid - implicit parameter types
+const onChange = (id, field, value) => { ... }
+```
+
+### Event Handler Types
+
+Cast DOM events to specific types rather than leaving as `any`:
+
+```typescript
+// ✅ Good - specific type
+this.on('change', '[data-role="enabled"]', (e) => {
+  const checked = (e.target as HTMLInputElement).checked
+})
+
+// ❌ Avoid - implicit typing
+this.on('change', '[data-role="enabled"]', (e: any) => {
+  const checked = e.target.checked
+})
+```
+
+### Union Types for Options
+
+Use discriminated unions for complex options:
+
+```typescript
+// ✅ Good - type-safe variants
+type ButtonVariant = 'primary' | 'secondary' | 'danger'
+interface ButtonOptions {
+  id: string
+  variant: ButtonVariant
+  text?: string
+  icon?: string
+}
+
+// ❌ Avoid - object with any properties
+interface ButtonOptions {
+  [key: string]: any
+}
+```
+
+### Null Safety
+
+Always be explicit about nullable types:
+
+```typescript
+// ✅ Good - clear when something could be null
+const component: MatcherRowComponent | undefined = this.matchers.get(id)
+if (component) { ... }
+
+// ❌ Avoid - implicit null
+const component: any = this.matchers.get(id)
 ```
 
 ## Color Scheme
