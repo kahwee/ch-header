@@ -178,7 +178,7 @@ export function getPopupTemplate(): string {
             <div class="flex flex-col gap-4 p-5 bg-stone-800/95 backdrop-blur-sm rounded-xl border border-gray-600/50 shadow-2xl">
               <div class="grid grid-cols-7 gap-3">
                 ${COLOR_PALETTE.map(
-    (color) => `
+                  (color) => `
                   <button
                     type="button"
                     data-color="${color.tailwind}"
@@ -190,7 +190,7 @@ export function getPopupTemplate(): string {
                     popovertargetaction="hide"
                   ></button>
                 `
-  ).join('')}
+                ).join('')}
               </div>
               <div class="flex flex-col gap-1.5">
                 <label for="profileInitials" class="text-xs font-medium text-gray-400">Avatar (optional, emoji ok!)</label>

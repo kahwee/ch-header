@@ -62,6 +62,7 @@ npm run typecheck
 The project uses a consistent naming convention across UI components to maintain clarity and DRY principles:
 
 **Pattern:**
+
 ```
 {name}.render.ts    = Shared HTML builder function (single source of truth)
 {name}.ts           = Template function in components/ (delegates to .render)
@@ -91,6 +92,7 @@ The project uses a consistent naming convention across UI components to maintain
   - Tests event handling, rendering, and updates
 
 **Benefits:**
+
 - Clear separation between shared rendering logic (`.render.ts`) and component implementations
 - Both template functions and component classes use the same HTML builder
 - Eliminates duplication of HTML markup
