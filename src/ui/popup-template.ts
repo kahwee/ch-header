@@ -219,15 +219,7 @@ export function getPopupTemplate(): string {
               addButtonTitle: 'Add matcher',
               menuItems: [{ label: 'Clear all', action: 'clearMatchers' }],
             })}
-            <div class="mt-4 flow-root">
-              <div class="-mx-4 -my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
-                <div class="inline-block min-w-full py-2 align-middle sm:px-6 lg:px-8">
-                  <table class="min-w-full">
-                    <tbody id="matchers"></tbody>
-                  </table>
-                </div>
-              </div>
-            </div>
+            <div id="matchers" class="space-y-2"></div>
           </div>
 
           <footer class="flex items-center justify-between gap-4 p-4 border-t border-gray-700">

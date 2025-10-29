@@ -433,9 +433,10 @@ describe('MatcherTableComponent', () => {
       const m1 = createTestMatcher({ id: 'm1' })
       component.render([m1])
 
-      // Old content should be cleared
+      // Old content should be cleared - only matcher row should remain
       expect(container.children.length).toBe(1)
-      expect(container.querySelector('div:not([data-mid])')).toBeNull()
+      // Check that the single child is the matcher row with data-mid
+      expect(container.querySelector(':scope > div[data-mid="m1"]')).not.toBeNull()
     })
   })
 })

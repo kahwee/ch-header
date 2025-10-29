@@ -178,15 +178,15 @@ describe('matcherRow', () => {
   })
 
   describe('styling and layout', () => {
-    it('should have correct CSS classes for table row layout', () => {
+    it('should have correct CSS classes for flex layout', () => {
       const html = matcherRow({
         id: 'matcher-1',
         urlFilter: 'example.com',
       })
 
-      expect(html).toContain('hover:bg-white/3 transition-colors')
-      expect(html).toContain('<tr')
-      expect(html).toContain('<td')
+      expect(html).toContain('mt-2 flex items-center gap-2')
+      expect(html).toContain('flex flex-1 items-center rounded-md')
+      expect(html).toContain('<div')
     })
 
     it('should have proper input styling', () => {
@@ -195,11 +195,11 @@ describe('matcherRow', () => {
         urlFilter: 'example.com',
       })
 
-      // URL filter input should be full-width in table cell with left-rounded corners
-      expect(html).toContain('w-full rounded-l-md bg-white/5')
+      // Input should have flex-1 to grow and fill space
+      expect(html).toContain('flex-1 bg-white/5')
 
-      // Resource type select should be full-width in table cell with right-rounded corners
-      expect(html).toContain('w-full rounded-r-md bg-white/5 px-3 py-2 text-sm text-text outline-1')
+      // Select should have rounded-r-md for right-rounded corners
+      expect(html).toContain('rounded-r-md bg-white/5')
     })
 
     it('should have consistent focus styles', () => {
@@ -282,23 +282,20 @@ describe('matcherRow', () => {
       })
 
       // Verify structure contains required elements
-      expect(html).toContain('<tr')
-      expect(html).toContain('</tr>')
-      expect(html).toContain('<td')
-      expect(html).toContain('</td>')
+      expect(html).toContain('<div')
+      expect(html).toContain('</div>')
       expect(html).toContain('<input')
       expect(html).toContain('<select')
       expect(html).toContain('</select>')
       expect(html).toContain('<button')
       expect(html).toContain('</button>')
+      expect(html).toContain('<svg')
+      expect(html).toContain('</svg>')
 
       // Verify no unclosed tags
-      const openTrs = (html.match(/<tr/g) || []).length
-      const closeTrs = (html.match(/<\/tr>/g) || []).length
-      expect(openTrs).toBe(closeTrs)
-      const openTds = (html.match(/<td/g) || []).length
-      const closeTds = (html.match(/<\/td>/g) || []).length
-      expect(openTds).toBe(closeTds)
+      const openDivs = (html.match(/<div/g) || []).length
+      const closeDivs = (html.match(/<\/div>/g) || []).length
+      expect(openDivs).toBe(closeDivs)
     })
   })
 })
