@@ -39,7 +39,7 @@ export function buildSectionHeaderHTML(opts: SectionHeaderOptions): string {
     <span class="bg-bg pr-3 text-sm font-semibold text-white whitespace-nowrap">${opts.title}</span>
     <div class="flex w-full items-center gap-2">
       <div aria-hidden="true" class="w-full border-t border-white/15"></div>
-      <button id="${opts.addButtonId}" class="relative inline-flex items-center rounded-md px-1.5 py-1 font-semibold focus-visible:outline-2 focus-visible:outline-offset-2 text-xs bg-blue-500 text-white hover:bg-blue-400 focus-visible:outline-blue-500" title="${opts.addButtonTitle}">
+      <button id="${opts.addButtonId}" class="relative inline-flex items-center rounded-md px-1.5 py-1 font-semibold focus-visible:outline-2 focus-visible:outline-offset-2 text-xs bg-blue-500 text-white hover:bg-blue-600 focus-visible:outline-blue-500" title="${opts.addButtonTitle}">
         <span class="inline-flex items-center justify-center w-3.5 h-3.5"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg></span>
       </button>
       ${dropdownMenu}

@@ -76,7 +76,7 @@ describe('sectionHeader', () => {
 
       expect(html).toContain('bg-blue-500')
       expect(html).toContain('text-white')
-      expect(html).toContain('hover:bg-blue-400')
+      expect(html).toContain('hover:bg-blue-600')
     })
 
     it('should include icon in add button', () => {
