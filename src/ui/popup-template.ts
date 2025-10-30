@@ -122,10 +122,7 @@ export function getSidebarTemplate(): string {
     </el-command-palette>
 
     <div class="flex flex-wrap items-center bg-stone-800/50 px-4 py-2.5 text-xs text-gray-300 shrink-0 border-t border-gray-700">
-      <button id="footerNewProfile" type="button" class="flex items-center gap-1.5 rounded-md bg-stone-700 px-2.5 py-1.5 text-xs font-semibold text-white hover:bg-stone-600 transition-colors flex-shrink-0 whitespace-nowrap" title="Add new profile">
-        <span class="inline-flex items-center justify-center w-4 h-4">${plusIcon}</span>
-        New
-      </button>
+      ${solidButton({ id: 'footerNewProfile', text: 'New', icon: plusIcon, variant: 'secondary', size: 'sm', title: 'Add new profile' })}
     </div>
   </aside>`
 }
@@ -140,10 +137,7 @@ export function getPopupTemplate(): string {
           <h3 class="mt-2 text-sm font-semibold text-text">No profiles</h3>
           <p class="mt-1 text-sm text-muted">Get started by creating a new profile.</p>
           <div class="mt-6">
-            <button id="newProfileEmpty" type="button" class="inline-flex items-center rounded-md bg-blue-700 px-3 py-2 text-sm font-semibold text-white hover:bg-blue-600 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-700">
-              <span class="mr-1.5 -ml-0.5 w-5 h-5 flex items-center justify-center">${plusIcon}</span>
-              New Profile
-            </button>
+            ${solidButton({ id: 'newProfileEmpty', text: 'New Profile', icon: plusIcon, variant: 'primary', size: 'md' })}
           </div>
         </div>
         <form id="detail" class="p-4 grid gap-3 hidden">
