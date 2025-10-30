@@ -12,7 +12,7 @@
     "32": "icons/32.png",
     "128": "icons/128.png"
   },
-  "permissions": ["declarativeNetRequest", "storage", "unlimitedStorage"],
+  "permissions": ["declarativeNetRequest", "storage"],
   "host_permissions": ["<all_urls>"],
   "declarative_net_request": {
     "rule_resources": []
