@@ -112,3 +112,40 @@ export const SubmitType: Story = {
     type: 'submit',
   },
 }
+
+/**
+ * Primary button in disabled state
+ */
+export const PrimaryDisabled: Story = {
+  args: {
+    text: 'Apply',
+    variant: 'primary',
+    size: 'md',
+    disabled: true,
+  },
+}
+
+/**
+ * Secondary button in disabled state
+ */
+export const SecondaryDisabled: Story = {
+  args: {
+    text: 'Cancel',
+    variant: 'secondary',
+    size: 'md',
+    disabled: true,
+  },
+}
+
+/**
+ * Primary button with icon, disabled
+ */
+export const PrimaryDisabledWithIcon: Story = {
+  args: {
+    text: 'New Profile',
+    icon: plusIcon,
+    variant: 'primary',
+    size: 'md',
+    disabled: true,
+  },
+}

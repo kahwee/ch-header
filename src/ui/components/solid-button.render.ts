@@ -12,6 +12,7 @@ export interface SolidButtonOptions {
   variant?: 'primary' | 'secondary'
   action?: string
   size?: 'sm' | 'md'
+  disabled?: boolean
 }
 
 /**
@@ -28,16 +29,22 @@ export function buildSolidButtonHTML(options: SolidButtonOptions): string {
     variant = 'primary',
     action,
     size = 'md',
+    disabled = false,
   } = options
 
   const variantClasses = {
-    primary: 'bg-blue-700 text-white hover:bg-blue-600 focus-visible:outline-blue-700',
-    secondary: 'bg-stone-700 text-text hover:bg-stone-600 focus-visible:outline-stone-500',
+    primary: disabled
+      ? 'bg-blue-400 text-white cursor-not-allowed opacity-60'
+      : 'bg-blue-700 text-white hover:bg-blue-600 focus-visible:outline-blue-700',
+    secondary: disabled
+      ? 'bg-stone-500 text-text cursor-not-allowed opacity-60'
+      : 'bg-stone-700 text-text hover:bg-stone-600 focus-visible:outline-stone-500',
   }
 
   const idAttr = id ? `id="${id}"` : ''
   const titleAttr = title ? `title="${title}"` : ''
   const actionAttr = action ? `data-action="${action}"` : ''
+  const disabledAttr = disabled ? 'disabled' : ''
 
   // Size classes
   const sizeClasses = {
@@ -58,7 +65,7 @@ export function buildSolidButtonHTML(options: SolidButtonOptions): string {
   const sizes = sizeClasses[size]
 
   return `
-    <button type="${type}" ${idAttr} ${titleAttr} ${actionAttr} class="relative inline-flex items-center ${sizes.gap} rounded-md ${sizes.padding} font-semibold focus-visible:outline-2 focus-visible:outline-offset-2 ${sizes.text} ${variantClasses[variant]}">
+    <button type="${type}" ${idAttr} ${titleAttr} ${actionAttr} ${disabledAttr} class="relative inline-flex items-center ${sizes.gap} rounded-md ${sizes.padding} font-semibold focus-visible:outline-2 focus-visible:outline-offset-2 ${sizes.text} ${variantClasses[variant]}">
       ${icon ? `<span class="inline-flex items-center justify-center ${sizes.icon}">${icon}</span>` : ''}
       ${text ? `${text}` : ''}
     </button>

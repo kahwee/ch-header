@@ -5,6 +5,7 @@
 import { solidButton } from './components/solid-button'
 import { sectionHeader } from './components/section-header'
 import { renderAvatar } from './components/avatar'
+import { menuItem } from './components/menu-item'
 import { escapeHtml } from './utils'
 import plusIcon from './icons/plus.svg?raw'
 import searchIcon from './icons/search.svg?raw'
@@ -157,12 +158,12 @@ export function getPopupTemplate(): string {
               </button>
               <el-menu anchor="bottom end" popover class="w-56 origin-top-right divide-y divide-white/10 rounded-md bg-stone-800 outline-1 -outline-offset-1 outline-white/10 transition transition-discrete [--anchor-gap:--spacing(2)] data-closed:scale-95 data-closed:transform data-closed:opacity-0 data-enter:duration-100 data-enter:ease-out data-leave:duration-75 data-leave:ease-in">
                 <div class="py-1">
-                  <button type="button" data-action="importHeaders" class="block w-full px-4 py-2 text-left text-sm text-gray-300 hover:bg-white/5 hover:text-white focus:bg-white/5 focus:text-white focus:outline-hidden" title="Import headers from JSON">Import headers</button>
-                  <button type="button" data-action="importProfile" class="block w-full px-4 py-2 text-left text-sm text-gray-300 hover:bg-white/5 hover:text-white focus:bg-white/5 focus:text-white focus:outline-hidden" title="Import entire profile from JSON">Import profile</button>
+                  ${menuItem({ label: 'Import headers', action: 'importHeaders', title: 'Import headers from JSON' })}
+                  ${menuItem({ label: 'Import profile', action: 'importProfile', title: 'Import entire profile from JSON' })}
                 </div>
                 <div class="py-1">
-                  <button type="button" data-action="duplicate" class="block w-full px-4 py-2 text-left text-sm text-gray-300 hover:bg-white/5 hover:text-white focus:bg-white/5 focus:text-white focus:outline-hidden">Duplicate</button>
-                  <button type="button" data-action="delete" class="block w-full px-4 py-2 text-left text-sm text-red-400 hover:bg-white/5 hover:text-red-300 focus:bg-white/5 focus:text-red-300 focus:outline-hidden">Delete</button>
+                  ${menuItem({ label: 'Duplicate', action: 'duplicate' })}
+                  ${menuItem({ label: 'Delete', action: 'delete', variant: 'delete' })}
                 </div>
               </el-menu>
             </el-dropdown>
