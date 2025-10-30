@@ -10,7 +10,6 @@ import { escapeHtml } from './utils'
 import plusIcon from '../icons/plus.svg?raw'
 import searchIcon from '../icons/search.svg?raw'
 import folderPlusIcon from '../icons/folder-plus.svg?raw'
-import trashIcon from '../icons/trash.svg?raw'
 
 /**
  * Profile color palette using standard Tailwind token names
