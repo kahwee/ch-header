@@ -115,13 +115,13 @@ export function buildMatcherRowHTML(options): string {
 
 // src/ui/components/matcher-row.ts
 export function matcherRow(options): string {
-  return buildMatcherRowHTML(options)  // Template for Storybook
+  return buildMatcherRowHTML(options) // Template for Storybook
 }
 
 // src/ui/lib/matcher-row.component.ts
 export class MatcherRowComponent extends Component {
   render(): string {
-    return buildMatcherRowHTML(this.data)  // Component class
+    return buildMatcherRowHTML(this.data) // Component class
   }
 }
 ```
@@ -137,11 +137,13 @@ export class MatcherRowComponent extends Component {
 **Current Implementation Status:**
 
 ✅ **Following Pattern (3 components):**
+
 - `matcher-row` - Full pattern with template + component class
 - `header-row` - Full pattern with template + component class
 - `section-header` - Template function with comprehensive Storybook stories
 
 ⚠️ **Candidates for Refactoring:**
+
 - `solid-button` - Currently a pure function, has hardcoded duplicates in popup-template.ts
 - `render-avatar` - Currently simple enough, defer unless variants expand
 - `ghost-button` - Already shared across render files, already optimal
@@ -149,6 +151,7 @@ export class MatcherRowComponent extends Component {
 **When to Apply This Pattern:**
 
 Use this pattern when:
+
 - HTML has moderate complexity (3+ lines)
 - Component is used in multiple contexts (popup + components + Storybook)
 - HTML has conditional logic or variants
@@ -156,6 +159,7 @@ Use this pattern when:
 - You're creating a component class with lifecycle management
 
 Skip this pattern if:
+
 - Component is a simple Web Component (like `checkbox-element`)
 - HTML is trivial (single line)
 - Only one usage location exists
@@ -163,6 +167,7 @@ Skip this pattern if:
 **Next Steps - Refactor solidButton:**
 
 The `solidButton` component would benefit from this pattern:
+
 1. Create `src/ui/components/solid-button.render.ts` with `buildSolidButtonHTML()`
 2. Update `src/ui/components/solid-button.ts` to delegate to render
 3. Replace 3 hardcoded buttons in `popup-template.ts` with `solidButton()` calls

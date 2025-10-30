@@ -3,7 +3,7 @@ import { sectionHeader } from '../components/section-header'
 import type { SectionHeaderOptions } from '../components/section-header'
 
 const meta: Meta<SectionHeaderOptions> = {
-  title: 'Components/Section Header',
+  title: 'ChHeader/Components/Section Header',
   tags: ['autodocs'],
   render: (args) => sectionHeader(args),
 }

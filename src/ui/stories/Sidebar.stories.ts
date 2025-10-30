@@ -13,7 +13,7 @@ const meta = {
   parameters: {
     layout: 'fullscreen',
   },
-} satisfies Meta
+} satisfies Meta<Record<string, unknown>>
 
 export default meta
 type Story = StoryObj<typeof meta>

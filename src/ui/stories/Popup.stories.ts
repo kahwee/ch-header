@@ -11,14 +11,14 @@ import '@tailwindplus/elements'
  * For sidebar-focused stories, see Sidebar.stories.ts
  */
 const meta = {
-  title: 'ChHeader/Full Layout',
+  title: 'ChHeader/Layouts/Full Layout',
   parameters: {
     layout: 'fullscreen',
     viewport: {
       defaultViewport: 'iphonese',
     },
   },
-} satisfies Meta
+} satisfies Meta<Record<string, unknown>>
 
 export default meta
 type Story = StoryObj<typeof meta>
