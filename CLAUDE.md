@@ -9,17 +9,18 @@ ChHeader is a profile-based HTTP header editor Chrome extension with Manifest V3
 - Runtime: Chrome Extension Manifest V3
 - Language: TypeScript (strict mode, zero `any`)
 - Styling: Tailwind CSS v4
-- Testing: Vitest with 304 tests across 12 files
+- Testing: Vitest with 388 tests across 16 files
 - UI: Component Pattern with vanilla DOM and template functions
 - Build: esbuild with watch mode
 
 **Key Stats:**
 
-- 304 tests passing across 12 test files
+- 388 tests passing across 16 test files (100% pass rate)
 - Zero `any` types in codebase
 - Fully typed Chrome API usage
 - 21 Tailwind profile colors
 - Component Pattern architecture with lifecycle management
+- `.render.ts` pattern for centralized HTML generation
 
 ## Quick Start
 
@@ -98,6 +99,76 @@ The project uses a consistent naming convention across UI components to maintain
 - Eliminates duplication of HTML markup
 - Easy to identify file purposes at a glance
 - `.component.ts` suffix clearly indicates a Component class with lifecycle management
+
+### The `.render.ts` Pattern: Single Source of Truth for HTML
+
+The codebase follows a deliberate pattern where HTML generation is centralized in `.render.ts` files. This enables multiple use cases without duplication:
+
+**The Pattern in Action:**
+
+```typescript
+// src/ui/lib/matcher-row.render.ts
+export function buildMatcherRowHTML(options): string {
+  // Single source of truth for matcher row HTML
+  return `<tr class="...">...</tr>`
+}
+
+// src/ui/components/matcher-row.ts
+export function matcherRow(options): string {
+  return buildMatcherRowHTML(options)  // Template for Storybook
+}
+
+// src/ui/lib/matcher-row.component.ts
+export class MatcherRowComponent extends Component {
+  render(): string {
+    return buildMatcherRowHTML(this.data)  // Component class
+  }
+}
+```
+
+**Why This Matters:**
+
+1. **DRY Principle**: HTML markup defined once, used everywhere
+2. **Storybook Documentation**: Template functions can demonstrate all variants and states
+3. **Component Testing**: Component classes use same HTML, ensuring consistency
+4. **Easy Refactoring**: Change HTML in one place, all consumers benefit
+5. **Testability**: HTML generation is pure function, easy to test
+
+**Current Implementation Status:**
+
+✅ **Following Pattern (3 components):**
+- `matcher-row` - Full pattern with template + component class
+- `header-row` - Full pattern with template + component class
+- `section-header` - Template function with comprehensive Storybook stories
+
+⚠️ **Candidates for Refactoring:**
+- `solid-button` - Currently a pure function, has hardcoded duplicates in popup-template.ts
+- `render-avatar` - Currently simple enough, defer unless variants expand
+- `ghost-button` - Already shared across render files, already optimal
+
+**When to Apply This Pattern:**
+
+Use this pattern when:
+- HTML has moderate complexity (3+ lines)
+- Component is used in multiple contexts (popup + components + Storybook)
+- HTML has conditional logic or variants
+- You want Storybook to demonstrate all variations
+- You're creating a component class with lifecycle management
+
+Skip this pattern if:
+- Component is a simple Web Component (like `checkbox-element`)
+- HTML is trivial (single line)
+- Only one usage location exists
+
+**Next Steps - Refactor solidButton:**
+
+The `solidButton` component would benefit from this pattern:
+1. Create `src/ui/components/solid-button.render.ts` with `buildSolidButtonHTML()`
+2. Update `src/ui/components/solid-button.ts` to delegate to render
+3. Replace 3 hardcoded buttons in `popup-template.ts` with `solidButton()` calls
+4. Add `SolidButtonComponent` class if button state management is needed
+
+This consolidates button styling into a single source of truth.
 
 ### Core Concepts
 
