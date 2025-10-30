@@ -1,7 +1,7 @@
 import type { Preview } from '@storybook/html'
 import '@tailwindplus/elements'
-import '../src/ui/styles.css'
-import '../src/ui/components/checkbox-element'
+import '../src/ui/core/styles.css'
+import '../src/ui/components/common/checkbox-element'
 
 const preview: Preview = {
   parameters: {

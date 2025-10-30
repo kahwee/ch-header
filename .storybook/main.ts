@@ -1,7 +1,7 @@
 import type { StorybookConfig } from '@storybook/html-vite'
 
 const config: StorybookConfig = {
-  stories: ['../src/ui/stories/**/*.stories.ts'],
+  stories: ['../src/ui/**/__stories__/**/*.stories.ts'],
   framework: {
     name: '@storybook/html-vite',
     options: {},
