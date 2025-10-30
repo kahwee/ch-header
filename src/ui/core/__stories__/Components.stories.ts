@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/html'
-import { headerRow } from '../components/header-row'
+import { headerRow } from '../../components/headers/header-row'
 import { profileListItem } from '../popup-template'
-import '../components/checkbox-element'
+import '../../components/common/checkbox-element'
 
 const meta = {
   title: 'ChHeader/Components/Header Row',

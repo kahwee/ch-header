@@ -6,8 +6,8 @@
 import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest'
 import { HeaderRowComponent, HeaderRowCallbacks } from '../header-row.component'
 import { HeaderOp } from '../../../lib/types'
-import '../../components/checkbox-element'
-import type { CheckboxElement } from '../../components/checkbox-element'
+import '../../components/common/checkbox-element'
+import type { CheckboxElement } from '../../components/common/checkbox-element'
 
 function createTestHeader(overrides: Partial<HeaderOp> = {}): HeaderOp {
   return {

@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/html'
-import { getSidebarTemplate, profileListItem } from '../popup-template'
-import '../components/checkbox-element'
+import { getSidebarTemplate, profileListItem } from '../../core/popup-template'
+import '../../components/common/checkbox-element'
 import '@tailwindplus/elements'
 
 /**

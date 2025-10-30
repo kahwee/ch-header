@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/html'
-import { COLOR_PALETTE } from '../popup-template'
+import { COLOR_PALETTE } from '../../core/popup-template'
 import '@tailwindplus/elements'
 
 /**

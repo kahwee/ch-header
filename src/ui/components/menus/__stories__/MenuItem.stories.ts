@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/html'
-import { menuItem } from '../components/menu-item'
-import type { MenuItemOptions } from '../components/menu-item'
+import { menuItem } from '../menu-item'
+import type { MenuItemOptions } from '../menu-item'
 
 /**
  * Menu Item Stories

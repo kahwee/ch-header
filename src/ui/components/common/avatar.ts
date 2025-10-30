@@ -1,7 +1,7 @@
 /**
  * Avatar component for profile display
  */
-import { escapeHtml } from '../utils'
+import { escapeHtml } from '../../core/utils'
 
 export function renderAvatar(character: string, backgroundColor: string): string {
   return `<div class="flex size-8 flex-none items-center justify-center rounded-md font-semibold text-white text-sm font-mono" style="background-color: ${backgroundColor}">

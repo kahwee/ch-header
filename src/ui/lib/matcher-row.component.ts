@@ -5,7 +5,7 @@
 
 import { Component } from './component'
 import { Matcher } from '../../lib/types'
-import { matcherRow } from '../components/matcher-row'
+import { matcherRow } from '../components/matchers/matcher-row'
 
 export interface MatcherRowCallbacks {
   onChange: (id: string, field: 'urlFilter' | 'types', value: string) => void

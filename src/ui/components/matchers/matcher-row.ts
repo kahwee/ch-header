@@ -2,7 +2,7 @@
  * Matcher row template function
  * Uses shared buildMatcherRowHTML for DRY rendering
  */
-import { buildMatcherRowHTML } from '../lib/matcher-row.render'
+import { buildMatcherRowHTML } from './matcher-row.render'
 
 export function matcherRow(m: {
   id: string

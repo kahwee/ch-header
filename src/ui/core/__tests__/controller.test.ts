@@ -5,7 +5,7 @@
 
 import { describe, it, expect, beforeEach, vi } from 'vitest'
 import { PopupController } from '../controller'
-import { Profile, State } from '../../lib/types'
+import { Profile, State } from '../../../lib/types'
 
 describe('PopupController - Refactored Methods', () => {
   let state: State

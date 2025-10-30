@@ -2,7 +2,7 @@
  * Shared menu item HTML template
  * Single source of truth for menu item rendering across components and templates
  */
-import { escapeHtml } from '../utils'
+import { escapeHtml } from '../../core/utils'
 
 export interface MenuItemOptions {
   label: string

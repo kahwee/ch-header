@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { matcherRow } from '../components/matcher-row'
+import { matcherRow } from '../matcher-row'
 
 describe('matcherRow', () => {
   describe('basic rendering', () => {

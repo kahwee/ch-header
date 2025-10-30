@@ -3,7 +3,7 @@
  * Extracts messy event handlers from popup.ts into a testable controller
  */
 
-import { STORAGE_KEYS, Profile, State } from '../lib/types'
+import { STORAGE_KEYS, Profile, State } from '../../lib/types'
 
 const K = STORAGE_KEYS
 

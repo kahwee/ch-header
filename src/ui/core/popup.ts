@@ -1,13 +1,13 @@
-import { STORAGE_KEYS, Profile, State } from '../lib/types'
+import { STORAGE_KEYS, Profile, State } from '../../lib/types'
 import { PopupController } from './controller'
 import { profileListItem, getPopupTemplate, COLOR_PALETTE } from './popup-template'
-import { MatcherTableComponent } from './lib/matcher-table.component'
-import { HeaderTableComponent } from './lib/header-table.component'
-import './components/checkbox-element'
+import { MatcherTableComponent } from '../lib/matcher-table.component'
+import { HeaderTableComponent } from '../lib/header-table.component'
+import '../components/common/checkbox-element'
 import '@tailwindplus/elements'
-import searchIcon from './icons/search.svg?raw'
-import plusIcon from './icons/plus.svg?raw'
-import folderPlusIcon from './icons/folder-plus.svg?raw'
+import searchIcon from '../../icons/search.svg?raw'
+import plusIcon from '../../icons/plus.svg?raw'
+import folderPlusIcon from '../../icons/folder-plus.svg?raw'
 
 const K = STORAGE_KEYS
 

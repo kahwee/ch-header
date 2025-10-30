@@ -4,8 +4,8 @@
  */
 
 import { describe, it, expect, beforeEach } from 'vitest'
-import '../components/checkbox-element'
-import type { CheckboxElement } from '../components/checkbox-element'
+import '../../components/common/checkbox-element'
+import type { CheckboxElement } from '../../components/common/checkbox-element'
 
 describe('ChHeader Popup UI - DOM Components', () => {
   beforeEach(() => {

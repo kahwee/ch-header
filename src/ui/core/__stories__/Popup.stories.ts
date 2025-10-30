@@ -1,8 +1,8 @@
 import type { Meta, StoryObj } from '@storybook/html'
 import { getPopupTemplate, profileListItem } from '../popup-template'
-import { headerRow } from '../components/header-row'
-import { matcherRow } from '../components/matcher-row'
-import '../components/checkbox-element'
+import { headerRow } from '../../components/headers/header-row'
+import { matcherRow } from '../../components/matchers/matcher-row'
+import '../../components/common/checkbox-element'
 import '@tailwindplus/elements'
 
 /**

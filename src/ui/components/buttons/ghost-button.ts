@@ -2,7 +2,7 @@
  * Ghost button component with transparent background
  * Used for secondary actions with icon only
  */
-import { escapeHtml } from '../utils'
+import { escapeHtml } from '../../core/utils'
 
 export interface GhostButtonOptions {
   icon: string // Raw SVG string

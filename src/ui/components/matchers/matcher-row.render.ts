@@ -2,9 +2,9 @@
  * Shared matcher row HTML template
  * Single source of truth for matcher row rendering across components and templates
  */
-import { ghostButton } from '../components/ghost-button'
-import trashIcon from '../icons/trash.svg?raw'
-import { escapeHtml } from '../utils'
+import { ghostButton } from '../buttons/ghost-button'
+import trashIcon from '../../icons/trash.svg?raw'
+import { escapeHtml } from '../../core/utils'
 
 interface MatcherRowOptions {
   id: string

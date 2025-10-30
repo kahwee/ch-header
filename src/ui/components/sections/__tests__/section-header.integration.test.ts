@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { sectionHeader } from '../components/section-header'
+import { sectionHeader } from '../section-header'
 
 describe('sectionHeader - Integration Tests', () => {
   describe('Popup template integration patterns', () => {
