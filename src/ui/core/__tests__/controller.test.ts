@@ -17,7 +17,10 @@ describe('PopupController - Refactored Methods', () => {
       renderList: vi.fn(),
       renderHeaders: vi.fn(),
       renderMatchers: vi.fn(),
-      select: vi.fn(),
+      select: vi.fn((id: string | null) => {
+        // Mock the select callback to actually update state.current
+        state.current = id ? state.profiles.find((p) => p.id === id) || null : null
+      }),
       saveProfiles: vi.fn(),
       syncAndRender: vi.fn(),
     }
@@ -40,6 +43,19 @@ describe('PopupController - Refactored Methods', () => {
   }
 
   beforeEach(() => {
+    // Mock chrome API
+    vi.stubGlobal('chrome', {
+      storage: {
+        local: {
+          set: vi.fn(),
+        },
+      },
+      runtime: {
+        lastError: null,
+        sendMessage: vi.fn(),
+      },
+    })
+
     callbacks = createMockCallbacks()
     state = {
       profiles: [createTestProfile()],
@@ -291,6 +307,286 @@ describe('PopupController - Refactored Methods', () => {
 
       const matcher = state.current.matchers.find((m) => m.id === matcherId)
       expect(matcher!.urlFilter).toBe('*')
+    })
+
+    it('should change matcher resource types', () => {
+      state.current = createTestProfile()
+      const matcherId = state.current.matchers[0].id
+
+      controller.onMatcherChange(matcherId, 'types', 'script')
+
+      const matcher = state.current.matchers.find((m) => m.id === matcherId)
+      expect(matcher!.resourceTypes).toEqual(['script'])
+    })
+  })
+
+  describe('Profile Selection', () => {
+    it('should select profile by ID', () => {
+      const profileId = state.profiles[0].id
+
+      controller.onProfileItemClick(profileId)
+
+      expect(state.current?.id).toBe(profileId)
+      expect(callbacks.select).toHaveBeenCalledWith(profileId)
+    })
+
+    it('should not crash on invalid profile ID', () => {
+      controller.onProfileItemClick('non-existent-id')
+
+      expect(callbacks.select).toHaveBeenCalledWith('non-existent-id')
+    })
+  })
+
+  describe('Profile Creation', () => {
+    it('should create new profile with defaults', () => {
+      const initialCount = state.profiles.length
+
+      controller.onNewProfile()
+
+      expect(state.profiles.length).toBe(initialCount + 1)
+      const newProfile = state.profiles[0] // New profiles are unshifted (added at beginning)
+      expect(newProfile.name).toBe('New profile') // Controller creates with lowercase 'p'
+      expect(newProfile.matchers[0]).toBeDefined() // Should have at least one default matcher
+      expect(newProfile.matchers[0].urlFilter).toBe('*')
+      expect(newProfile.requestHeaders).toEqual([])
+      expect(newProfile.responseHeaders).toEqual([])
+      expect(newProfile.enabled).toBe(false)
+    })
+
+    it('should select newly created profile', () => {
+      controller.onNewProfile()
+
+      expect(state.current).toBeTruthy()
+      expect(callbacks.select).toHaveBeenCalled()
+    })
+  })
+
+  describe('Profile Deletion', () => {
+    it('should delete current profile', () => {
+      const profileId = state.current!.id
+      const initialCount = state.profiles.length
+
+      controller.onDeleteProfile()
+
+      expect(state.profiles.length).toBe(initialCount - 1)
+      expect(state.profiles.some((p) => p.id === profileId)).toBe(false)
+    })
+
+    it('should not delete when no profile selected', () => {
+      state.current = null
+      const initialCount = state.profiles.length
+
+      controller.onDeleteProfile()
+
+      expect(state.profiles.length).toBe(initialCount)
+    })
+
+    it('should clear current after deletion', () => {
+      controller.onDeleteProfile()
+
+      expect(state.current).toBeNull()
+    })
+  })
+
+  describe('Profile Field Changes', () => {
+    beforeEach(() => {
+      state.current = createTestProfile()
+    })
+
+    it('should change profile name', () => {
+      controller.onProfileNameChange('New Name')
+
+      expect(state.current!.name).toBe('New Name')
+      expect(callbacks.syncAndRender).toHaveBeenCalled()
+    })
+
+    it('should change profile color', () => {
+      controller.onProfileColorChange('red-700')
+
+      expect(state.current!.color).toBe('red-700')
+      expect(callbacks.syncAndRender).toHaveBeenCalled()
+    })
+
+    it('should change profile notes', () => {
+      controller.onProfileNotesChange('Updated notes')
+
+      expect(state.current!.notes).toBe('Updated notes')
+      expect(callbacks.syncAndRender).toHaveBeenCalled()
+    })
+
+    it('should toggle profile enabled state', () => {
+      const initialState = state.current!.enabled
+
+      controller.onProfileEnabledChange(!initialState)
+
+      expect(state.current!.enabled).toBe(!initialState)
+      // onProfileEnabledChange calls setActiveProfile, not syncAndRender
+      // Verify the profile is set as active
+      expect(state.activeId).toBe(state.current!.id)
+    })
+  })
+
+  describe('Header Changes', () => {
+    beforeEach(() => {
+      state.current = createTestProfile()
+    })
+
+    it('should change header name', () => {
+      const headerId = state.current!.requestHeaders[0].id
+
+      controller.onHeaderChange(headerId, true, 'header', 'X-New-Header')
+
+      const header = state.current!.requestHeaders.find((h) => h.id === headerId)
+      expect(header!.header).toBe('X-New-Header')
+    })
+
+    it('should change header value', () => {
+      const headerId = state.current!.requestHeaders[0].id
+
+      controller.onHeaderChange(headerId, true, 'value', 'new-value')
+
+      const header = state.current!.requestHeaders.find((h) => h.id === headerId)
+      expect(header!.value).toBe('new-value')
+    })
+
+    it('should toggle header enabled state', () => {
+      const headerId = state.current!.requestHeaders[0].id
+      const header = state.current!.requestHeaders.find((h) => h.id === headerId)
+      const initialEnabled = header?.enabled ?? true
+
+      controller.onHeaderChange(headerId, true, 'enabled', !initialEnabled)
+
+      const updated = state.current!.requestHeaders.find((h) => h.id === headerId)
+      expect(updated!.enabled).toBe(!initialEnabled)
+    })
+
+    it('should remove header', () => {
+      const headerId = state.current!.requestHeaders[0].id
+      const initialCount = state.current!.requestHeaders.length
+
+      controller.onRemoveHeader(headerId, true)
+
+      expect(state.current!.requestHeaders.length).toBe(initialCount - 1)
+      expect(state.current!.requestHeaders.some((h) => h.id === headerId)).toBe(false)
+    })
+
+    it('should handle response header changes', () => {
+      state.current!.responseHeaders = [{ id: 'res-1', header: 'X-Response', value: 'test' }]
+
+      controller.onHeaderChange('res-1', false, 'value', 'updated')
+
+      const header = state.current!.responseHeaders.find((h) => h.id === 'res-1')
+      expect(header!.value).toBe('updated')
+    })
+  })
+
+  describe('Search and Filter', () => {
+    beforeEach(() => {
+      state.profiles = [
+        {
+          ...createTestProfile(),
+          id: 'profile-1',
+          name: 'Production API',
+          notes: 'AWS credentials',
+        },
+        {
+          ...createTestProfile(),
+          id: 'profile-2',
+          name: 'Development Server',
+          notes: 'Local debug mode',
+        },
+        {
+          ...createTestProfile(),
+          id: 'profile-3',
+          name: 'Testing Sandbox',
+          notes: 'QA environment',
+        },
+      ]
+      state.filtered = [...state.profiles]
+    })
+
+    it('should filter profiles by search query', () => {
+      controller.onSearchChange('prod')
+
+      expect(state.filtered.length).toBe(1)
+      expect(state.filtered[0].name).toContain('Production')
+    })
+
+    it('should be case insensitive', () => {
+      controller.onSearchChange('DEVEL')
+
+      expect(state.filtered.length).toBe(1)
+      expect(state.filtered[0].name).toContain('Development')
+    })
+
+    it('should clear filter on empty search', () => {
+      controller.onSearchChange('AWS')
+      expect(state.filtered.length).toBeLessThan(state.profiles.length)
+
+      controller.onSearchChange('')
+
+      expect(state.filtered.length).toBe(state.profiles.length)
+    })
+
+    it('should call renderList on search', () => {
+      controller.onSearchChange('dev')
+
+      expect(callbacks.renderList).toHaveBeenCalled()
+    })
+  })
+
+  describe('Import Operations', () => {
+    beforeEach(() => {
+      state.current = createTestProfile()
+    })
+
+    it('should import headers from JSON', () => {
+      const initialCount = state.current!.requestHeaders.length
+      const importData = [{ header: 'X-Imported', value: 'imported-value' }]
+
+      controller.onImportHeaders(importData)
+
+      expect(state.current!.requestHeaders.length).toBeGreaterThan(initialCount)
+      const imported = state.current!.requestHeaders.find((h) => h.header === 'X-Imported')
+      expect(imported?.value).toBe('imported-value')
+    })
+
+    it('should handle import with invalid data', () => {
+      const initialCount = state.current!.requestHeaders.length
+
+      controller.onImportHeaders({ invalid: 'data' })
+
+      expect(state.current!.requestHeaders.length).toBe(initialCount)
+    })
+
+    it('should import full profile from JSON', () => {
+      const importData = {
+        name: 'Imported Profile',
+        color: 'green-700',
+        matchers: [{ urlFilter: 'example.com' }],
+        requestHeaders: [{ header: 'X-Test', value: 'test' }],
+      }
+
+      controller.onImportProfile(importData)
+
+      expect(state.current!.name).toBe('Imported Profile')
+      expect(state.current!.color).toBe('green-700')
+      expect(state.current!.matchers.length).toBeGreaterThan(0)
+      expect(state.current!.requestHeaders.length).toBeGreaterThan(0)
+    })
+
+    it('should handle import with invalid profile data', () => {
+      const initialProfileCount = state.profiles.length
+
+      controller.onImportProfile({ invalid: 'profile' })
+
+      // Invalid data still creates a new profile with default name and empty arrays
+      expect(state.profiles.length).toBe(initialProfileCount + 1)
+      const importedProfile = state.profiles[0]
+      expect(importedProfile.name).toBe('Imported profile') // Default name for invalid data
+      expect(importedProfile.matchers).toEqual([])
+      expect(importedProfile.requestHeaders).toEqual([])
+      expect(importedProfile.responseHeaders).toEqual([])
     })
   })
 })
