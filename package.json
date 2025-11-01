@@ -3,6 +3,9 @@
   "description": "ChHeader - Profile-based header editor with Manifest V3",
   "version": "0.2.2",
   "type": "module",
+  "engines": {
+    "node": "25.1.0"
+  },
   "scripts": {
     "dev": "vite",
     "build": "vite build",
@@ -23,26 +26,26 @@
     "storybook:build": "storybook build"
   },
   "devDependencies": {
-    "@storybook/html": "^10.0.1",
-    "@storybook/html-vite": "^10.0.1",
+    "@storybook/html": "^10.0.2",
+    "@storybook/html-vite": "^10.0.2",
     "@tailwindcss/postcss": "^4.1.16",
     "@types/chrome": "^0.1.24",
     "@types/node": "^24.9.2",
-    "@vitest/browser": "^4.0.5",
-    "@vitest/browser-playwright": "^4.0.5",
-    "@vitest/coverage-v8": "^4.0.5",
-    "@vitest/ui": "^4.0.5",
+    "@vitest/browser": "^4.0.6",
+    "@vitest/browser-playwright": "^4.0.6",
+    "@vitest/coverage-v8": "^4.0.6",
+    "@vitest/ui": "^4.0.6",
     "autoprefixer": "^10.4.21",
-    "jsdom": "^27.0.1",
+    "jsdom": "^27.1.0",
     "playwright": "^1.56.1",
     "postcss": "^8.5.6",
     "prettier": "^3.2.5",
-    "storybook": "^10.0.1",
+    "storybook": "^10.0.2",
     "tailwindcss": "^4.1.16",
     "terser": "^5.44.0",
     "typescript": "^5.5.4",
     "vite": "^7.1.12",
-    "vitest": "^4.0.5"
+    "vitest": "^4.0.6"
   },
   "dependencies": {
     "@tailwindplus/elements": "^1.0.18"
