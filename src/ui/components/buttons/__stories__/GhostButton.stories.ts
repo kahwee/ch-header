@@ -4,55 +4,71 @@ import type { GhostButtonOptions } from '../ghost-button'
 import trashIcon from '../../../icons/trash.svg?raw'
 
 /**
- * Ghost Button Stories
- * Transparent background buttons for secondary/minor actions
+ * Ghost Button Component
+ *
+ * Transparent background buttons for secondary/minor actions.
+ * Use the controls below to explore different variants and shapes.
  */
-const meta: Meta<GhostButtonOptions> = {
+const meta = {
   title: 'ChHeader/Components/Ghost Button',
   tags: ['autodocs'],
   render: (args) => ghostButton(args),
+  argTypes: {
+    icon: {
+      control: 'text',
+      description: 'SVG icon (raw string)',
+    },
+    variant: {
+      control: 'select',
+      options: ['default', 'delete'],
+      description: 'Button style variant (default or delete with red hover)',
+    },
+    circle: {
+      control: 'boolean',
+      description: 'Use circular shape instead of square',
+    },
+    action: {
+      control: 'text',
+      description: 'Custom data-action attribute',
+    },
+    title: {
+      control: 'text',
+      description: 'Tooltip text',
+    },
+  },
+  args: {
+    icon: trashIcon,
+    variant: 'default',
+    circle: false,
+    action: 'deleteItem',
+    title: 'Delete',
+  },
   parameters: {
     layout: 'centered',
     backgrounds: {
       default: 'dark',
     },
   },
-}
+} satisfies Meta<GhostButtonOptions>
 
 export default meta
-type Story = StoryObj<GhostButtonOptions>
+type Story = StoryObj<typeof meta>
 
 /**
- * Default ghost button with action
+ * Default ghost button - subtle hover effect
  */
 export const Default: Story = {
   args: {
-    icon: trashIcon,
     action: 'deleteHeader',
     title: 'Delete header',
-    variant: 'default',
   },
 }
 
 /**
- * Default ghost button, circular shape
+ * Delete variant - red hover effect for destructive actions
  */
-export const DefaultCircle: Story = {
+export const Delete: Story = {
   args: {
-    icon: trashIcon,
-    action: 'deleteHeader',
-    title: 'Delete header',
-    variant: 'default',
-    circle: true,
-  },
-}
-
-/**
- * Delete variant ghost button (red hover)
- */
-export const DeleteVariant: Story = {
-  args: {
-    icon: trashIcon,
     action: 'delete',
     title: 'Delete profile',
     variant: 'delete',
@@ -60,14 +76,11 @@ export const DeleteVariant: Story = {
 }
 
 /**
- * Delete variant ghost button, circular shape
+ * Circular shape - useful for icon-only buttons in compact spaces
  */
-export const DeleteVariantCircle: Story = {
+export const Circle: Story = {
   args: {
-    icon: trashIcon,
-    action: 'delete',
-    title: 'Delete profile',
-    variant: 'delete',
     circle: true,
+    title: 'Delete header',
   },
 }

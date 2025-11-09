@@ -6,9 +6,11 @@ import '../../components/common/checkbox-element'
 import '@tailwindplus/elements'
 
 /**
- * Full popup layout showing both sidebar and details panel.
- * This demonstrates the complete extension UI with profile list and detailed profile editor.
- * For sidebar-focused stories, see Sidebar.stories.ts
+ * Full Popup Layout
+ *
+ * Complete extension UI showing both sidebar with profile list and the detail panel
+ * for editing the selected profile. This demonstrates the main user interface with
+ * profiles, matchers, request headers, and response headers.
  */
 const meta = {
   title: 'ChHeader/Layouts/Full Layout',
@@ -16,6 +18,12 @@ const meta = {
     layout: 'fullscreen',
     viewport: {
       defaultViewport: 'iphonese',
+    },
+    docs: {
+      description: {
+        component:
+          'The main extension layout with sidebar navigation and detail editor. Users can switch between profiles, add matchers to target specific URLs, and configure HTTP headers.',
+      },
     },
   },
 } satisfies Meta<Record<string, unknown>>
@@ -257,6 +265,9 @@ const sampleProfiles = [
 
 const sampleProfile = sampleProfiles[0]
 
+/**
+ * Empty state with no profiles created yet
+ */
 export const Empty: Story = {
   render: () => {
     const wrapper = document.createElement('div')
@@ -272,6 +283,10 @@ export const Empty: Story = {
   },
 }
 
+/**
+ * Full layout with multiple profiles and active profile showing details.
+ * Demonstrates the complete UI with sidebar navigation and profile editor.
+ */
 export const WithProfile: Story = {
   render: () => {
     const wrapper = document.createElement('div')
@@ -283,52 +298,6 @@ export const WithProfile: Story = {
     const profileList = wrapper.querySelector('#profileList') as HTMLUListElement
     if (profileList) {
       profileList.innerHTML = sampleProfiles.map((p, idx) => profileListItem(p, idx === 0)).join('')
-    }
-
-    // Show detail pane
-    const detailEmpty = wrapper.querySelector('#detailEmpty')
-    const detailPane = wrapper.querySelector('#detail')
-    if (detailEmpty) detailEmpty.classList.add('hidden')
-    if (detailPane) detailPane.classList.remove('hidden')
-
-    // Populate detail form with first profile
-    const nameInput = wrapper.querySelector('#profileName') as HTMLInputElement
-    const colorInput = wrapper.querySelector('#profileColor') as HTMLInputElement
-    const notesInput = wrapper.querySelector('#profileNotes') as HTMLTextAreaElement
-    const enabledInput = wrapper.querySelector('#enabled') as HTMLInputElement
-
-    if (nameInput) nameInput.value = sampleProfile.name
-    if (colorInput) colorInput.value = sampleProfile.color
-    if (notesInput) notesInput.value = sampleProfile.notes || ''
-    if (enabledInput) enabledInput.checked = sampleProfile.enabled
-
-    // Populate request headers
-    const reqHeaders = wrapper.querySelector('#reqHeaders')
-    if (reqHeaders) {
-      reqHeaders.innerHTML = sampleProfile.requestHeaders.map((h) => headerRow(h)).join('')
-    }
-
-    // Populate matchers
-    const matchers = wrapper.querySelector('#matchers')
-    if (matchers) {
-      matchers.innerHTML = sampleProfile.matchers.map((m) => matcherRow(m)).join('')
-    }
-
-    return wrapper
-  },
-}
-
-export const ManyProfiles: Story = {
-  render: () => {
-    const wrapper = document.createElement('div')
-    wrapper.style.width = '864px'
-    wrapper.style.height = '520px'
-    wrapper.innerHTML = getPopupTemplate()
-
-    // Populate profile list with all 20+ profiles
-    const profileList = wrapper.querySelector('#profileList') as HTMLUListElement
-    if (profileList) {
-      profileList.innerHTML = sampleProfiles.map((p) => profileListItem(p, false)).join('')
     }
 
     // Show detail pane
