@@ -4,148 +4,102 @@ import type { SolidButtonOptions } from '../solid-button'
 import plusIcon from '../../../icons/plus.svg?raw'
 
 /**
- * Solid Button Stories
- * Filled background buttons for primary and secondary actions
+ * Solid Button Component
+ *
+ * Filled background buttons for primary and secondary actions.
+ * Use the controls below to explore different variants, sizes, and states.
  */
-const meta: Meta<SolidButtonOptions> = {
+const meta = {
   title: 'ChHeader/Components/Solid Button',
   tags: ['autodocs'],
   render: (args) => solidButton(args),
+  argTypes: {
+    text: {
+      control: 'text',
+      description: 'Button text label',
+    },
+    variant: {
+      control: 'select',
+      options: ['primary', 'secondary'],
+      description: 'Button style variant',
+    },
+    size: {
+      control: 'radio',
+      options: ['sm', 'md'],
+      description: 'Button size',
+    },
+    icon: {
+      control: 'text',
+      description: 'SVG icon (raw string)',
+    },
+    disabled: {
+      control: 'boolean',
+      description: 'Disabled state',
+    },
+    type: {
+      control: 'select',
+      options: ['button', 'submit', 'reset'],
+      description: 'Button type attribute',
+    },
+    action: {
+      control: 'text',
+      description: 'Custom data-action attribute',
+    },
+  },
+  args: {
+    text: 'Button',
+    variant: 'primary',
+    size: 'md',
+    disabled: false,
+    type: 'button',
+  },
   parameters: {
     layout: 'centered',
   },
-}
+} satisfies Meta<SolidButtonOptions>
 
 export default meta
-type Story = StoryObj<SolidButtonOptions>
+type Story = StoryObj<typeof meta>
 
 /**
- * Primary solid button with text only
+ * Primary button - the main call-to-action style
  */
-export const PrimaryText: Story = {
+export const Primary: Story = {
   args: {
     text: 'Apply',
     variant: 'primary',
-    size: 'md',
   },
 }
 
 /**
- * Primary solid button with icon and text
+ * Secondary button - for less prominent actions
  */
-export const PrimaryWithIcon: Story = {
+export const Secondary: Story = {
+  args: {
+    text: 'Cancel',
+    variant: 'secondary',
+  },
+}
+
+/**
+ * Button with icon and text
+ */
+export const WithIcon: Story = {
   args: {
     text: 'New Profile',
     icon: plusIcon,
     variant: 'primary',
-    size: 'md',
   },
 }
 
 /**
- * Primary solid button, small size
+ * Small button size
  */
-export const PrimarySmall: Story = {
+export const Small: Story = {
   args: {
     text: 'New',
     icon: plusIcon,
     variant: 'primary',
     size: 'sm',
-  },
-}
-
-/**
- * Secondary solid button with text only
- */
-export const SecondaryText: Story = {
-  args: {
-    text: 'Cancel',
-    variant: 'secondary',
-    size: 'md',
-  },
-}
-
-/**
- * Secondary solid button with icon and text
- */
-export const SecondaryWithIcon: Story = {
-  args: {
-    text: 'New',
-    icon: plusIcon,
-    variant: 'secondary',
-    size: 'md',
-  },
-}
-
-/**
- * Secondary solid button, small size
- */
-export const SecondarySmall: Story = {
-  args: {
-    text: 'New',
-    icon: plusIcon,
-    variant: 'secondary',
-    size: 'sm',
-  },
-}
-
-/**
- * Primary button with action attribute
- */
-export const WithAction: Story = {
-  args: {
-    text: 'Delete',
-    variant: 'primary',
-    size: 'md',
-    action: 'deleteProfile',
-  },
-}
-
-/**
- * Button with submit type
- */
-export const SubmitType: Story = {
-  args: {
-    text: 'Submit',
-    variant: 'primary',
-    size: 'md',
-    type: 'submit',
-  },
-}
-
-/**
- * Primary button in disabled state
- */
-export const PrimaryDisabled: Story = {
-  args: {
-    text: 'Apply',
-    variant: 'primary',
-    size: 'md',
-    disabled: true,
-  },
-}
-
-/**
- * Secondary button in disabled state
- */
-export const SecondaryDisabled: Story = {
-  args: {
-    text: 'Cancel',
-    variant: 'secondary',
-    size: 'md',
-    disabled: true,
-  },
-}
-
-/**
- * Primary button with icon, disabled
- */
-export const PrimaryDisabledWithIcon: Story = {
-  args: {
-    text: 'New Profile',
-    icon: plusIcon,
-    variant: 'primary',
-    size: 'md',
-    disabled: true,
   },
 }
