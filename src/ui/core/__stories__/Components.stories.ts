@@ -1,14 +1,21 @@
 import type { Meta, StoryObj } from '@storybook/html'
 import { headerRow } from '../../components/headers/header-row'
-import { profileListItem } from '../popup-template'
 import '../../components/common/checkbox-element'
+
+type HeaderRowArgs = {
+  id: string
+  header: string
+  value: string
+  op: 'set'
+  enabled: boolean
+}
 
 /**
  * Header Row Component
  *
  * Table row for editing HTTP request/response headers with inline controls.
  */
-const headerMeta = {
+const headerMeta: Meta<HeaderRowArgs> = {
   title: 'ChHeader/Components/Header Row',
   render: (args: { id: string; header: string; value: string; op: 'set'; enabled: boolean }) => {
     const wrapper = document.createElement('div')
@@ -50,10 +57,10 @@ const headerMeta = {
   parameters: {
     layout: 'centered',
   },
-} satisfies Meta<{ id: string; header: string; value: string; op: 'set'; enabled: boolean }>
+}
 
 export default headerMeta
-type HeaderStory = StoryObj<typeof headerMeta>
+type HeaderStory = StoryObj<HeaderRowArgs>
 
 /**
  * Header row in enabled state
@@ -71,82 +78,5 @@ export const HeaderRowDisabled: HeaderStory = {
   },
 }
 
-/**
- * Profile List Item Component
- *
- * Individual profile list item for the sidebar navigation.
- */
-const profileMeta = {
-  title: 'ChHeader/Components/Profile List Item',
-  render: (args: {
-    profile: { id: string; name: string; color: string; notes: string; enabled: boolean }
-    isActive: boolean
-  }) => {
-    const wrapper = document.createElement('div')
-    wrapper.style.width = '300px'
-    wrapper.style.padding = '10px'
-    wrapper.style.background = '#0f121a'
-    wrapper.innerHTML = `<ul class="ch-list" style="list-style: none; margin: 0; padding: 0;">${profileListItem(
-      args.profile,
-      args.isActive
-    )}</ul>`
-    return wrapper
-  },
-  argTypes: {
-    'profile.name': {
-      control: 'text',
-      description: 'Profile name',
-    },
-    'profile.color': {
-      control: 'color',
-      description: 'Profile color',
-    },
-    'profile.notes': {
-      control: 'text',
-      description: 'Profile description',
-    },
-    isActive: {
-      control: 'boolean',
-      description: 'Whether profile is currently selected',
-    },
-  },
-  args: {
-    profile: {
-      id: 'prod-1',
-      name: 'Production',
-      color: '#7c3aed',
-      notes: 'Auth headers for production API',
-      enabled: true,
-    },
-    isActive: true,
-  },
-  parameters: {
-    layout: 'centered',
-  },
-} satisfies Meta<{
-  profile: { id: string; name: string; color: string; notes: string; enabled: boolean }
-  isActive: boolean
-}>
-
-type ProfileStory = StoryObj<typeof profileMeta>
-
-/**
- * Active profile in the list (currently selected)
- */
-export const ProfileListItemActive: ProfileStory = {}
-
-/**
- * Inactive profile in the list (not selected)
- */
-export const ProfileListItemInactive: ProfileStory = {
-  args: {
-    profile: {
-      id: 'staging-1',
-      name: 'Staging',
-      color: '#f97316',
-      notes: 'Test environment headers',
-      enabled: false,
-    },
-    isActive: false,
-  },
-}
+// Profile List Item stories have been moved to ProfileListItem.stories.ts to avoid
+// multiple meta exports in a single file, which Storybook doesn't support
