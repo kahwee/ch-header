@@ -24,16 +24,16 @@ export function buildHeaderRowHTML(h: HeaderRowOptions): string {
 
   return `
     <tr class="hover:bg-white/3 transition-colors" data-hid="${h.id}" data-kind="${kind}">
-      <td class="text-sm whitespace-nowrap sm:pl-0 w-8 items-center justify-center pb-px">
+      <td class="text-sm whitespace-nowrap w-8 py-2 pl-0 pr-3 align-middle">
         <ch-checkbox
           data-role="enabled"
           ${isEnabled ? 'checked' : ''}
           title="Enable/disable this header"
         ></ch-checkbox>
       </td>
-      <td class="text-sm pb-px">
-        <div class="grid grid-cols-2">
-          <div class="-mt-px -mr-px">
+      <td class="text-sm py-2 px-0">
+        <div class="grid grid-cols-2 gap-0">
+          <div>
             <input
               type="text"
               class="w-full rounded-l-md bg-white/5 px-3 py-2 text-sm text-text outline-1 -outline-offset-1 outline-gray-700 placeholder:text-gray-500 focus:outline-2 focus:-outline-offset-2 focus:outline-blue-500"
@@ -42,7 +42,7 @@ export function buildHeaderRowHTML(h: HeaderRowOptions): string {
               value="${escapeHtml(h.header || '')}"
             />
           </div>
-          <div class="-mt-px">
+          <div>
             <input
               type="text"
               class="w-full rounded-r-md bg-white/5 px-3 py-2 text-sm text-text outline-1 -outline-offset-1 outline-gray-700 placeholder:text-gray-500 focus:outline-2 focus:-outline-offset-2 focus:outline-blue-500"
@@ -53,7 +53,7 @@ export function buildHeaderRowHTML(h: HeaderRowOptions): string {
           </div>
         </div>
       </td>
-      <td class="text-sm whitespace-nowrap sm:pr-0 w-10 text-right align-middle pl-0.5 pb-px">
+      <td class="text-sm whitespace-nowrap w-10 py-2 pl-3 pr-0 text-right align-middle">
         ${ghostButton({
           icon: trashIcon,
           action: 'removeHeader',
