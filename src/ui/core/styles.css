@@ -11,7 +11,7 @@
 
 @layer components {
   body {
-    @apply text-text bg-bg;
+    @apply bg-bg text-text;
   }
 
   el-disclosure {
