@@ -122,7 +122,7 @@ export function getSidebarTemplate(): string {
       </el-command-list>
     </el-command-palette>
 
-    <div class="flex flex-wrap items-center bg-stone-800/50 px-4 py-2.5 text-xs text-gray-300 shrink-0 border-t border-gray-700">
+    <div class="flex flex-wrap items-center bg-stone-800/50 px-4 py-2.5 text-xs text-gray-300 shrink-0 border-t border-gray-700 mt-auto">
       ${solidButton({ id: 'footerNewProfile', text: 'New', icon: plusIcon, variant: 'secondary', size: 'sm', title: 'Add new profile' })}
     </div>
   </aside>`
