@@ -105,7 +105,7 @@ export function getSidebarTemplate(): string {
           ${searchIcon}
         </span>
       </div>
-      <el-command-list class="overflow-y-auto" style="height: 508px;">
+      <el-command-list class="overflow-y-auto flex-1 min-h-0">
         <el-defaults class="block divide-y divide-white/10">
           <div class="p-2">
             <div id="profileList" class="space-y-1"></div>
