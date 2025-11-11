@@ -270,16 +270,17 @@ const sampleProfile = sampleProfiles[0]
  */
 export const Empty: Story = {
   render: () => {
-    const wrapper = document.createElement('div')
-    wrapper.style.width = '864px'
-    wrapper.style.height = '520px'
-    wrapper.innerHTML = getPopupTemplate()
+    const container = document.createElement('div')
+    container.innerHTML = getPopupTemplate()
+
+    const app = container.querySelector('#app')
+    if (!app) throw new Error('App element not found')
 
     // Keep detail empty - no profile selected
-    const detailPane = wrapper.querySelector('#detail')
+    const detailPane = app.querySelector('#detail')
     if (detailPane) detailPane.classList.add('hidden')
 
-    return wrapper
+    return app as HTMLElement
   },
 }
 
@@ -289,28 +290,29 @@ export const Empty: Story = {
  */
 export const WithProfile: Story = {
   render: () => {
-    const wrapper = document.createElement('div')
-    wrapper.style.width = '864px'
-    wrapper.style.height = '520px'
-    wrapper.innerHTML = getPopupTemplate()
+    const container = document.createElement('div')
+    container.innerHTML = getPopupTemplate()
+
+    const app = container.querySelector('#app')
+    if (!app) throw new Error('App element not found')
 
     // Populate profile list with all 20+ profiles
-    const profileList = wrapper.querySelector('#profileList') as HTMLUListElement
+    const profileList = app.querySelector('#profileList') as HTMLUListElement
     if (profileList) {
       profileList.innerHTML = sampleProfiles.map((p, idx) => profileListItem(p, idx === 0)).join('')
     }
 
     // Show detail pane
-    const detailEmpty = wrapper.querySelector('#detailEmpty')
-    const detailPane = wrapper.querySelector('#detail')
+    const detailEmpty = app.querySelector('#detailEmpty')
+    const detailPane = app.querySelector('#detail')
     if (detailEmpty) detailEmpty.classList.add('hidden')
     if (detailPane) detailPane.classList.remove('hidden')
 
     // Populate detail form with first profile
-    const nameInput = wrapper.querySelector('#profileName') as HTMLInputElement
-    const colorInput = wrapper.querySelector('#profileColor') as HTMLInputElement
-    const notesInput = wrapper.querySelector('#profileNotes') as HTMLTextAreaElement
-    const enabledInput = wrapper.querySelector('#enabled') as HTMLInputElement
+    const nameInput = app.querySelector('#profileName') as HTMLInputElement
+    const colorInput = app.querySelector('#profileColor') as HTMLInputElement
+    const notesInput = app.querySelector('#profileNotes') as HTMLTextAreaElement
+    const enabledInput = app.querySelector('#enabled') as HTMLInputElement
 
     if (nameInput) nameInput.value = sampleProfile.name
     if (colorInput) colorInput.value = sampleProfile.color
@@ -318,17 +320,17 @@ export const WithProfile: Story = {
     if (enabledInput) enabledInput.checked = sampleProfile.enabled
 
     // Populate request headers
-    const reqHeaders = wrapper.querySelector('#reqHeaders')
+    const reqHeaders = app.querySelector('#reqHeaders')
     if (reqHeaders) {
       reqHeaders.innerHTML = sampleProfile.requestHeaders.map((h) => headerRow(h)).join('')
     }
 
     // Populate matchers
-    const matchers = wrapper.querySelector('#matchers')
+    const matchers = app.querySelector('#matchers')
     if (matchers) {
       matchers.innerHTML = sampleProfile.matchers.map((m) => matcherRow(m)).join('')
     }
 
-    return wrapper
+    return app as HTMLElement
   },
 }

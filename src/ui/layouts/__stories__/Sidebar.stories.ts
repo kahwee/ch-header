@@ -59,35 +59,33 @@ const sampleProfiles = [
 
 export const Default: Story = {
   render: () => {
-    const wrapper = document.createElement('div')
-    wrapper.style.width = '100%'
-    wrapper.style.height = '100vh'
-    wrapper.innerHTML = getSidebarTemplate()
+    const container = document.createElement('div')
+    container.className = 'w-full h-full'
+    container.innerHTML = getSidebarTemplate()
 
-    const profileList = wrapper.querySelector('#profileList')
+    const profileList = container.querySelector('#profileList')
     if (profileList) {
       profileList.innerHTML = sampleProfiles
         .map((p) => profileListItem(p, p.id === 'prod-1'))
         .join('')
     }
 
-    return wrapper
+    return container
   },
 }
 
 export const WithSearchResults: Story = {
   render: () => {
-    const wrapper = document.createElement('div')
-    wrapper.style.width = '100%'
-    wrapper.style.height = '100vh'
-    wrapper.innerHTML = getSidebarTemplate()
+    const container = document.createElement('div')
+    container.className = 'w-full h-full'
+    container.innerHTML = getSidebarTemplate()
 
-    const profileList = wrapper.querySelector('#profileList')
+    const profileList = container.querySelector('#profileList')
     if (profileList) {
       profileList.innerHTML = sampleProfiles.map((p) => profileListItem(p, false)).join('')
     }
 
-    const searchResults = wrapper.querySelector('#searchResults')
+    const searchResults = container.querySelector('#searchResults')
     if (searchResults) {
       searchResults.removeAttribute('hidden')
       searchResults.classList.add('p-2')
@@ -103,27 +101,26 @@ export const WithSearchResults: Story = {
       searchResults.innerHTML = searchResultsHtml
     }
 
-    return wrapper
+    return container
   },
 }
 
 export const NoProfiles: Story = {
   render: () => {
-    const wrapper = document.createElement('div')
-    wrapper.style.width = '100%'
-    wrapper.style.height = '100vh'
-    wrapper.innerHTML = getSidebarTemplate()
+    const container = document.createElement('div')
+    container.className = 'w-full h-full'
+    container.innerHTML = getSidebarTemplate()
 
-    const profileList = wrapper.querySelector('#profileList')
+    const profileList = container.querySelector('#profileList')
     if (profileList) {
       profileList.innerHTML = ''
     }
 
-    const noResults = wrapper.querySelector('#noResults')
+    const noResults = container.querySelector('#noResults')
     if (noResults) {
       noResults.removeAttribute('hidden')
     }
 
-    return wrapper
+    return container
   },
 }
