@@ -128,8 +128,9 @@ export function getSidebarTemplate(): string {
   </aside>`
 }
 
-export function getPopupTemplate(): string {
-  return `<div id="app" class="w-[800px] h-[600px] grid grid-rows-[auto_1fr] bg-bg text-text overflow-hidden">
+export function getPopupTemplate(options?: { containerClass?: string }): string {
+  const containerClass = options?.containerClass || 'w-full h-full'
+  return `<div id="app" class="${containerClass} grid grid-rows-[auto_1fr] bg-bg text-text overflow-hidden">
     <main class="grid grid-cols-[280px_1fr] h-full overflow-hidden bg-stone-900">
       ${getSidebarTemplate()}
       <section class="overflow-y-auto overflow-x-hidden min-w-0">
