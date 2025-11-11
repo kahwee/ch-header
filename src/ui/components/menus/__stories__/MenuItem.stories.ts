@@ -8,7 +8,7 @@ import type { MenuItemOptions } from '../menu-item'
  * Individual menu items for use in dropdown menus.
  * Use the controls below to explore different variants and options.
  */
-const meta = {
+const meta: Meta<MenuItemOptions> = {
   title: 'ChHeader/Components/Menu Item',
   tags: ['autodocs'],
   render: (args) => menuItem(args),
@@ -42,10 +42,10 @@ const meta = {
       default: 'dark',
     },
   },
-} satisfies Meta<MenuItemOptions>
+}
 
 export default meta
-type Story = StoryObj<typeof meta>
+type Story = StoryObj<MenuItemOptions>
 
 /**
  * Standard menu item for non-destructive actions

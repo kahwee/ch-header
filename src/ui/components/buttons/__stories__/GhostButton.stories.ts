@@ -9,7 +9,7 @@ import trashIcon from '../../../icons/trash.svg?raw'
  * Transparent background buttons for secondary/minor actions.
  * Use the controls below to explore different variants and shapes.
  */
-const meta = {
+const meta: Meta<GhostButtonOptions> = {
   title: 'ChHeader/Components/Ghost Button',
   tags: ['autodocs'],
   render: (args) => ghostButton(args),
@@ -49,10 +49,10 @@ const meta = {
       default: 'dark',
     },
   },
-} satisfies Meta<GhostButtonOptions>
+}
 
 export default meta
-type Story = StoryObj<typeof meta>
+type Story = StoryObj<GhostButtonOptions>
 
 /**
  * Default ghost button - subtle hover effect

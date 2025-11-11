@@ -9,7 +9,7 @@ import plusIcon from '../../../icons/plus.svg?raw'
  * Filled background buttons for primary and secondary actions.
  * Use the controls below to explore different variants, sizes, and states.
  */
-const meta = {
+const meta: Meta<SolidButtonOptions> = {
   title: 'ChHeader/Components/Solid Button',
   tags: ['autodocs'],
   render: (args) => solidButton(args),
@@ -56,10 +56,10 @@ const meta = {
   parameters: {
     layout: 'centered',
   },
-} satisfies Meta<SolidButtonOptions>
+}
 
 export default meta
-type Story = StoryObj<typeof meta>
+type Story = StoryObj<SolidButtonOptions>
 
 /**
  * Primary button - the main call-to-action style
