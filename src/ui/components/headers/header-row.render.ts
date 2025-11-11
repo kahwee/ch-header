@@ -24,14 +24,14 @@ export function buildHeaderRowHTML(h: HeaderRowOptions): string {
 
   return `
     <tr class="hover:bg-white/3 transition-colors" data-hid="${h.id}" data-kind="${kind}">
-      <td class="text-sm whitespace-nowrap w-8 py-2 pl-0 pr-3 align-middle">
+      <td class="text-sm whitespace-nowrap w-8 pl-0 pr-3 align-middle">
         <ch-checkbox
           data-role="enabled"
           ${isEnabled ? 'checked' : ''}
           title="Enable/disable this header"
         ></ch-checkbox>
       </td>
-      <td class="text-sm py-2 px-0">
+      <td class="text-sm px-0">
         <div class="grid grid-cols-2 gap-0">
           <div>
             <input
@@ -53,7 +53,7 @@ export function buildHeaderRowHTML(h: HeaderRowOptions): string {
           </div>
         </div>
       </td>
-      <td class="text-sm whitespace-nowrap w-10 py-2 pl-3 pr-0 text-right align-middle">
+      <td class="text-sm whitespace-nowrap w-10 pl-3 pr-0 text-right align-middle">
         ${ghostButton({
           icon: trashIcon,
           action: 'removeHeader',
