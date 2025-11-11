@@ -240,7 +240,7 @@ describe('popup-template', () => {
     it('should have main app container', () => {
       const html = getPopupTemplate()
       expect(html).toContain('id="app"')
-      expect(html).toContain('w-[800px] h-[600px]')
+      expect(html).toContain('w-full h-full')
     })
 
     it('should include sidebar template', () => {
