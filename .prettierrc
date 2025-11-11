@@ -5,5 +5,6 @@
   "printWidth": 100,
   "tabWidth": 2,
   "plugins": ["prettier-plugin-tailwindcss"],
-  "tailwindConfig": "./tailwind.config.ts"
+  "tailwindConfig": "./tailwind.config.ts",
+  "tailwindPreserveDuplicates": true
 }
