@@ -1,4 +1,4 @@
-import { STORAGE_KEYS, Profile, State } from '../../lib/types'
+import { STORAGE_KEYS, type ExtensionStorage, Profile, State } from '../../lib/types'
 import { PopupController } from './controller'
 import { profileListItem, getPopupTemplate, COLOR_PALETTE } from './popup-template'
 import { MatcherTableComponent } from '../lib/matcher-table.component'
@@ -133,7 +133,10 @@ function injectIcons(): void {
 }
 
 async function load(): Promise<void> {
-  const data = await chrome.storage.local.get([K.PROFILES, K.ACTIVE_PROFILE_ID])
+  const data = await chrome.storage.local.get<Partial<ExtensionStorage>>([
+    K.PROFILES,
+    K.ACTIVE_PROFILE_ID,
+  ])
   const profiles: Profile[] = data[K.PROFILES] || []
   const activeProfileId: string | undefined = data[K.ACTIVE_PROFILE_ID]
 

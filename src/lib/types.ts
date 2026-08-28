@@ -32,6 +32,11 @@ export const STORAGE_KEYS = {
   ACTIVE_PROFILE_ID: 'activeProfileId',
 } as const
 
+export interface ExtensionStorage {
+  profiles: Profile[]
+  activeProfileId: string
+}
+
 export interface State {
   profiles: Profile[]
   activeId: string | null

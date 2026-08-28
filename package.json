@@ -11,7 +11,7 @@
     }
   },
   "engines": {
-    "node": "25.1.0"
+    "node": ">=25.1.0"
   },
   "scripts": {
     "dev": "vite",
@@ -33,30 +33,30 @@
     "storybook:build": "storybook build"
   },
   "devDependencies": {
-    "@storybook/html": "^10.0.6",
-    "@storybook/html-vite": "^10.0.6",
-    "@tailwindcss/postcss": "^4.1.17",
-    "@types/chrome": "0.1.27",
-    "@types/node": "^24.10.0",
-    "@vitest/browser": "^4.0.8",
-    "@vitest/browser-playwright": "^4.0.8",
-    "@vitest/coverage-v8": "^4.0.8",
-    "@vitest/ui": "^4.0.8",
-    "autoprefixer": "^10.4.21",
-    "jsdom": "^27.1.0",
-    "playwright": "^1.56.1",
-    "postcss": "^8.5.6",
-    "prettier": "^3.6.2",
-    "prettier-plugin-tailwindcss": "^0.7.1",
-    "storybook": "^10.0.6",
-    "tailwindcss": "^4.1.17",
-    "terser": "^5.44.1",
-    "typescript": "^5.9.3",
-    "vite": "^7.2.2",
-    "vitest": "^4.0.8"
+    "@storybook/html": "^10.5.10",
+    "@storybook/html-vite": "^10.5.10",
+    "@tailwindcss/postcss": "^4.3.3",
+    "@types/chrome": "0.2.7",
+    "@types/node": "^26.4.0",
+    "@vitest/browser": "^4.1.11",
+    "@vitest/browser-playwright": "^4.1.11",
+    "@vitest/coverage-v8": "^4.1.11",
+    "@vitest/ui": "^4.1.11",
+    "autoprefixer": "^10.5.4",
+    "jsdom": "^30.0.1",
+    "playwright": "^1.62.1",
+    "postcss": "^8.5.26",
+    "prettier": "^3.9.6",
+    "prettier-plugin-tailwindcss": "^0.8.1",
+    "storybook": "^10.5.10",
+    "tailwindcss": "^4.3.3",
+    "terser": "^5.51.2",
+    "typescript": "^7.0.2",
+    "vite": "^8.2.2",
+    "vitest": "^4.1.11"
   },
   "dependencies": {
-    "@tailwindplus/elements": "^1.0.18"
+    "@tailwindplus/elements": "^1.0.22"
   },
   "optionalDependencies": {
     "@rollup/rollup-linux-x64-gnu": "*"

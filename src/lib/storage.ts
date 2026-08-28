@@ -2,16 +2,18 @@
  * Storage management for ChHeader extension
  */
 
-import type { Profile } from './types'
+import type { ExtensionStorage, Profile } from './types'
 import { STORAGE_KEYS } from './types'
 
 export async function getProfiles(): Promise<Profile[]> {
-  const data = await chrome.storage.local.get(STORAGE_KEYS.PROFILES)
+  const data = await chrome.storage.local.get<Partial<ExtensionStorage>>(STORAGE_KEYS.PROFILES)
   return data[STORAGE_KEYS.PROFILES] || []
 }
 
 export async function getActiveProfileId(): Promise<string | null> {
-  const data = await chrome.storage.local.get(STORAGE_KEYS.ACTIVE_PROFILE_ID)
+  const data = await chrome.storage.local.get<Partial<ExtensionStorage>>(
+    STORAGE_KEYS.ACTIVE_PROFILE_ID
+  )
   return data[STORAGE_KEYS.ACTIVE_PROFILE_ID] || null
 }
 
