@@ -3,13 +3,20 @@
   "description": "ChHeader - Profile-based header editor with Manifest V3",
   "version": "0.2.2",
   "type": "module",
+  "devEngines": {
+    "packageManager": {
+      "name": "pnpm",
+      "version": "11.24.0",
+      "onFail": "error"
+    }
+  },
   "engines": {
     "node": "25.1.0"
   },
   "scripts": {
     "dev": "vite",
     "build": "vite build",
-    "build:package": "npm run build && npm run build:zip",
+    "build:package": "pnpm run build && pnpm run build:zip",
     "build:zip": "node scripts/build-zip.js",
     "preview": "vite preview",
     "test": "vitest",
@@ -29,7 +36,7 @@
     "@storybook/html": "^10.0.6",
     "@storybook/html-vite": "^10.0.6",
     "@tailwindcss/postcss": "^4.1.17",
-    "@types/chrome": "^0.1.27",
+    "@types/chrome": "0.1.27",
     "@types/node": "^24.10.0",
     "@vitest/browser": "^4.0.8",
     "@vitest/browser-playwright": "^4.0.8",

@@ -26,26 +26,26 @@ ChHeader is a profile-based HTTP header editor Chrome extension with Manifest V3
 
 ```bash
 # Install dependencies
-npm install
+pnpm install
 
 # Development with watch mode
-npm run dev
+pnpm run dev
 
 # Run tests
-npm run test
+pnpm run test
 
 # Test UI mode
-npm run test:ui
+pnpm run test:ui
 
 # Run Storybook
-npm run storybook
+pnpm run storybook
 
 # Build for production
-npm run build
+pnpm run build
 
 # Format and type check
-npm run format
-npm run typecheck
+pnpm run format
+pnpm run typecheck
 ```
 
 ## Architecture
@@ -450,16 +450,16 @@ function matchesRegex(pattern: string, url: string): boolean
 
 ```bash
 # Run all tests
-npm run test
+pnpm run test
 
 # Watch mode
-npm run test -- --watch
+pnpm run test -- --watch
 
 # UI mode
-npm run test:ui
+pnpm run test:ui
 
 # Coverage report
-npm run test -- --coverage
+pnpm run test -- --coverage
 ```
 
 ## Type Safety Guidelines
@@ -559,22 +559,22 @@ Red, Orange, Amber, Yellow, Lime, Green, Emerald, Teal, Cyan, Sky, Blue, Indigo,
 1. **Feature Development**
 
    ```bash
-   npm run dev              # Start watch mode
-   npm run test:ui          # Run tests in UI
-   npm run storybook        # Preview components
+   pnpm run dev              # Start watch mode
+   pnpm run test:ui          # Run tests in UI
+   pnpm run storybook        # Preview components
    ```
 
 2. **Before Commit**
 
    ```bash
-   npm run typecheck        # Type safety
-   npm run format           # Code formatting
-   npm run test             # Full test suite
+   pnpm run typecheck        # Type safety
+   pnpm run format           # Code formatting
+   pnpm run test             # Full test suite
    ```
 
 3. **Production Build**
    ```bash
-   npm run build            # Creates dist/
+   pnpm run build            # Creates dist/
    ```
 
 ## Chrome Extension Loading
@@ -670,14 +670,14 @@ All styles use Tailwind v4:
 ```bash
 # Clean rebuild
 rm -rf dist node_modules
-npm install
-npm run build
-npm run test
+pnpm install
+pnpm run build
+pnpm run test
 ```
 
 ### Extension Not Loading
 
-1. Ensure `npm run build` completed successfully
+1. Ensure `pnpm run build` completed successfully
 2. Check `dist/manifest.json` exists
 3. Verify in `chrome://extensions/` that extension is loaded
 4. Check browser console for errors
@@ -688,7 +688,7 @@ npm run test
    - Simple: just domain (no special chars unless intended as regex)
    - Wildcard: must contain `*` and no `regex:` prefix
    - Regex: must start with `regex:`
-2. Test with `npm run test` - matcher tests validate patterns
+2. Test with `pnpm run test` - matcher tests validate patterns
 3. Check Chrome DevTools Network tab to see actual request URLs
 
 ## Performance Considerations

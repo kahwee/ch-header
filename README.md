@@ -19,13 +19,13 @@ A profile-based HTTP header editor for Chrome using Manifest V3 and declarativeN
 ### 1. Install dependencies
 
 ```bash
-npm install
+pnpm install
 ```
 
 ### 2. Build the extension
 
 ```bash
-npm run build
+pnpm run build
 ```
 
 ### 3. Load in Chrome
@@ -38,7 +38,7 @@ npm run build
 ### 4. Development mode
 
 ```bash
-npm run dev
+pnpm run dev
 ```
 
 Watch mode builds the extension automatically. Reload the extension in `chrome://extensions/` to see changes.
@@ -111,22 +111,22 @@ Headers are added if they don't exist, or replaced if they do. Both request and 
 
 ```bash
 # Type checking
-npm run typecheck
+pnpm run typecheck
 
 # Format code with Prettier
-npm run format
+pnpm run format
 
 # Check formatting
-npm run format:check
+pnpm run format:check
 
 # Run tests
-npm run test
+pnpm run test
 
 # Run tests in UI mode
-npm run test:ui
+pnpm run test:ui
 
 # Run Storybook for component testing
-npm run storybook
+pnpm run storybook
 ```
 
 ### Project Structure

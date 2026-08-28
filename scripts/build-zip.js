@@ -13,7 +13,7 @@ const packageJsonPath = resolve('./package.json')
 
 // Check if dist folder exists
 if (!existsSync(distDir)) {
-  console.error('❌ dist/ folder not found. Run `npm run build` first.')
+  console.error('❌ dist/ folder not found. Run `pnpm run build` first.')
   process.exit(1)
 }
 
