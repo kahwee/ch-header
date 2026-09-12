@@ -52,7 +52,7 @@ the last deleted profile, off, while the popup remains open.
 off. **Export all** shares a collection; **Options → Export JSON** shares one profile.
 Exports blank common credential headers by default; review custom headers and
 values before sharing. A [localhost example](docs/examples/local-profile.json)
-is included.
+is included. Read the [privacy policy](PRIVACY.md) for storage and data handling.
 
 ## Develop
 

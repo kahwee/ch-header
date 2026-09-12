@@ -1,0 +1,25 @@
+ChHeader helps developers test APIs and websites by changing HTTP request and response headers directly in Chrome.
+
+Organize your headers into named profiles for local development, staging, and debugging. Choose the sites, URL patterns, or request types each profile applies to, then switch it on when you need it.
+
+• Edit request and response headers in one compact popup.
+• Match sites, wildcard URL patterns, or regular expressions.
+• Filter by request type, including documents and XHR/fetch.
+• Keep separate profiles with names, colors, and notes.
+• Import and export profiles as JSON. Imported profiles start off.
+• See which profile is on, independently of the profile you are editing.
+• Work in light or dark mode, following your system appearance.
+
+GET STARTED
+Create a profile, add a header, choose a URL rule, and turn the profile on. Reload the target page or make a new request to test the result. Only one profile is enabled at a time. A profile with no URL rules changes no requests.
+
+LOCAL STORAGE AND SHARING
+Profiles are stored locally in your browser. No ChHeader account is required, and the extension includes no analytics or advertising. Header values are sent to destinations matched by your enabled rules, so review their scope before enabling a profile.
+
+Exports hide common credential header values by default. This is a convenience, not a guarantee that an export contains no secrets; review JSON before sharing it.
+
+PERMISSIONS
+ChHeader uses Chrome’s declarativeNetRequest API to apply your header rules and local storage to save your profiles. Website access allows rules to work on the sites you choose, including local development servers.
+
+Source code and documentation: https://github.com/kahwee/ch-header
+Support: https://github.com/kahwee/ch-header/issues

@@ -1,8 +1,8 @@
 {
   "manifest_version": 3,
   "name": "ChHeader",
-  "description": "Edit request and response headers for the sites you choose. Organize changes into local profiles.",
-  "version": "0.3.0",
+  "description": "Edit request and response headers, organize profiles, and target specific sites to test APIs and websites.",
+  "version": "0.4.0",
   "action": {
     "default_popup": "ui/popup.html",
     "default_title": "ChHeader"
@@ -21,7 +21,6 @@
     "service_worker": "background/background.js",
     "type": "module"
   },
-  "optional_permissions": ["declarativeNetRequestWithHostAccess"],
   "minimum_chrome_version": "118",
   "offline_enabled": true
 }

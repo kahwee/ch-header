@@ -1,10 +1,18 @@
-## Unreleased
+## ChHeader 0.4.0 — prepared for submission
 
 - Right-click profile actions, recoverable deletion, and explicit On/Off sidebar badges.
 - Copy, download and import portable JSON; import validates the whole batch and starts profiles off.
 - Common credential header values are hidden in exports by default.
 - Plain CSS cleanup, simple profile color names, updated screenshots and shorter documentation.
 - Real-template workflow tests and a single `pnpm check` command shared with CI.
+- System light/dark appearance and a first-run welcome with no enabled demo rules.
+- Explicit Site, URL pattern, Regex and All sites modes; no URL rules means no requests.
+- Inline regex validation, preserved invalid drafts, and visible save/apply failures.
+- Chrome Web Store description, privacy policy, and submission assets.
+- Removed an unused optional permission; required header and local-storage access remain.
+
+This version is prepared locally for Chrome Web Store review; this heading does
+not indicate that Google has approved it or that a GitHub release has been published.
 
 ## ChHeader 0.3.0
 

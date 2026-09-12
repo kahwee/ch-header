@@ -251,3 +251,22 @@ remained off. Dark appearance was not repeated. No release or store listing chan
 4. Push an annotated `vX.Y.Z` tag. The release workflow publishes a ZIP and checksum.
 5. Download and verify both assets. Never move a published tag. GitHub releases do
    not publish to the Chrome Web Store.
+
+## Chrome Web Store preparation — September 12, 2026
+
+Prepared 0.4.0 with matching package/manifest versions, a clearer summary, and removal
+of the unused optional declarativeNetRequestWithHostAccess permission. No rule or
+popup behavior changed in this pass. Pinned Node 26.7.0 / pnpm 11.25.0 frozen install
+and `pnpm check` passed: 432 tests, types, formatting, lint, coverage, ZIP and
+Storybook. Biome reports the existing noImportantStyles warning for the hidden-state
+rule; it is non-failing. ZIP contents were inspected for the root manifest and
+bundled assets.
+
+Computer Use uploaded 0.4.0 to the existing store draft and saved corrected listing
+copy, support links, and privacy explanations. The old policy link returned 404.
+The 1280 × 800 store image uses the real popup module/template with isolated demo
+profiles and a mocked Chrome boundary; it is promotional artwork, not evidence of
+Chrome rule acceptance. The small promotional tile is 440 × 280, opaque PNG.
+Actual toolbar/network behavior was not repeated in this store-preparation pass;
+prior Chrome verification is recorded above. No live profile or system setting was
+changed. Source captures and preview scaffolding remain under ignored `.local/qa/store/`.
