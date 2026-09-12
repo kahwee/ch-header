@@ -312,3 +312,14 @@ responses changed to `modified`. Switching it off restored absent request header
 and `original` responses. The profile was left off and the fixture stopped.
 Frames were visually reviewed; the H.264/AAC MP4 decoded without errors.
 The revised demo is [on YouTube](https://www.youtube.com/watch?v=vmv77KYgOAo).
+
+## Release consistency review — September 12, 2026
+
+For 0.4.1, `pnpm check` passed all 432 tests and the package/Storybook builds;
+GitHub CI and the tagged release workflow passed. The published ZIP was downloaded
+and its SHA-256 checksum, manifest version, MIT license and gecko icon verified.
+It contains no local QA artifacts, node_modules or source maps. The README's latest
+release link now resolves to 0.4.1. This packaging review did not repeat header
+behavior tests; the actual Chrome checks above cover the unchanged rule code.
+Chrome Store accepted the updated draft package, but it has not been submitted
+or approved. The live blog header was checked at desktop and 390px mobile widths.
