@@ -1,13 +1,18 @@
 import { STORAGE_KEYS, type ExtensionStorage, Profile, State } from '../../lib/types'
 import { PopupController } from './controller'
-import { profileListItem, getPopupTemplate, COLOR_PALETTE } from './popup-template'
+import { getPopupTemplate } from './popup-template'
 import { MatcherTableComponent } from '../lib/matcher-table.component'
 import { HeaderTableComponent } from '../lib/header-table.component'
 import '../components/common/checkbox-element'
-import searchIcon from '../icons/search.svg?raw'
-import plusIcon from '../icons/plus.svg?raw'
-import folderPlusIcon from '../icons/folder-plus.svg?raw'
 import { setupDropdowns } from './dropdowns'
+import { queryPopupElements, type PopupElements } from './popup-elements'
+import { renderProfileAppearance, updateColorSelection } from './profile-appearance'
+import { getProfileColor } from './profile-colors'
+import {
+  setupProfileKeyboardNavigation,
+  type ProfileKeyboardNavigation,
+} from './profile-keyboard-navigation'
+import { renderProfileList } from './profile-list-view'
 
 const K = STORAGE_KEYS
 
@@ -21,60 +26,9 @@ function initializeTemplate(): void {
   }
 }
 
-let el: {
-  list: HTMLUListElement | null
-  sidebarSearch: HTMLInputElement | null
-  newBtn: HTMLButtonElement | null
-  footerNewBtn: HTMLButtonElement | null
-  detailPane: HTMLElement | null
-  detailEmpty: HTMLElement | null
-  name: HTMLInputElement | null
-  profileAvatarBtn: HTMLButtonElement | null
-  profileAvatarInitials: HTMLElement | null
-  initials: HTMLInputElement | null
-  notes: HTMLTextAreaElement | null
-  enabled: HTMLInputElement | null
-  addMatcher: HTMLButtonElement | null
-  matchers: HTMLElement | null
-  addReq: HTMLButtonElement | null
-  req: HTMLElement | null
-  addRes: HTMLButtonElement | null
-  res: HTMLElement | null
-  apply: HTMLButtonElement | null
-  importFile: HTMLInputElement | null
-  noResults: HTMLElement | null
-  searchResults: HTMLElement | null
-}
+let el: PopupElements
 
-// Command palette navigation state
-let keyboardSelectedIndex = -1
-
-function initializeElements(): void {
-  el = {
-    list: document.querySelector('#profileList') as HTMLUListElement | null,
-    sidebarSearch: document.querySelector('#sidebarSearch') as HTMLInputElement | null,
-    newBtn: document.querySelector('#newProfile') as HTMLButtonElement | null,
-    footerNewBtn: document.querySelector('#footerNewProfile') as HTMLButtonElement | null,
-    detailPane: document.querySelector('#detail') as HTMLElement | null,
-    detailEmpty: document.querySelector('#detailEmpty') as HTMLElement | null,
-    name: document.querySelector('#profileName') as HTMLInputElement | null,
-    profileAvatarBtn: document.querySelector('#profileAvatarBtn') as HTMLButtonElement | null,
-    profileAvatarInitials: document.querySelector('#profileAvatarInitials') as HTMLElement | null,
-    initials: document.querySelector('#profileInitials') as HTMLInputElement | null,
-    notes: document.querySelector('#profileNotes') as HTMLTextAreaElement | null,
-    enabled: document.querySelector('#enabled') as HTMLInputElement | null,
-    addMatcher: document.querySelector('#addMatcher') as HTMLButtonElement | null,
-    matchers: document.querySelector('#matchers') as HTMLElement | null,
-    addReq: document.querySelector('#addReq') as HTMLButtonElement | null,
-    req: document.querySelector('#reqHeaders') as HTMLElement | null,
-    addRes: document.querySelector('#addRes') as HTMLButtonElement | null,
-    res: document.querySelector('#resHeaders') as HTMLElement | null,
-    apply: document.querySelector('#apply') as HTMLButtonElement | null,
-    importFile: document.querySelector('#importFile') as HTMLInputElement | null,
-    noResults: document.querySelector('#noResults') as HTMLElement | null,
-    searchResults: document.querySelector('#searchResults') as HTMLElement | null,
-  }
-}
+let keyboardNavigation: ProfileKeyboardNavigation | undefined
 
 const state: State = {
   profiles: [],
@@ -90,47 +44,6 @@ let controller: PopupController
 let matcherList: MatcherTableComponent
 let headerListReq: HeaderTableComponent
 let headerListRes: HeaderTableComponent
-
-// Inject SVG icons into static HTML elements
-function injectIcons(): void {
-  // Search icon in sidebar command palette (overlayed on input)
-  const sidebarSearchParent = document.querySelector('#sidebarSearch')?.parentElement
-  const sidebarSearchIcon = sidebarSearchParent?.querySelector('span')
-  if (sidebarSearchIcon) {
-    sidebarSearchIcon.innerHTML = searchIcon
-  }
-
-  // Plus icon for new profile button
-  const newProfileBtn = document.querySelector('#newProfile')?.querySelector('span')
-  if (newProfileBtn) {
-    newProfileBtn.innerHTML = plusIcon
-  }
-
-  // Empty state folder-plus icon
-  const emptyStateIcon = document.querySelector('#detailEmpty')?.querySelector('svg')?.parentElement
-  if (emptyStateIcon) {
-    emptyStateIcon.innerHTML = folderPlusIcon
-  }
-
-  // New profile button in empty state
-  const newProfileEmptyBtn = document
-    .querySelector('#newProfileEmpty')
-    ?.querySelector('svg')?.parentElement
-  if (newProfileEmptyBtn) {
-    newProfileEmptyBtn.innerHTML = `<span class="button__icon">${plusIcon}</span>`
-  }
-
-  // Inject SVG icons into header action buttons
-  const addReqBtn = document.querySelector('#addReq')?.querySelector('span')
-  if (addReqBtn) {
-    addReqBtn.innerHTML = plusIcon
-  }
-
-  const addResBtn = document.querySelector('#addRes')?.querySelector('span')
-  if (addResBtn) {
-    addResBtn.innerHTML = plusIcon
-  }
-}
 
 async function load(): Promise<void> {
   const data = await chrome.storage.local.get<Partial<ExtensionStorage>>([
@@ -163,9 +76,9 @@ async function load(): Promise<void> {
   }
 
   // Initialize HeaderTableComponents (request and response)
-  if (el.req) {
+  if (el.requestHeaders) {
     headerListReq = new HeaderTableComponent(
-      el.req,
+      el.requestHeaders,
       {
         onChange: (id, field, value) => controller.onHeaderChange(id, true, field, value),
         onDelete: (id) => controller.onRemoveHeader(id, true),
@@ -174,9 +87,9 @@ async function load(): Promise<void> {
     )
   }
 
-  if (el.res) {
+  if (el.responseHeaders) {
     headerListRes = new HeaderTableComponent(
-      el.res,
+      el.responseHeaders,
       {
         onChange: (id, field, value) => controller.onHeaderChange(id, false, field, value),
         onDelete: (id) => controller.onRemoveHeader(id, false),
@@ -194,53 +107,13 @@ function saveProfiles(): Promise<void> {
 }
 
 function renderList(): void {
-  const q = (el.sidebarSearch?.value || '').toLowerCase()
-
-  // Always show all profiles in "All Profiles" section
-  if (el.list) {
-    el.list.innerHTML = state.profiles
-      .map((p) => profileListItem(p, p.id === state.current?.id))
-      .join('')
-  }
-
-  // Handle search results filtering
-  if (q.length > 0) {
-    state.filtered = state.profiles.filter(
-      (p) => p.name.toLowerCase().includes(q) || (p.notes || '').toLowerCase().includes(q)
-    )
-
-    // Show search results group and populate with filtered items
-    if (el.searchResults) {
-      el.searchResults.removeAttribute('hidden')
-      el.searchResults.classList.add('p-2')
-      el.searchResults.innerHTML = `
-        <h2 class="search-results__title">Search results</h2>
-        <ul class="search-results__list" role="list">
-          ${state.filtered.map((p) => profileListItem(p, p.id === state.current?.id)).join('')}
-        </ul>
-      `
-    }
-
-    // Hide no results only if we have matches
-    const hasResults = state.filtered.length > 0
-    if (el.noResults) {
-      el.noResults.classList.toggle('hidden', hasResults)
-    }
-  } else {
-    // Hide search results group when search is empty
-    if (el.searchResults) {
-      el.searchResults.setAttribute('hidden', '')
-      el.searchResults.classList.remove('p-2')
-    }
-
-    // Hide no results when no search
-    if (el.noResults) {
-      el.noResults.classList.add('hidden')
-    }
-  }
-
-  // Reset keyboard navigation state
-  keyboardSelectedIndex = -1
+  state.filtered = renderProfileList(
+    el,
+    state.profiles,
+    state.current?.id,
+    el.sidebarSearch?.value ?? ''
+  )
+  keyboardNavigation?.reset()
 }
 
 function select(id: string | null): void {
@@ -263,21 +136,20 @@ function select(id: string | null): void {
   el.detailEmpty?.classList.add('hidden')
   el.detailPane?.classList.remove('hidden')
 
-  if (el.name) el.name.value = p.name || ''
-  if (el.profileAvatarBtn) {
-    const colorEntry = COLOR_PALETTE.find((c) => c.token === (p.color || 'purple-700'))
-    el.profileAvatarBtn.style.backgroundColor = colorEntry?.hex || '#7e22ce'
-  }
-  if (el.initials) el.initials.value = p.initials || ''
-  if (el.notes) el.notes.value = p.notes || ''
-  if (el.enabled) el.enabled.checked = !!p.enabled
+  if (el.profileName) el.profileName.value = p.name || ''
+  if (el.profileInitials) el.profileInitials.value = p.initials || ''
+  if (el.profileNotes) el.profileNotes.value = p.notes || ''
+  if (el.profileEnabled) el.profileEnabled.checked = !!p.enabled
 
-  // Update the initials preview in the profile avatar
-  updateAvatarPreview(p.name, p.initials)
-
-  // Highlight the selected color in the color picker
   const colorToken = p.color || 'purple-700'
-  updateSelectedColorIndicator(colorToken)
+  renderProfileAppearance(
+    el.profileAvatarButton,
+    el.profileAvatarInitials,
+    p.name,
+    p.initials,
+    colorToken
+  )
+  updateColorSelection(document, colorToken)
 
   renderMatchers()
   renderHeaders()
@@ -351,10 +223,11 @@ function setupEventListeners(): void {
   document.addEventListener(
     'click',
     (e) => {
-      const btn = (e.target as HTMLElement).closest('button[data-action]')
+      const btn = (e.target as HTMLElement).closest<HTMLButtonElement>('button[data-action]')
       if (!btn) return
 
-      const action = (btn as any).dataset.action
+      const action = btn.dataset.action
+      if (!action) return
       const handler = actionHandlers[action]
       if (handler) {
         handler()
@@ -371,12 +244,10 @@ function setupEventListeners(): void {
       if (colorToken) {
         controller.onProfileColorChange(colorToken)
         // Update the profile avatar background
-        const colorEntry = COLOR_PALETTE.find((c) => c.token === colorToken)
-        if (el.profileAvatarBtn && colorEntry) {
-          el.profileAvatarBtn.style.backgroundColor = colorEntry.hex
+        if (el.profileAvatarButton) {
+          el.profileAvatarButton.style.backgroundColor = getProfileColor(colorToken).hex
         }
-        // Update the selected color visual indicator
-        updateSelectedColorIndicator(colorToken)
+        updateColorSelection(document, colorToken)
       }
     }
   })
@@ -390,7 +261,7 @@ function setupEventListeners(): void {
       try {
         const text = await file.text()
         const data = JSON.parse(text)
-        const action = (el.importFile as any)?.dataset.importAction
+        const action = el.importFile?.dataset.importAction
         if (action === 'headers') {
           controller.onImportHeaders(data)
         } else if (action === 'profile') {
@@ -409,9 +280,9 @@ function setupEventListeners(): void {
 document.addEventListener('click', (e) => {
   const target = e.target as HTMLElement
   // Profile item click (a tag with data-id in sidebar)
-  const profileLink = target.closest('a[data-id]') as HTMLElement | null
+  const profileLink = target.closest<HTMLAnchorElement>('a[data-id]')
   if (profileLink) {
-    const id = (profileLink as any).dataset.id
+    const id = profileLink.dataset.id
     if (id) {
       e.preventDefault()
       controller.onProfileItemClick(id)
@@ -422,14 +293,13 @@ document.addEventListener('click', (e) => {
   const btn = target.closest('button') as HTMLButtonElement | null
   if (!btn) return
 
-  const action = (btn as any).dataset.action
+  const action = btn.dataset.action
 
-  if (btn === el.newBtn || btn === el.footerNewBtn || btn.id === 'newProfileEmpty')
-    return controller.onNewProfile()
-  if (btn === el.addMatcher) return controller.onAddMatcher()
-  if (btn === el.addReq) return controller.onAddHeader(true)
-  if (btn === el.addRes) return controller.onAddHeader(false)
-  if (btn === el.apply) return controller.onApply()
+  if (btn === el.newProfileButton || btn.id === 'newProfileEmpty') return controller.onNewProfile()
+  if (btn === el.addMatcherButton) return controller.onAddMatcher()
+  if (btn === el.addRequestHeaderButton) return controller.onAddHeader(true)
+  if (btn === el.addResponseHeaderButton) return controller.onAddHeader(false)
+  if (btn === el.applyButton) return controller.onApply()
 
   // Import menu items
   if (action === 'importHeaders') {
@@ -465,33 +335,44 @@ document.addEventListener('input', (e) => {
     return
   }
 
-  if (target === el.name) {
-    const newName = (el.name as HTMLInputElement)?.value || ''
+  if (target === el.profileName) {
+    const newName = (el.profileName as HTMLInputElement)?.value || ''
     controller.onProfileNameChange(newName)
     // Update the profile avatar preview with new name
     if (state.current) {
-      updateAvatarPreview(newName, state.current.initials)
+      renderProfileAppearance(
+        el.profileAvatarButton,
+        el.profileAvatarInitials,
+        newName,
+        state.current.initials,
+        state.current.color
+      )
     }
     return
   }
 
-  if (target === el.initials) {
+  if (target === el.profileInitials) {
     if (state.current) {
-      state.current.initials = ((el.initials as HTMLInputElement)?.value || '').toUpperCase()
-      // Update the profile avatar preview
-      updateAvatarPreview(state.current.name, state.current.initials)
+      state.current.initials = ((el.profileInitials as HTMLInputElement)?.value || '').toUpperCase()
+      renderProfileAppearance(
+        el.profileAvatarButton,
+        el.profileAvatarInitials,
+        state.current.name,
+        state.current.initials,
+        state.current.color
+      )
       syncAndRender({ listOnly: true })
     }
     return
   }
 
-  if (target === el.notes) {
-    controller.onProfileNotesChange((el.notes as HTMLTextAreaElement)?.value || '')
+  if (target === el.profileNotes) {
+    controller.onProfileNotesChange((el.profileNotes as HTMLTextAreaElement)?.value || '')
     return
   }
 
-  if (target === el.enabled) {
-    const checked = (el.enabled as HTMLInputElement)?.checked || false
+  if (target === el.profileEnabled) {
+    const checked = (el.profileEnabled as HTMLInputElement)?.checked || false
     controller.onProfileEnabledChange(checked)
   }
 })
@@ -500,129 +381,28 @@ interface SyncOpts {
   listOnly?: boolean
 }
 
-function updateAvatarPreview(name: string, customInitials?: string): void {
-  // Use custom avatar or generate from name (first character only)
-  const displayAvatar =
-    customInitials?.slice(0, 1) ||
-    name
-      .split(' ')
-      .map((w) => w[0])
-      .join('')
-      .toUpperCase()
-      .slice(0, 1) ||
-    '?'
-
-  if (el.profileAvatarInitials) {
-    el.profileAvatarInitials.textContent = displayAvatar
-    // Ensure text shadow is applied
-    el.profileAvatarInitials.style.textShadow = '0 1px 3px rgba(0,0,0,0.5)'
-  }
-}
-
-function updateSelectedColorIndicator(selectedColorToken: string): void {
-  const colorOptions = document.querySelectorAll('.color-option')
-  colorOptions.forEach((btn) => {
-    const buttonColorToken = btn.getAttribute('data-color')
-    const btnHex = btn.getAttribute('data-hex')
-    if (buttonColorToken === selectedColorToken) {
-      // Selected color - prominent white border
-      btn.setAttribute('style', `background-color: ${btnHex}; border: 3px solid white;`)
-    } else {
-      // Not selected - subtle border
-      btn.setAttribute(
-        'style',
-        `background-color: ${btnHex}; border: 2px solid rgba(255,255,255,0.2);`
-      )
-    }
-  })
-}
-
 function syncAndRender(opts?: SyncOpts): void {
   saveProfiles()
   if (!opts?.listOnly) select(state.current?.id || null)
   renderList()
 }
 
-// Keyboard: quick focus search (Ctrl/Cmd+K)
 // Initialize: template → elements → icons → event listeners → load
 initializeTemplate()
-initializeElements()
-injectIcons()
+el = queryPopupElements()
 setupEventListeners()
 
-// Set up keyboard listener after elements are initialized
-window.addEventListener('keydown', (e) => {
-  // Ctrl/Cmd+K: Focus sidebar search input
-  if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'k') {
-    e.preventDefault()
-    el.sidebarSearch?.focus()
-    return
-  }
-
-  // Command palette keyboard navigation (when sidebar search is focused)
-  const isSearchFocused = e.target === el.sidebarSearch
-  if (!isSearchFocused) return
-
-  const items = Array.from(el.list?.querySelectorAll('a[data-id]') || [])
-  const itemCount = items.length
-
-  if (itemCount === 0) return
-
-  // Arrow Down: move to next profile
-  if (e.key === 'ArrowDown') {
-    e.preventDefault()
-    keyboardSelectedIndex = Math.min(keyboardSelectedIndex + 1, itemCount - 1)
-    updateKeyboardSelection(items)
-    return
-  }
-
-  // Arrow Up: move to previous profile
-  if (e.key === 'ArrowUp') {
-    e.preventDefault()
-    keyboardSelectedIndex = Math.max(keyboardSelectedIndex - 1, -1)
-    updateKeyboardSelection(items)
-    return
-  }
-
-  // Enter: select the highlighted profile
-  if (e.key === 'Enter') {
-    e.preventDefault()
-    if (keyboardSelectedIndex >= 0 && keyboardSelectedIndex < itemCount) {
-      const item = items[keyboardSelectedIndex] as HTMLElement
-      const id = item.dataset.id
-      if (id) controller.onProfileItemClick(id)
-    }
-    return
-  }
-
-  // Escape: clear keyboard selection
-  if (e.key === 'Escape') {
-    e.preventDefault()
-    keyboardSelectedIndex = -1
-    el.sidebarSearch?.blur()
-    updateKeyboardSelection(items)
-    return
-  }
-})
-
-// Helper function to update keyboard selection styling and load details
-function updateKeyboardSelection(items: Element[]): void {
-  items.forEach((item, index) => {
-    if (index === keyboardSelectedIndex) {
-      item.classList.add('bg-white/10')
-      // Load the profile details for keyboard navigation
-      const id = (item as any).dataset.id
-      if (id) select(id)
-    } else {
-      item.classList.remove('bg-white/10')
-    }
+if (el.sidebarSearch) {
+  keyboardNavigation = setupProfileKeyboardNavigation({
+    search: el.sidebarSearch,
+    getItems: () =>
+      Array.from(
+        (el.searchResults?.hidden ? el.list : el.searchResults)?.querySelectorAll<HTMLElement>(
+          'a[data-id]'
+        ) ?? []
+      ),
+    onSelect: (id) => controller.onProfileItemClick(id),
   })
-
-  // Scroll the selected item into view
-  if (keyboardSelectedIndex >= 0 && keyboardSelectedIndex < items.length) {
-    const item = items[keyboardSelectedIndex] as HTMLElement
-    item.scrollIntoView({ block: 'nearest' })
-  }
 }
 
 load()

@@ -1,227 +1,131 @@
 # ChHeader
 
-A profile-based HTTP header editor for Chrome using Manifest V3 and declarativeNetRequest.
+ChHeader is a profile-based HTTP header editor for Chrome. It uses Manifest V3 and
+`declarativeNetRequest`, so enabled profiles modify matching requests without a persistent
+background page.
 
 [![CI Status](https://github.com/kahwee/ch-header/workflows/ChHeader%20CI/badge.svg)](https://github.com/kahwee/ch-header/actions)
 [![Coverage Status](https://coveralls.io/repos/github/kahwee/ch-header/badge.svg?branch=main)](https://coveralls.io/github/kahwee/ch-header?branch=main)
 
-## Features
+## What it does
 
-- Multiple header profiles with search and filtering
-- Three matcher formats: simple domains, wildcards, and regex patterns
-- Apply headers to specific request types (XHR, scripts, stylesheets, images, fonts, documents, iframes)
-- Modify request and response headers
-- Profile colors for quick identification
-- Declarative rules for immediate application
+- Groups request and response headers into reusable profiles.
+- Targets all sites, a domain, wildcard patterns, or explicit regular expressions.
+- Optionally limits a matcher to XHR, scripts, stylesheets, images, fonts, documents, or iframes.
+- Keeps profiles searchable and individually enabled.
+- Imports profiles or header collections from JSON.
+- Uses native semantic CSS with no styling framework or runtime UI dependency.
 
-## Installation
+## Install locally
 
-### 1. Install dependencies
+Requirements:
+
+- Node.js 25.1 or newer
+- pnpm 11.24.0
+- Chromium-based browser with Manifest V3 support
 
 ```bash
 pnpm install
-```
-
-### 2. Build the extension
-
-```bash
 pnpm run build
 ```
 
-### 3. Load in Chrome
+Then open `chrome://extensions`, enable **Developer mode**, choose **Load unpacked**, and select
+the generated `dist` directory.
 
-1. Open `chrome://extensions/`
-2. Enable **Developer mode** (toggle in top right)
-3. Click **Load unpacked**
-4. Select the `dist/` folder
-
-### 4. Development mode
+For active development, run:
 
 ```bash
 pnpm run dev
 ```
 
-Watch mode builds the extension automatically. Reload the extension in `chrome://extensions/` to see changes.
+Reload ChHeader from `chrome://extensions` after a rebuild.
 
-## Usage
+## Using profiles
 
-### Creating a Profile
+1. Select **New** and name the profile.
+2. Add one or more request or response headers.
+3. Add a matcher. An empty matcher applies everywhere.
+4. Enable the profile and select **Apply**.
 
-1. Click **New** to create a profile
-2. Enter a profile name, optional notes, and select a color
-3. Add matchers to specify which URLs the headers apply to
-4. Add request and/or response headers
-5. Toggle **Enable this profile** and click **Apply**
+Matcher examples:
 
-### URL Matchers
+| Input                                 | Behavior                           |
+| ------------------------------------- | ---------------------------------- |
+| `api.example.com`                     | Matches the domain and its paths   |
+| `*.api.example.com`                   | Matches API subdomains             |
+| `example.com/api/*`                   | Matches paths below `/api/`        |
+| `regex:^https://.*\.example\.com/api` | Uses the expression after `regex:` |
 
-The extension supports three matcher formats:
+Headers are added when absent and replaced when already present.
 
-**Simple Format**
+## Development commands
 
-Type a domain to match that domain and all its paths:
+| Command                    | Purpose                                   |
+| -------------------------- | ----------------------------------------- |
+| `pnpm run dev`             | Watch and rebuild the extension           |
+| `pnpm run build`           | Create the production extension in `dist` |
+| `pnpm run build:package`   | Build and package the extension ZIP       |
+| `pnpm run typecheck`       | Run strict TypeScript checks              |
+| `pnpm run test:run`        | Run the complete test suite once          |
+| `pnpm run test:coverage`   | Generate coverage reports                 |
+| `pnpm run format:check`    | Verify formatting                         |
+| `pnpm run storybook`       | Start the component workbench             |
+| `pnpm run storybook:build` | Build static Storybook output             |
 
-```
-localhost:3002         → localhost:3002 and all paths
-api.example.com        → api.example.com and all paths
-```
-
-Empty matcher applies to all domains.
-
-**Wildcard Format**
-
-Use `*` for flexible matching:
-
-```
-localhost:300*         → localhost:3000-3009
-*.api.example.com      → All subdomains
-example.com/api/*      → Only /api/* paths
-```
-
-**Regex Format**
-
-Use `regex:` prefix for regular expressions:
-
-```
-regex:localhost:30(0[0-9])
-regex:(staging|prod)\.example\.com
-regex:^https://.*\.example\.com/api
-```
-
-### Request Type Filtering
-
-Headers can be filtered by request type:
-
-- All request types (default)
-- XHR/Fetch
-- Scripts
-- Stylesheets
-- Images
-- Fonts
-- Documents
-- Iframes
-
-### Header Modification
-
-Headers are added if they don't exist, or replaced if they do. Both request and response headers are supported.
-
-## Development
-
-### Code Quality
+Before opening a pull request, run:
 
 ```bash
-# Type checking
-pnpm run typecheck
-
-# Format code with Prettier
-pnpm run format
-
-# Check formatting
 pnpm run format:check
-
-# Run tests
-pnpm run test
-
-# Run tests in UI mode
-pnpm run test:ui
-
-# Run Storybook for component testing
-pnpm run storybook
+pnpm run typecheck
+pnpm run test:run
+pnpm run build
+pnpm run storybook:build
 ```
 
-### Project Structure
+## Architecture
 
-```
+```text
 src/
-├── manifest.json              # Extension manifest (V3)
-├── background.ts              # Service worker with DNR rule management
-├── ui/
-│   ├── popup.html            # Popup UI
-│   ├── popup.ts              # Popup UI logic and event handlers
-│   ├── popup-template.ts      # Shared template functions
-│   ├── controller.ts          # Business logic controller (testable)
-│   ├── utils.ts              # Utility functions (escapeHtml, color helpers)
-│   ├── styles.css            # native CSS styles
-│   ├── components/           # Reusable UI template functions
-│   │   ├── button.ts         # Action button template
-│   │   ├── matcher-row.ts    # Matcher row template (uses matcher-row.render.ts)
-│   │   ├── header-row.ts     # Header row template (uses header-row.render.ts)
-│   │   ├── avatar.ts         # Avatar component
-│   │   └── checkbox-element.ts # Custom checkbox element
-│   ├── lib/                  # Component classes and shared rendering
-│   │   ├── component.ts      # Base Component class (lifecycle management)
-│   │   ├── matcher-row.render.ts  # Shared buildMatcherRowHTML() function
-│   │   ├── matcher-row.component.ts # MatcherRowComponent
-│   │   ├── header-row.render.ts    # Shared buildHeaderRowHTML() function
-│   │   ├── header-row.component.ts # HeaderRowComponent
-│   │   ├── matcher-table-component.ts # MatcherTableComponent
-│   │   ├── header-table-component.ts  # HeaderTableComponent
-│   │   ├── profile-card-component.ts # ProfileCard
-│   │   └── __tests__/        # Component tests
-│   │       ├── component.test.ts
-│   │       ├── matcher-row.component.test.ts
-│   │       ├── header-row.component.test.ts
-│   │       ├── matcher-table-component.test.ts
-│   │       ├── header-table-component.test.ts
-│   │       └── profile-card-component.test.ts
-│   ├── __tests__/            # UI tests
-│   │   ├── matcher-row.test.ts
-│   │   ├── popup.ui.test.ts
-│   │   └── controller.test.ts
-│   └── stories/              # Storybook component stories
+├── background.ts                  service worker and DNR synchronization
+├── manifest.json                  extension manifest
 ├── lib/
-│   ├── types.ts              # TypeScript type definitions
-│   ├── matcher.ts            # Matcher format parsing and validation
-│   ├── dnr-rules.ts          # DNR rule generation
-│   ├── storage.ts            # Chrome storage management
-│   └── __tests__/            # Library tests
-│       ├── matcher.test.ts   # 38 matcher format tests
-│       ├── dnr-rules.test.ts # DNR rule tests
-│       └── types.test.ts     # Type validation tests
-└── icons/                    # Extension icons (16, 32, 128px PNGs)
+│   ├── dnr-rules.ts               profiles → declarativeNetRequest rules
+│   ├── matcher.ts                 matcher parsing and validation
+│   ├── storage.ts                 typed Chrome storage access
+│   └── types.ts                   shared domain types
+└── ui/
+    ├── components/                pure HTML renderers and custom elements
+    ├── lib/                       mounted component lifecycle classes
+    ├── core/
+    │   ├── controller.ts          DOM-free popup business logic
+    │   ├── popup.ts               popup composition and application wiring
+    │   ├── popup-elements.ts      typed DOM queries
+    │   ├── popup-template.ts      top-level popup markup
+    │   ├── profile-appearance.ts  avatar and color presentation
+    │   ├── profile-colors.ts      stable stored color tokens
+    │   ├── profile-list-view.ts   search and profile-list rendering
+    │   ├── profile-keyboard-navigation.ts
+    │   ├── dropdowns.ts           framework-free dropdown behavior
+    │   └── styles.css             native design tokens and component CSS
+    └── popup.html                 extension UI entry point
 ```
 
-### File Naming Convention
+The core rule is separation by responsibility:
 
-The codebase uses a consistent naming convention for UI components:
+- Domain rules stay in `src/lib` and do not depend on the DOM.
+- The controller owns mutations and orchestration, but not markup.
+- Render modules return HTML and escape user-controlled values.
+- Component classes own lifecycle and delegated row events.
+- `popup.ts` wires those pieces to Chrome storage and browser events.
 
-- **`{name}.render.ts`** - Shared HTML builder function (single source of truth)
-  - Example: `matcher-row.render.ts` exports `buildMatcherRowHTML()`
-  - Used by both template functions and component classes
+See [CONTRIBUTING.md](CONTRIBUTING.md) for code conventions and the verification checklist.
 
-- **`{name}.ts`** (in `components/`) - Template function for Storybook
-  - Example: `components/matcher-row.ts` imports from `matcher-row.render.ts`
-  - Delegates to the shared builder function
+## Security notes
 
-- **`{name}.component.ts`** (in `lib/`) - Interactive Component class
-  - Example: `lib/matcher-row.component.ts` extends `Component` base class
-  - Handles event listeners and lifecycle management
-
-- **`{name}.component.test.ts`** - Component tests
-  - Tests the interactive component behavior
-
-## Implementation
-
-### APIs Used
-
-- `declarativeNetRequest` for header modification
-- `chrome.storage.local` for profile persistence
-- `chrome.runtime.sendMessage` for inter-process communication
-- Service worker for background processing
-
-### Code Structure
-
-- **popup.ts**: UI event handling and DOM manipulation
-- **controller.ts**: Business logic (no DOM dependencies, fully testable)
-- **matcher.ts**: Matcher format parsing and validation
-- **dnr-rules.ts**: Declarative rule generation
-- **background.ts**: Service worker for rule management
-
-### Language & Type Safety
-
-- TypeScript with strict mode
-- Zero `any` types
-- Full Chrome API type definitions
+- Treat imported JSON and stored profile content as untrusted input.
+- Escape values before inserting them into rendered HTML.
+- Keep extension permissions minimal and review manifest changes carefully.
+- Do not log header values; profiles may contain credentials.
 
 ## License
 

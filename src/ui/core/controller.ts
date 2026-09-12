@@ -286,7 +286,8 @@ export class PopupController {
       try {
         const headers = Array.isArray(data) ? data : [data]
         const importedHeaders = headers.filter(
-          (h) => h && typeof h === 'object' && 'header' in h && 'value' in h
+          (header): header is Record<string, unknown> =>
+            !!header && typeof header === 'object' && 'header' in header && 'value' in header
         )
 
         if (importedHeaders.length === 0) {
@@ -296,10 +297,10 @@ export class PopupController {
 
         // Add imported headers to request headers
         p.requestHeaders.push(
-          ...importedHeaders.map((h: any) => ({
+          ...importedHeaders.map((h) => ({
             id: crypto.randomUUID(),
-            header: h.header || '',
-            value: h.value || '',
+            header: typeof h.header === 'string' ? h.header : '',
+            value: typeof h.value === 'string' ? h.value : '',
             enabled: h.enabled !== false,
           }))
         )
@@ -366,37 +367,36 @@ export class PopupController {
   private validateItems<T extends { id?: unknown }>(
     data: unknown,
     requiredField: string,
-    transform: (item: any) => Omit<T, 'id'>
+    transform: (item: Record<string, unknown>) => Omit<T, 'id'>
   ): Array<T & { id: string }> {
     if (!Array.isArray(data)) return []
 
     return data
-      .filter((item) => item && typeof item === 'object' && requiredField in item)
-      .map(
-        (item: any) =>
-          ({
-            id: crypto.randomUUID(),
-            ...transform(item),
-          }) as T & { id: string }
+      .filter(
+        (item): item is Record<string, unknown> =>
+          !!item && typeof item === 'object' && requiredField in item
       )
+      .map((item) => ({ id: crypto.randomUUID(), ...transform(item) }) as T & { id: string })
   }
 
   private validateMatchers(
     data: unknown
   ): Array<{ id: string; urlFilter: string; resourceTypes?: string[] }> {
-    return this.validateItems(data, 'urlFilter', (m: any) => ({
-      urlFilter: m.urlFilter || '*',
-      resourceTypes: Array.isArray(m.resourceTypes) ? m.resourceTypes : [],
+    return this.validateItems(data, 'urlFilter', (matcher) => ({
+      urlFilter: typeof matcher.urlFilter === 'string' ? matcher.urlFilter : '*',
+      resourceTypes: Array.isArray(matcher.resourceTypes)
+        ? matcher.resourceTypes.filter((type): type is string => typeof type === 'string')
+        : [],
     }))
   }
 
   private validateHeaders(
     data: unknown
   ): Array<{ id: string; header: string; value: string; enabled?: boolean }> {
-    return this.validateItems(data, 'header', (h: any) => ({
-      header: h.header || '',
-      value: h.value || '',
-      enabled: h.enabled !== false,
+    return this.validateItems(data, 'header', (header) => ({
+      header: typeof header.header === 'string' ? header.header : '',
+      value: typeof header.value === 'string' ? header.value : '',
+      enabled: header.enabled !== false,
     }))
   }
 
