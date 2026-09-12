@@ -38,6 +38,7 @@ export function buildHeaderRowHTML(h: HeaderRowOptions): string {
             <input
               type="text"
               class="field field--header-name"
+              aria-label="${kind === 'req' ? 'Request' : 'Response'} header name"
               data-role="header"
               placeholder="Header name (e.g. X-Custom-Header)"
               value="${escapeHtml(h.header || '')}"
@@ -47,6 +48,7 @@ export function buildHeaderRowHTML(h: HeaderRowOptions): string {
             <input
               type="text"
               class="field field--header-value"
+              aria-label="${kind === 'req' ? 'Request' : 'Response'} header value"
               data-role="value"
               placeholder="Value"
               value="${escapeHtml(h.value || '')}"

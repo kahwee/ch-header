@@ -114,6 +114,102 @@ Generated screenshots and review reports are local-only evidence. Store future
 captures under ignored `.local/qa/`; keep concise results in this file. Curated
 README images are maintained separately in `docs/screenshots/`.
 
+## UI clarity review — September 12, 2026
+
+`pnpm install --frozen-lockfile`, `pnpm test:fast` (18 tests), and `pnpm check`
+(415 tests, formatting, lint, types, coverage, packaging and Storybook) passed.
+The harness also verifies that footer status follows selection independently of
+which profile is enabled. Existing placeholder expectations were updated.
+
+Using Chrome browser control and Computer Use, reloaded the existing unpacked
+`dist/` installation and checked the actual 744 × 440 toolbar popup in light mode:
+
+- Populated editor: persistent header labels, URL scope guidance and footer fit.
+- New profile: empty header guidance disappears when Add creates a row.
+- Name editing, Enter submission, Tab to Options and keyboard menu opening worked.
+- Search with no results kept the selected editor visible; clearing restored the list.
+- Import dialog guidance remained readable. Temporary demo was deleted afterward.
+- Localhost profile On changed document headers and all three fetch paths to
+  `enabled` / `modified`; Off restored absent requests and `original` responses.
+  All profiles were left off and the local fixture was stopped.
+
+The rebuilt popup exposed a CSS cascade defect where `.empty-state` overrode
+`.hidden`; hidden state now takes precedence. Captures are local-only under
+`.local/qa/clarity/`. Dark appearance, full screen-reader use, and the complete
+wildcard/regex/resource-type matrix were not repeated in this pass. Existing
+Chrome error history was not cleared. No rule-generation code changed.
+
+## URL rule safety — September 12, 2026
+
+URL editing now has Site, URL pattern, Regex and All sites modes. Site uses an
+anchored hostname filter and includes HTTP/HTTPS and subdomains. New rules use
+`example.invalid`; deleting the last rule now matches nothing (a deliberate change
+from the old all-sites fallback). Existing nonempty filters keep their semantics.
+URL edits are drafts until change/blur; empty input is rejected rather than widened.
+Explicit All sites displays a destination warning.
+
+Regex validation uses Chrome's `isRegexSupported`, both before the editor saves and
+before the background replaces rules. See the [Chrome DNR API documentation](https://developer.chrome.com/docs/extensions/reference/api/declarativeNetRequest).
+A rejected replacement retains the last applied rules. Apply failures now show a
+notice rather than silently ignoring Chrome's error response.
+
+`pnpm test:fast` passed 21 tests. `pnpm check` passed 421 tests across 24 files,
+formatting, lint, types, coverage, packaging and Storybook. Added real-module
+regressions for draft isolation, regex rejection/repair, storage-supplied invalid
+regexes, disabling after rejection, and deleting the final rule. Unit coverage
+checks anchored host conversion, explicit ports, ambiguous inputs and old filters.
+
+Actual Chrome toolbar popup, through Chrome and Computer controls:
+
+- Site `127.0.0.1:3002` changed document and all three fetch request/response headers.
+- Regex `[` showed an inline error; prior live localhost rules remained effective.
+- Repair to `^http://127\.0\.0\.1:3002/match/` modified only `/match/echo`.
+- Deleting the final rule restored all fetch baselines; Off restored document baseline.
+- After reloading the final build, Add defaulted to Site / `example.invalid`.
+  Regex errors remained readable above the footer at 744 × 440 in light appearance.
+  All sites showed a disabled value field and explicit warning while the profile was off.
+- Disposable profile removed, all profiles off, fixture stopped. Local error capture:
+  `.local/qa/clarity/06-regex-error.png`.
+
+Limits: dark appearance and every request-type combination were not repeated.
+This is not a comprehensive security audit. Advanced patterns can still intentionally
+match broad destinations; Site includes subdomains. On a rejected replacement,
+previously applied rules remain active until repaired or disabled. Pending/invalid
+editor drafts are not persisted across popup closure or profile switching.
+
+## Adversarial editor pass — September 12, 2026
+
+Confirmed and fixed three additional defects:
+
+- Adding a header replaced the URL input, discarding its invalid draft and feedback.
+  Reproduced before the fix in Chrome and the real-module harness. Rows now remain
+  connected, and unchanged URL rows retain their draft through unrelated additions.
+- Site input accepted control characters and normalized path tricks. Inputs such as
+  embedded tabs/newlines, extra slashes and `/a/..` now fail before URL conversion.
+- Edit-save rejections were unhandled and invisible. They now show a recovery notice;
+  Apply retries persistence before applying rules. Row feedback says validated,
+  rather than claiming persistence succeeded before Chrome storage acknowledges it.
+
+Added delayed-validator tests for old results arriving after newer edits, validation
+finishing during a row addition, and a result arriving after its rule was deleted.
+Injected storage rejection verifies the notice and successful Apply retry. Existing
+row-placeholder cleanup remains covered; the full suite caught and corrected a
+regression there during the fix.
+
+Pinned Node 26.7.0 / pnpm 11.25.0: frozen install, `test:fast` (25 tests), and `check`
+(426 tests in 24 files, types, format, lint, coverage, package and Storybook) passed.
+The system defaults changed during the session, so the final checks ran with the
+pinned versions through a temporary npm-exec environment, without changing the
+project pins or system defaults.
+
+Actual Chrome toolbar popup via Computer Use: reproduced lost invalid draft before
+reload; after reload, adding a header preserved the empty draft and its error.
+`127.0.0.1:3002/a/..` was rejected in Site mode, replacing it with the hostname
+validated successfully, and Apply kept the popup intact. Disposable profile removed;
+all profiles remained off. Storage failure and delayed results were injected only at
+the automated Chrome boundary. Dark appearance and real network tests were not
+repeated in this pass; previous network results remain documented above.
+
 ## Release checklist
 
 1. Align `package.json` and `src/manifest.json`; update release notes and screenshots.

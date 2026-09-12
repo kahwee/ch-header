@@ -100,7 +100,7 @@ svg {
 }
 [hidden],
 .hidden {
-  display: none;
+  display: none !important;
 }
 .app-shell,
 .workspace {
@@ -297,8 +297,8 @@ svg {
   min-height: 0;
   min-width: 0;
   flex-direction: column;
-  gap: 16px;
-  padding: 0 16px 16px;
+  gap: 8px;
+  padding: 0 16px 12px;
   overflow-y: auto;
   scrollbar-color: var(--line-strong) transparent;
   scrollbar-width: thin;
@@ -550,7 +550,7 @@ svg {
 }
 .matcher-row__fields {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) 144px;
+  grid-template-columns: 100px minmax(0, 1fr) 144px;
   gap: 6px;
 }
 .matcher-row__url,
@@ -984,4 +984,53 @@ svg {
   height: 40px;
   color: var(--muted);
   margin: 0 auto;
+}
+
+.header-column-labels {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: 6px;
+  margin: 0 28px;
+  color: var(--muted);
+  font-size: 11px;
+}
+.header-empty,
+.editor-section__hint {
+  margin: 2px 0 6px;
+  color: var(--muted);
+  font-size: 11px;
+}
+.header-empty {
+  padding: 8px;
+  background: var(--footer);
+  border-radius: var(--radius-sm);
+}
+.editor-section--headers:has(tbody:empty) .header-column-labels,
+.editor-section--headers:has(tbody:not(:empty)) .header-empty {
+  display: none;
+}
+
+.matcher-row__mode {
+  height: 32px;
+  padding: 0 6px;
+  font-size: 12px;
+}
+.matcher-row__feedback {
+  grid-column: 1 / -1;
+  margin: 0;
+  color: var(--muted);
+  font-size: 11px;
+}
+.matcher-row__feedback:empty {
+  display: none;
+}
+.matcher-row__feedback--error {
+  color: var(--danger);
+}
+.field[aria-invalid="true"] {
+  border-color: var(--danger);
+}
+.field:disabled {
+  color: var(--muted);
+  background: var(--footer);
 }

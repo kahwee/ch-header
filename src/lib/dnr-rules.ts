@@ -2,6 +2,7 @@
  * DNR (Declarative Net Request) rule building for ChHeader extension
  */
 
+import { validateRegexFilter } from './url-rule'
 import type { HeaderOp, Profile } from './types'
 
 /**
@@ -87,16 +88,8 @@ export function buildRulesFromProfile(
   if (!profile) return []
 
   const rules: chrome.declarativeNetRequest.Rule[] = []
-  const matchers = profile.matchers?.length
-    ? profile.matchers
-    : [
-        {
-          id: '__all__',
-          label: 'All sites',
-          urlFilter: '*',
-          resourceTypes: Array.from(DEFAULT_RESOURCE_TYPES),
-        },
-      ]
+  // No URL rules means no destinations. Removing the last rule must not widen scope.
+  const matchers = profile.matchers || []
 
   const requestHeaders = buildHeaderModifications(profile.requestHeaders || [])
   const responseHeaders = buildHeaderModifications(profile.responseHeaders || [])
@@ -167,6 +160,13 @@ export async function applyDNRRules(rules: chrome.declarativeNetRequest.Rule[]):
   if (uniqueIds.size !== ruleIds.length) {
     const duplicates = ruleIds.filter((id, idx) => ruleIds.indexOf(id) !== idx)
     throw new Error(`Duplicate rule IDs detected: ${[...new Set(duplicates)].join(', ')}`)
+  }
+
+  // Validate before touching live rules, including profiles arriving via imports/storage.
+  for (const rule of uniqueRules) {
+    if (rule.condition.regexFilter !== undefined) {
+      await validateRegexFilter(`regex:${rule.condition.regexFilter}`)
+    }
   }
 
   // Get and remove all existing dynamic rules

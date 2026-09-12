@@ -39,7 +39,7 @@ function headersSection(type: 'req' | 'res', title: string, description: string)
   const { addButtonId, containerId, sortAction, clearAction } = config[type]
 
   return `
-    <section class="editor-section">
+    <section class="editor-section editor-section--headers">
       ${description ? `<p class="editor-section__description">${description}</p>` : ''}
       ${sectionHeader({
         title,
@@ -50,6 +50,8 @@ function headersSection(type: 'req' | 'res', title: string, description: string)
           { label: 'Clear all', action: clearAction },
         ],
       })}
+      <div class="header-column-labels" aria-hidden="true"><span>Header name</span><span>Value</span></div>
+      <p class="header-empty">No ${type === 'req' ? 'request' : 'response'} headers. Use Add to set one.</p>
       <div class="header-table-wrap">
         <div>
           <div>
@@ -79,6 +81,7 @@ export function getSidebarTemplate(): string {
           id="sidebarSearch"
           type="text"
           autofocus
+          aria-label="Search profiles"
           placeholder="Search profiles…"
           class="search-field__input"
           autocomplete="off"
@@ -187,11 +190,12 @@ export function getPopupTemplate(options?: { containerClass?: string }): string 
 
           <section class="editor-section">
             ${sectionHeader({
-              title: 'Matchers',
+              title: 'URL rules',
               addButtonId: 'addMatcher',
-              addButtonTitle: 'Add matcher',
+              addButtonTitle: 'Add URL rule',
               menuItems: [{ label: 'Clear all', action: 'clearMatchers' }],
             })}
+            <p id="urlRulesHelp" class="editor-section__hint">Site covers HTTP/HTTPS and subdomains. No rules: no requests.</p>
             <div id="matchers"></div>
           </section>
 
@@ -199,10 +203,10 @@ export function getPopupTemplate(options?: { containerClass?: string }): string 
           <footer class="profile-footer">
             <div class="profile-footer__status">
               <ch-checkbox id="enabled" data-role="enabled" aria-label="Enable this profile" switch></ch-checkbox>
-              <div><strong>Enable this profile</strong><span>Apply these rules to matching requests</span></div>
+              <div><strong id="profileEnabledStatus" aria-live="polite">Profile is off</strong><span>Changes save on edit · URL rules save on leaving the field</span></div>
             </div>
             <div>
-              ${solidButton({ id: 'apply', text: 'Apply', type: 'submit', variant: 'primary' })}
+              ${solidButton({ id: 'apply', text: 'Apply', type: 'submit', variant: 'primary', title: 'Reapply the enabled profile’s saved rules' })}
             </div>
           </footer>
         </form>

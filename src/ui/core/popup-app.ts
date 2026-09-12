@@ -20,6 +20,7 @@ import { renderProfileList } from './profile-list-view'
 /** Mount the real popup in its own document; resolves when storage is loaded. */
 export async function mountPopup(document: Document = globalThis.document): Promise<void> {
   const K = STORAGE_KEYS
+  const saveFailure = 'Changes could not be saved. Keep this popup open and press Apply to retry.'
 
   const $$ = (sel: string): HTMLElement[] => Array.from(document.querySelectorAll(sel))
 
@@ -170,6 +171,8 @@ export async function mountPopup(document: Document = globalThis.document): Prom
     if (el.profileInitials) el.profileInitials.value = p.initials || ''
     if (el.profileNotes) el.profileNotes.value = p.notes || ''
     if (el.profileEnabled) el.profileEnabled.checked = !!p.enabled
+    const enabledStatus = document.querySelector('#profileEnabledStatus')
+    if (enabledStatus) enabledStatus.textContent = p.enabled ? 'Profile is on' : 'Profile is off'
 
     const colorToken = p.color || 'blue'
     renderProfileAppearance(
@@ -204,7 +207,14 @@ export async function mountPopup(document: Document = globalThis.document): Prom
   function setupEventListeners(): void {
     el.detailPane?.addEventListener('submit', (event) => {
       event.preventDefault()
-      void controller.onApply()
+      void saveProfiles()
+        .then(() => controller.onApply())
+        .then((error) => {
+          if (error) notify(error)
+          else if (document.querySelector('#profileNotice span')?.textContent === saveFailure)
+            document.querySelector<HTMLElement>('#profileNotice')!.hidden = true
+        })
+        .catch(() => notify(saveFailure))
     })
     setupDropdowns(document)
     sharing = setupProfileSharing(document, {
@@ -421,7 +431,7 @@ export async function mountPopup(document: Document = globalThis.document): Prom
   }
 
   function syncAndRender(opts?: SyncOpts): void {
-    saveProfiles()
+    void saveProfiles().catch(() => notify(saveFailure))
     if (!opts?.listOnly) select(state.current?.id || null)
     renderList()
   }

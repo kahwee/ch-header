@@ -133,20 +133,23 @@ describe('MatcherRowComponent', () => {
       component.mount(container)
     })
 
-    it('should call onChange when URL filter changes', () => {
+    it('should call onChange when URL filter changes', async () => {
       const input = container.querySelector('[data-role="urlFilter"]') as HTMLInputElement
       input.value = 'example.com'
-      input.dispatchEvent(new Event('input', { bubbles: true }))
+      input.dispatchEvent(new Event('change', { bubbles: true }))
+      await Promise.resolve()
 
       expect(callbacks.onChange).toHaveBeenCalledWith('matcher-1', 'urlFilter', 'example.com')
     })
 
-    it('should convert empty URL filter to "*"', () => {
+    it('should reject an empty URL filter instead of widening its scope', async () => {
       const input = container.querySelector('[data-role="urlFilter"]') as HTMLInputElement
       input.value = ''
-      input.dispatchEvent(new Event('input', { bubbles: true }))
+      input.dispatchEvent(new Event('change', { bubbles: true }))
+      await Promise.resolve()
 
-      expect(callbacks.onChange).toHaveBeenCalledWith('matcher-1', 'urlFilter', '*')
+      expect(callbacks.onChange).not.toHaveBeenCalled()
+      expect(input.getAttribute('aria-invalid')).toBe('true')
     })
 
     it('should call onChange when resource types change', () => {
@@ -182,12 +185,13 @@ describe('MatcherRowComponent', () => {
       expect(callbacks.onDelete).toHaveBeenCalledWith('matcher-1')
     })
 
-    it('should handle multiple changes to same matcher', () => {
+    it('should handle multiple changes to same matcher', async () => {
       const input = container.querySelector('[data-role="urlFilter"]') as HTMLInputElement
       const select = container.querySelector('[data-role="types"]') as HTMLSelectElement
 
       input.value = 'example.com'
-      input.dispatchEvent(new Event('input', { bubbles: true }))
+      input.dispatchEvent(new Event('change', { bubbles: true }))
+      await Promise.resolve()
       expect(callbacks.onChange).toHaveBeenCalledTimes(1)
       ;(select.querySelector('option[value="xmlhttprequest"]') as HTMLOptionElement).selected = true
       select.dispatchEvent(new Event('change', { bubbles: true }))
@@ -224,7 +228,7 @@ describe('MatcherRowComponent', () => {
       expect(select.value).toBe('script')
     })
 
-    it('should preserve event handlers after update', () => {
+    it('should preserve event handlers after update', async () => {
       let firstValue = ''
       callbacks.onChange = vi.fn((_id, _field, value) => {
         firstValue = value as string
@@ -233,7 +237,8 @@ describe('MatcherRowComponent', () => {
       // First interaction
       let input = container.querySelector('[data-role="urlFilter"]') as HTMLInputElement
       input.value = 'first.com'
-      input.dispatchEvent(new Event('input', { bubbles: true }))
+      input.dispatchEvent(new Event('change', { bubbles: true }))
+      await Promise.resolve()
       expect(firstValue).toBe('first.com')
 
       // Update matcher
@@ -242,7 +247,8 @@ describe('MatcherRowComponent', () => {
       // Second interaction should still work
       input = container.querySelector('[data-role="urlFilter"]') as HTMLInputElement
       input.value = 'second.com'
-      input.dispatchEvent(new Event('input', { bubbles: true }))
+      input.dispatchEvent(new Event('change', { bubbles: true }))
+      await Promise.resolve()
       expect(callbacks.onChange).toHaveBeenCalledTimes(2)
     })
   })
@@ -299,7 +305,7 @@ describe('MatcherRowComponent', () => {
       component.mount(container)
 
       const input = container.querySelector('[data-role="urlFilter"]') as HTMLInputElement
-      expect(input.value).toBe(regexUrl)
+      expect(input.value).toBe(regexUrl.slice(6))
     })
 
     it('should handle wildcard pattern in URL', () => {
@@ -328,7 +334,7 @@ describe('MatcherRowComponent', () => {
 
     it('should have proper placeholder text', () => {
       const input = container.querySelector('[data-role="urlFilter"]') as HTMLInputElement
-      expect(input.placeholder).toBe('Leave empty for all domains')
+      expect(input.placeholder).toBe('https://example.com/api/*')
     })
 
     it('should have button with title attribute', () => {

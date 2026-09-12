@@ -3,6 +3,7 @@
  * Single source of truth for matcher row rendering across components and templates
  */
 
+import { readURLRule } from '../../../lib/url-rule'
 import { escapeHtml } from '../../core/utils'
 import trashIcon from '../../icons/trash.svg?raw'
 import { ghostButton } from '../buttons/ghost-button'
@@ -20,14 +21,24 @@ interface MatcherRowOptions {
 export function buildMatcherRowHTML(m: MatcherRowOptions): string {
   const selectedTypes = m.resourceTypes || []
   // If urlFilter is "*", show empty in UI (means "all domains")
-  const displayUrlFilter = m.urlFilter === '*' ? '' : m.urlFilter
+  const { mode, value: displayUrlFilter } = readURLRule(m.urlFilter)
 
   return `
     <div class="matcher-row" data-mid="${m.id}">
       <div class="matcher-row__fields">
+        <select data-role="mode" class="field matcher-row__mode" aria-label="URL rule mode">
+          <option value="site" ${mode === 'site' ? 'selected' : ''}>Site</option>
+          <option value="pattern" ${mode === 'pattern' ? 'selected' : ''}>URL pattern</option>
+          <option value="regex" ${mode === 'regex' ? 'selected' : ''}>Regex</option>
+          <option value="all" ${mode === 'all' ? 'selected' : ''}>All sites</option>
+        </select>
         <input
           type="text"
-          placeholder="Leave empty for all domains"
+          aria-label="URL rule value"
+          ${mode === 'all' ? 'disabled' : ''}
+          aria-describedby="urlRulesHelp"
+          title="Site: hostname only. URL pattern: paths and * wildcards. Regex: Chrome-supported expression without a regex: prefix."
+          placeholder="${mode === 'site' ? 'api.example.com' : mode === 'regex' ? '^https://api\\.example\\.com/' : mode === 'all' ? 'Every site' : 'https://example.com/api/*'}"
           value="${escapeHtml(displayUrlFilter)}"
           data-role="urlFilter"
           class="field matcher-row__url"
@@ -59,6 +70,7 @@ export function buildMatcherRowHTML(m: MatcherRowOptions): string {
         variant: 'delete',
         circle: true,
       })}
+      <p data-role="ruleFeedback" class="matcher-row__feedback" aria-live="polite">${mode === 'all' ? 'All sites: headers may be sent to any destination.' : ''}</p>
     </div>
   `
 }

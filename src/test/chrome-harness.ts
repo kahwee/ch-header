@@ -48,6 +48,9 @@ export function createChromeHarness(initial: Partial<ExtensionStorage> = {}) {
       ),
     },
     declarativeNetRequest: {
+      isRegexSupported: vi.fn(async (_options: chrome.declarativeNetRequest.RegexOptions) => ({
+        isSupported: true,
+      })),
       getDynamicRules: vi.fn(async () => structuredClone(rules)),
       updateDynamicRules: vi.fn(async (update: chrome.declarativeNetRequest.UpdateRuleOptions) => {
         rules = structuredClone([

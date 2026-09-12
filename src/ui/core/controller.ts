@@ -57,7 +57,7 @@ export class PopupController {
       color: 'blue',
       enabled: false,
       notes: '',
-      matchers: [{ id: crypto.randomUUID(), urlFilter: '*', resourceTypes: [] }],
+      matchers: [{ id: crypto.randomUUID(), urlFilter: '||example.invalid^', resourceTypes: [] }],
       requestHeaders: [],
       responseHeaders: [],
     }
@@ -118,7 +118,11 @@ export class PopupController {
    */
   onAddMatcher(): void {
     this.withCurrentProfile((p) => {
-      p.matchers.push({ id: crypto.randomUUID(), urlFilter: '*', resourceTypes: [] })
+      p.matchers.push({
+        id: crypto.randomUUID(),
+        urlFilter: '||example.invalid^',
+        resourceTypes: [],
+      })
       this.callbacks.syncAndRender()
     })
   }
@@ -187,11 +191,15 @@ export class PopupController {
   /**
    * Handle apply/submit button click
    */
-  async onApply(): Promise<void> {
+  async onApply(): Promise<string | null> {
     try {
-      await chrome.runtime.sendMessage({ type: 'applyNow' })
+      const response = await chrome.runtime.sendMessage({ type: 'applyNow' })
+      if (response?.ok === false)
+        return 'Could not apply rules. Last applied rules remain active. Check your URL rules and headers.'
+      return null
     } catch (err) {
       console.error('Failed to apply profile:', err)
+      return 'Could not reach Chrome to apply rules. Try reopening the popup.'
     }
   }
 

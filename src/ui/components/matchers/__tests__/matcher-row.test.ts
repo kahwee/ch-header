@@ -16,7 +16,7 @@ describe('matcherRow', () => {
 
       // Verify input elements
       expect(html).toContain('value="example.com"')
-      expect(html).toContain('placeholder="Leave empty for all domains"')
+      expect(html).toContain('placeholder="https://example.com/api/*"')
     })
 
     it('should render trash icon for delete button', () => {
@@ -87,7 +87,9 @@ describe('matcherRow', () => {
 
       edgeCases.forEach((url) => {
         const html = matcherRow({ id: 'test', urlFilter: url })
-        expect(html).toContain(`value="${url === '*' ? '' : url}"`)
+        expect(html).toContain(
+          `value="${url === '*' ? '' : url.startsWith('regex:') ? url.slice(6) : url}"`
+        )
       })
     })
   })
@@ -173,7 +175,9 @@ describe('matcherRow', () => {
       })
 
       // No resource type should be selected
-      expect(html).not.toContain('selected>')
+      expect(html).not.toMatch(
+        /value="(?:xmlhttprequest|script|stylesheet|image|font|main_frame|sub_frame)" selected>/
+      )
     })
   })
 
@@ -241,7 +245,7 @@ describe('matcherRow', () => {
         urlFilter: 'example.com',
       })
 
-      expect(html).toContain('placeholder="Leave empty for all domains"')
+      expect(html).toContain('placeholder="https://example.com/api/*"')
     })
   })
 

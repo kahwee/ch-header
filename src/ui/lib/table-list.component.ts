@@ -35,10 +35,8 @@ export abstract class TableListComponent<T extends { id: string }, R extends Tab
       }
     }
 
-    // Clear container and mount/update items in order
-    this.container.innerHTML = ''
-
-    itemList.forEach((item) => {
+    // Keep existing nodes connected so drafts, focus and pending validation survive.
+    itemList.forEach((item, index) => {
       let component = this.items.get(item.id)
 
       if (!component) {
@@ -49,9 +47,16 @@ export abstract class TableListComponent<T extends { id: string }, R extends Tab
       } else {
         // Update existing item and remount it
         this.updateComponent(component, item)
-        this.container.appendChild(component.getElement()!)
       }
+      const element = component.getElement()!
+      const position = this.container.children[index] ?? null
+      if (position !== element) this.container.insertBefore(element, position)
     })
+    // Remove initial placeholders or other stale content without detaching managed rows.
+    const managed = new Set<Node>(Array.from(this.items.values(), (row) => row.getElement()!))
+    for (const child of Array.from(this.container.childNodes)) {
+      if (!managed.has(child)) child.remove()
+    }
   }
 
   /**

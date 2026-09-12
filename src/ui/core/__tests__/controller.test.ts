@@ -274,7 +274,7 @@ describe('PopupController - Refactored Methods', () => {
 
       expect(state.current.matchers.length).toBe(initialCount + 1)
       const newMatcher = state.current.matchers[initialCount]
-      expect(newMatcher.urlFilter).toBe('*')
+      expect(newMatcher.urlFilter).toBe('||example.invalid^')
       expect(newMatcher.resourceTypes).toEqual([])
     })
 
@@ -347,7 +347,7 @@ describe('PopupController - Refactored Methods', () => {
       const newProfile = state.profiles[0] // New profiles are unshifted (added at beginning)
       expect(newProfile.name).toBe('New profile') // Controller creates with lowercase 'p'
       expect(newProfile.matchers[0]).toBeDefined() // Should have at least one default matcher
-      expect(newProfile.matchers[0].urlFilter).toBe('*')
+      expect(newProfile.matchers[0].urlFilter).toBe('||example.invalid^')
       expect(newProfile.requestHeaders).toEqual([])
       expect(newProfile.responseHeaders).toEqual([])
       expect(newProfile.enabled).toBe(false)

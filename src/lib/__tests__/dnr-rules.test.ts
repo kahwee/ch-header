@@ -134,7 +134,7 @@ describe('DNR Rules', () => {
       expect(rules).toHaveLength(0)
     })
 
-    it('should use default matchers when empty', () => {
+    it('should match no requests when no URL rules remain', () => {
       const profile: Profile = {
         id: 'test-profile',
         name: 'Test Profile',
@@ -147,8 +147,7 @@ describe('DNR Rules', () => {
 
       const rules = buildRulesFromProfile(profile)
 
-      expect(rules).toHaveLength(1)
-      expect(rules[0].condition.urlFilter).toBe('*')
+      expect(rules).toEqual([])
     })
 
     it('should generate unique rule IDs based on profile and matcher', () => {
