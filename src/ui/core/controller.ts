@@ -8,6 +8,8 @@ import { STORAGE_KEYS, Profile, State } from '../../lib/types'
 const K = STORAGE_KEYS
 
 export class PopupController {
+  private deleted: { profile: Profile; index: number } | null = null
+
   constructor(
     private state: State,
     private callbacks: {
@@ -52,7 +54,7 @@ export class PopupController {
     const newProfile: Profile = {
       id: crypto.randomUUID(),
       name: 'New profile',
-      color: 'blue-700',
+      color: 'blue',
       enabled: false,
       notes: '',
       matchers: [{ id: crypto.randomUUID(), urlFilter: '*', resourceTypes: [] }],
@@ -137,32 +139,49 @@ export class PopupController {
   /**
    * Handle duplicate profile button click
    */
-  onDuplicateProfile(): void {
-    this.withCurrentProfile((src) => {
-      const copy = this.deepCloneProfile(src)
-      copy.name = `${src.name} (copy)`
-      this.state.profiles.unshift(copy)
-      this.callbacks.syncAndRender()
-      this.callbacks.select(copy.id)
-    })
+  onDuplicateProfile(id = this.state.current?.id): void {
+    const src = this.state.profiles.find((p) => p.id === id)
+    if (!src) return
+    const copy = this.deepCloneProfile(src)
+    copy.name = `${src.name} (copy)`
+    this.state.profiles.unshift(copy)
+    this.callbacks.syncAndRender()
+    this.callbacks.select(copy.id)
   }
 
-  /**
-   * Handle delete profile button click
-   */
-  onDeleteProfile(): void {
-    if (!this.state.current) return
-
-    const id = this.state.current.id
-    this.state.profiles = this.state.profiles.filter((p) => p.id !== id)
-
+  onDeleteProfile(id = this.state.current?.id): boolean {
+    const index = this.state.profiles.findIndex((p) => p.id === id)
+    if (index < 0) return false
+    this.deleted = { profile: this.state.profiles[index], index }
+    this.state.profiles.splice(index, 1)
     if (this.state.activeId === id) {
-      this.state.activeId = this.state.profiles[0]?.id ?? null
-      chrome.storage.local.set({ [K.ACTIVE_PROFILE_ID]: this.state.activeId })
+      this.state.activeId = null
+      chrome.storage.local.set({ [K.ACTIVE_PROFILE_ID]: null })
     }
-
+    if (this.state.current?.id === id)
+      this.state.current = this.state.profiles[index] ?? this.state.profiles[index - 1] ?? null
     this.callbacks.syncAndRender()
-    this.callbacks.select(this.state.activeId)
+    return true
+  }
+
+  onUndoDeleteProfile(): void {
+    if (!this.deleted) return
+    const { profile, index } = this.deleted
+    profile.enabled = false
+    this.state.profiles.splice(index, 0, profile)
+    this.deleted = null
+    this.callbacks.syncAndRender()
+    this.callbacks.select(profile.id)
+  }
+
+  onImportProfiles(profiles: Profile[]): void {
+    this.state.profiles.unshift(...profiles.map((p) => ({ ...p, enabled: false })))
+    this.callbacks.syncAndRender()
+    this.callbacks.select(profiles[0]?.id ?? null)
+  }
+
+  onSetProfileEnabled(id: string, enabled: boolean): void {
+    if (this.state.profiles.some((p) => p.id === id)) this.setActiveProfile(id, enabled)
   }
 
   /**
@@ -327,7 +346,7 @@ export class PopupController {
       const newProfile: Profile = {
         id: crypto.randomUUID(),
         name: typeof profileData.name === 'string' ? profileData.name : 'Imported profile',
-        color: typeof profileData.color === 'string' ? profileData.color : 'blue-700',
+        color: typeof profileData.color === 'string' ? profileData.color : 'blue',
         enabled: false,
         notes: typeof profileData.notes === 'string' ? profileData.notes : '',
         matchers: this.validateMatchers(profileData.matchers),
@@ -354,6 +373,7 @@ export class PopupController {
       name: src.name,
       color: src.color,
       notes: src.notes,
+      initials: src.initials,
       enabled: false, // Always disabled by default
       matchers: src.matchers.map((m) => ({ ...m, id: crypto.randomUUID() })),
       requestHeaders: src.requestHeaders.map((h) => ({ ...h, id: crypto.randomUUID() })),
@@ -410,6 +430,9 @@ export class PopupController {
       enabled: p.id === id ? enabled : false,
     }))
 
+    this.state.current = this.state.profiles.find((p) => p.id === this.state.current?.id) ?? null
+    this.callbacks.renderList()
+    this.callbacks.select(this.state.current?.id ?? null)
     chrome.storage.local.set(
       {
         [K.ACTIVE_PROFILE_ID]: id,

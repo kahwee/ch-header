@@ -16,7 +16,7 @@ pnpm run storybook
   `src/ui/components`.
 - Use semantic class names and the tokens in `styles.css`. Do not add a CSS utility framework.
 - Escape all user-controlled strings rendered into HTML.
-- Preserve stored color-token values for backward compatibility.
+- Preserve the appearance of saved colors; normalize old numeric names to simple app-owned tokens.
 - Use delegated events for repeated rows and clean up listeners owned by mounted components.
 
 ### Component files
@@ -34,11 +34,7 @@ attributes, escaped content, and behavior.
 Run this sequence before committing:
 
 ```bash
-pnpm run format:check
-pnpm run typecheck
-pnpm run test:run
-pnpm run build
-pnpm run storybook:build
+pnpm check
 ```
 
 For UI changes, also inspect the actual toolbar popup at 744 × 440 and the Full Layout story. Check keyboard

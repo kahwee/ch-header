@@ -1,3 +1,4 @@
+import { profileActionsTemplate } from './profile-actions-template'
 /**
  * Shared popup HTML template
  * Used by both popup.html (rendered) and Storybook stories (with mocks)
@@ -15,9 +16,6 @@ import { PROFILE_COLORS, getProfileColor } from './profile-colors'
 
 export { PROFILE_COLORS as COLOR_PALETTE } from './profile-colors'
 
-/**
- * Stable profile color tokens retained for storage compatibility.
- */
 /**
  * Build a headers section (Request or Response)
  * Uses sectionHeader component with dynamic menu items
@@ -101,6 +99,7 @@ export function getSidebarTemplate(): string {
           <p class="empty-search__copy">Try a different profile name or note.</p>
         </div>
     </div>
+    <footer class="sidebar__footer"><button type="button" data-action="importProfile" class="button button--secondary button--sm">Import</button><button type="button" data-action="exportAll" class="button button--secondary button--sm">Export all</button></footer>
   </aside>`
 }
 
@@ -120,8 +119,8 @@ export function getPopupTemplate(options?: { containerClass?: string }): string 
         </div>
         <form id="detail" class="profile-editor hidden">
           <div class="profile-heading">
-            <button id="profileAvatarBtn" type="button" popovertarget="colorPickerPopover" class="profile-avatar profile-avatar--button" style="background-color: #7e22ce;" title="Choose profile color">
-              <span id="profileAvatarInitials" style="text-shadow: 0 1px 3px rgba(0,0,0,0.5);">P</span>
+            <button id="profileAvatarBtn" type="button" popovertarget="colorPickerPopover" class="profile-avatar profile-avatar--button" style="background-color: #a8c7fa;" title="Choose profile color">
+              <span id="profileAvatarInitials">P</span>
             </button>
             <div class="profile-heading__name">
               <input id="profileName" type="text" name="profileName" placeholder="Profile name" aria-label="Profile name" class="field field--profile-name" required />
@@ -136,7 +135,8 @@ export function getPopupTemplate(options?: { containerClass?: string }): string 
               <div class="dropdown__menu" role="menu" hidden>
                 <div>
                   ${menuItem({ label: 'Import headers', action: 'importHeaders', title: 'Import headers from JSON' })}
-                  ${menuItem({ label: 'Import profile', action: 'importProfile', title: 'Import entire profile from JSON' })}
+                  ${menuItem({ label: 'Copy JSON', action: 'copy' })}
+                  ${menuItem({ label: 'Export JSON…', action: 'export' })}
                 </div>
                 <div class="dropdown__group">
                   ${menuItem({ label: 'Duplicate', action: 'duplicate' })}
@@ -208,6 +208,7 @@ export function getPopupTemplate(options?: { containerClass?: string }): string 
         </form>
       </section>
     </main>
+    ${profileActionsTemplate()}
   </div>`
 }
 
@@ -239,15 +240,15 @@ export function profileListItem(
   const labelId = `profile-label-${p.id}`
 
   // Resolve the stored color token to its display value.
-  const colorToken = p.color || 'blue-700'
+  const colorToken = p.color || 'blue'
   const hexColor = getProfileColor(colorToken).hex
 
   return `
-    <a href="#" aria-labelledby="${labelId}" aria-selected="${isActive}" data-id="${p.id}" class="profile-item ${isActive ? 'active' : ''}">
+    <a href="#" aria-labelledby="${labelId}" aria-describedby="status-${p.id}" aria-selected="${isActive}" data-id="${p.id}" class="profile-item ${isActive ? 'active' : ''}">
       ${renderAvatar(displayAvatar, hexColor)}
       <div class="profile-item__copy">
         <p id="${labelId}" class="profile-item__name">${escapeHtml(p.name)}</p>
-        ${p.notes ? `<p class="profile-item__note">${escapeHtml(p.notes)}</p>` : ''}
+        <p class="profile-item__meta"><span id="status-${p.id}" class="profile-status ${p.enabled ? 'profile-status--on' : ''}">${p.enabled ? 'On' : 'Off'}</span>${p.notes ? `<span class="profile-item__note">${escapeHtml(p.notes)}</span>` : ''}</p>
       </div>
     </a>
   `

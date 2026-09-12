@@ -1,54 +1,20 @@
 # Working on ChHeader
 
-ChHeader is a Manifest V3 Chrome extension for profile-based request and response
-header editing. Keep the popup compact and familiar to Chrome users.
+ChHeader is a local-profile HTTP header editor for Chrome Manifest V3.
 
-## Source of truth
-
-- `src/ui/core/popup-template.ts` and `styles.css`: popup layout shared with Storybook.
-- `src/ui/core/profile-*` and `popup-elements.ts`: appearance, list filtering, keyboard navigation and typed DOM queries.
-- `src/ui/components/`: small TypeScript renderers and custom elements.
-- `src/lib/dnr-rules.ts`: Chrome declarativeNetRequest rule generation.
-- `src/background.ts`: serialized updates to installed dynamic rules.
-- `src/lib/storage.ts`: local profiles and active-profile selection.
-- `package.json`: release version; Vite writes it into `dist/manifest.json`.
-- `TESTING.md`: reproducible browser checks and observed results.
-
-## Development
-
-Use Node from `.node-version` / `.nvmrc` and pnpm from `package.json`.
-Install with `pnpm install --frozen-lockfile`. Keep the pnpm lockfile; do not
-introduce npm or yarn lockfiles. `pnpm dev:extension` rebuilds `dist/` on edits;
-reload the unpacked extension in Chrome after each build. `pnpm dev` is a web
-preview and does not install the extension.
-
-Before a release run `pnpm typecheck`, `pnpm format:check`,
-`pnpm test:coverage`, `pnpm build:package`, and `pnpm storybook:build`.
-Vitest uses jsdom: passing tests do not prove that Chrome accepts DNR rules.
-Exercise the actual toolbar popup with the localhost fixture in TESTING.md.
-Record failures and untested cases honestly; never infer a browser pass from a mock.
-
-## UI and regression guardrails
-
-- Use the existing neutral surface and blue accent tokens. Keep branding in
-  `public/icons/logo.svg`; regenerate the 16/32/48/128px PNGs when it changes.
-- Keep all row actions visible at the popup's 744 × 440 CSS-pixel size. The
-  editor body scrolls; the heading and Apply footer stay visible.
-- Give non-submit buttons `type="button"`; prevent form navigation when applying.
-- Preserve visible focus and accessible labels, including controls in shadow DOM.
-- Matchers use Chrome resource types (`main_frame`, not `document`) and explicit
-  `regexFilter` for `regex:` input. Test positive and excluded URLs.
-- Serialize the entire read/build/replace operation for background rule updates.
-- Add focused regression tests for behavioral bugs. Avoid tests that merely
-  repeat CSS values or implementation details.
-- Use only localhost-scoped test profiles, set the matcher before enabling, and
-  disable test profiles afterward. Screenshots must contain demonstration data.
-
-## Releases
-
-Follow the release checklist in TESTING.md. Update package and source manifest
-versions together, RELEASE_NOTES.md, screenshots and any changed behavior docs.
-Push the reviewed commit and confirm CI, then push an annotated `vX.Y.Z` tag.
-The tag workflow validates the version and publishes a ZIP plus SHA-256 checksum.
-Do not claim Chrome Web Store publication: GitHub releases are unpacked builds.
-No scheduled CI is configured; the README contains the tentative roadmap.
+- Use the pinned Node/pnpm versions. Install with `pnpm install --frozen-lockfile`.
+- Run `pnpm check` before pushing. `pnpm test:workflows` is the focused behavior suite.
+- Share actual popup markup with Storybook (`popup-template.ts`). Use plain CSS,
+  semantic classes and the existing surface/accent tokens; add no styling framework.
+- Keep every control usable at 744 × 440. Preserve keyboard focus and accessible labels.
+  All buttons except Apply must be `type="button"`.
+- Context actions target the invoked profile. Selection is separate from enabled state.
+  Imports get new IDs and start off; parsing must finish before storage changes.
+- Keep saved colors compatible. New values use simple color names or custom hex.
+- Serialize background rule updates. Chrome uses `main_frame` and explicit `regexFilter`.
+- Test behavior with real modules, not copied mock UI. jsdom cannot prove Chrome accepts rules.
+- Follow [TESTING.md](TESTING.md) in the actual toolbar popup. Scope test profiles to
+  localhost, disable them afterward, and use demonstration data in screenshots.
+- Keep README short. Record actual results and limits in TESTING.md.
+- Before releasing, align package/manifest versions and release notes, confirm CI on
+  the pushed commit, then push an annotated version tag. Never move published tags.

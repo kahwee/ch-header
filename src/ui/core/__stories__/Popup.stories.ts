@@ -33,7 +33,7 @@ const sampleProfiles = [
   {
     id: 'prod-1',
     name: 'Production',
-    color: 'purple-700',
+    color: 'purple',
     notes: 'Add authentication headers to production API endpoints',
     enabled: true,
     matchers: [{ id: 'm1', urlFilter: 'api.example.com', label: '', resourceTypes: [] }],
@@ -61,7 +61,7 @@ const sampleProfiles = [
   {
     id: 'dev-1',
     name: 'Development',
-    color: 'blue-700',
+    color: 'blue',
     notes: 'Local development configuration with debug headers',
     enabled: true,
     matchers: [{ id: 'm2', urlFilter: 'localhost:3000', label: '', resourceTypes: [] }],
@@ -71,7 +71,7 @@ const sampleProfiles = [
   {
     id: 'staging-1',
     name: 'Staging',
-    color: 'emerald-700',
+    color: 'emerald',
     notes: 'Pre-release testing environment',
     enabled: false,
     matchers: [
@@ -84,7 +84,7 @@ const sampleProfiles = [
   {
     id: 'test-1',
     name: 'Testing',
-    color: 'amber-700',
+    color: 'amber',
     notes: 'QA and integration testing',
     enabled: true,
     matchers: [
@@ -96,7 +96,7 @@ const sampleProfiles = [
   {
     id: 'local-1',
     name: 'Local API',
-    color: 'violet-700',
+    color: 'violet',
     notes: 'Local mock API server',
     enabled: false,
     matchers: [{ id: 'm3', urlFilter: 'localhost:8000', label: '', resourceTypes: [] }],
@@ -106,7 +106,7 @@ const sampleProfiles = [
   {
     id: 'beta-1',
     name: 'Beta API',
-    color: 'pink-700',
+    color: 'pink',
     notes: 'Early access beta features',
     enabled: true,
     matchers: [
@@ -119,7 +119,7 @@ const sampleProfiles = [
   {
     id: 'sandbox-1',
     name: 'Sandbox',
-    color: 'cyan-700',
+    color: 'cyan',
     notes: 'Safe playground for testing',
     enabled: false,
     matchers: [],
@@ -129,7 +129,7 @@ const sampleProfiles = [
   {
     id: 'cache-1',
     name: 'Cache Control',
-    color: 'teal-700',
+    color: 'teal',
     notes: 'Add cache headers for performance testing',
     enabled: true,
     matchers: [{ id: 'm9', urlFilter: '*.example.com', label: 'All Domains', resourceTypes: [] }],
@@ -139,7 +139,7 @@ const sampleProfiles = [
   {
     id: 'cors-1',
     name: 'CORS Headers',
-    color: 'orange-700',
+    color: 'orange',
     notes: 'CORS configuration for cross-origin requests',
     enabled: false,
     matchers: [],
@@ -149,7 +149,7 @@ const sampleProfiles = [
   {
     id: 'auth-1',
     name: 'Auth Headers',
-    color: 'indigo-700',
+    color: 'indigo',
     notes: 'Custom authentication token headers',
     enabled: true,
     matchers: [],
@@ -159,7 +159,7 @@ const sampleProfiles = [
   {
     id: 'mobile-1',
     name: 'Mobile API',
-    color: 'violet-400',
+    color: 'violet',
     notes: 'Mobile-specific API endpoints and headers',
     enabled: false,
     matchers: [],
@@ -169,7 +169,7 @@ const sampleProfiles = [
   {
     id: 'web-1',
     name: 'Web API',
-    color: 'blue-300',
+    color: 'blue',
     notes: 'Web application API configuration',
     enabled: true,
     matchers: [],
@@ -179,7 +179,7 @@ const sampleProfiles = [
   {
     id: 'analytics-1',
     name: 'Analytics',
-    color: 'amber-400',
+    color: 'amber',
     notes: 'Analytics tracking and telemetry headers',
     enabled: false,
     matchers: [],
@@ -189,7 +189,7 @@ const sampleProfiles = [
   {
     id: 'payment-1',
     name: 'Payment Gateway',
-    color: 'cyan-400',
+    color: 'cyan',
     notes: 'Payment processing API configuration',
     enabled: true,
     matchers: [],

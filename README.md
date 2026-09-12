@@ -1,125 +1,67 @@
-<p align="center"><img src="public/icons/logo.svg" width="64" height="64" alt="ChHeader logo"></p>
+<p align="center"><img src="public/icons/logo.svg" width="56" height="56" alt="ChHeader logo"></p>
 <h1 align="center">ChHeader</h1>
 <p align="center">HTTP headers, organized into profiles.</p>
-<p align="center">
-  <a href="https://github.com/kahwee/ch-header/actions/workflows/ci.yml"><img src="https://github.com/kahwee/ch-header/actions/workflows/ci.yml/badge.svg" alt="CI status"></a>
-  <a href="https://github.com/kahwee/ch-header/releases/latest">Download the latest release</a>
-</p>
+<p align="center"><a href="https://github.com/kahwee/ch-header/actions/workflows/ci.yml"><img src="https://github.com/kahwee/ch-header/actions/workflows/ci.yml/badge.svg" alt="CI status"></a> · <a href="https://github.com/kahwee/ch-header/releases/latest">Download</a></p>
 
-ChHeader is a small Chrome extension for developers testing APIs and websites.
-Set request and response headers, scope them to URLs and request types, and
-switch between saved profiles. It uses Manifest V3 declarative rules and stores
-profiles locally in your browser.
+A small Chrome extension for testing APIs and websites. Set request and response
+headers, match URLs and request types, and switch between profiles stored locally.
 
-![ChHeader toolbar popup with a localhost development profile](docs/screenshots/popup.jpg)
-
-## What it does
-
-- Set or replace request and response headers, with per-header toggles.
-- Match domains, wildcard paths or `regex:` patterns; filter Documents, XHR/Fetch
-  and other request types.
-- Search profiles, add notes, choose a color, duplicate, or import JSON.
-- Keep editing compact: Chrome-inspired dark colors, a scrolling editor and an
-  always-visible Apply footer. One profile is active at a time.
-
-<details>
-<summary>Profile colors and controls</summary>
-
-![Tonal profile palette in the Chrome toolbar popup](docs/screenshots/palette.jpg)
-
-A cohesive tonal palette, legible initials, and subtle elevation on menus and
-controls keep profiles distinct without overwhelming the editor.
-
-</details>
+![Chrome-style editor with explicit On and Off profile badges](docs/screenshots/popup.jpg)
 
 ## Install
 
-1. Download the ZIP from [Releases](https://github.com/kahwee/ch-header/releases/latest)
-   and extract it into a permanent folder.
-2. Open `chrome://extensions/`, enable **Developer mode**, and choose **Load unpacked**.
-3. Select the extracted folder containing `manifest.json`, then open ChHeader from
-   Chrome's Extensions menu. Pin it for easy access.
+Download and extract the ZIP from [Releases](https://github.com/kahwee/ch-header/releases/latest).
+In `chrome://extensions/`, enable **Developer mode**, click **Load unpacked**, and
+select the extracted folder. Pin ChHeader from Chrome's Extensions menu.
+To update, replace the files and click **Reload**. Distribution is through GitHub;
+Chrome Web Store installation is not available yet.
 
-To update, replace the files in that folder and click **Reload** in Chrome's
-Extensions page. The release includes a SHA-256 checksum for the ZIP. GitHub is
-currently the distribution channel; this is not a Chrome Web Store installation.
+## Use and share
 
-## Use a profile
+- **New:** name a profile, add headers and a URL matcher, then turn it on. Only one
+  profile is on at a time. Edits save automatically; **Apply** reapplies the rules.
+- **On / Off:** sidebar badges show whether a profile is enabled. Selecting a
+  profile only opens its editor.
+- **Right-click a profile:** turn it on/off, rename, duplicate, copy JSON, export
+  or delete. **Undo** restores the last deleted profile, off, while the popup is open.
+  Options also contains duplicate, delete and sharing actions.
+- **Import:** paste JSON or choose a file. Imports become new profiles and start off.
+  **Export all** shares a collection; **Options → Export JSON** shares one profile.
+  Export blanks common credential headers by default; review the JSON before sharing.
 
-Click **New**, name the profile, and add a URL matcher before enabling it. Add
-header names and values, turn on **Enable this profile**, and click **Apply**.
-Edits are saved locally, and edits to an enabled profile update its rules.
-Turn the profile off to restore normal requests.
+Try the [localhost example](docs/examples/local-profile.json). Matchers accept hosts
+(`127.0.0.1:3002`), wildcard paths (`127.0.0.1:3002/match/*`) and
+`regex:` patterns. Empty matchers cover all URLs. Disable profiles while editing
+incomplete regex patterns; inline validation is planned.
 
-| Matcher             | Example                                  |
-| ------------------- | ---------------------------------------- |
-| Domain or localhost | `127.0.0.1:3002`                         |
-| Wildcard path       | `127.0.0.1:3002/match/*`                 |
-| Regular expression  | `regex:^http://127\.0\.0\.1:3002/match/` |
-| All URLs            | Leave the matcher empty                  |
+![Copy or download a portable JSON profile](docs/screenshots/sharing.jpg)
 
-Matchers follow Chrome's [declarativeNetRequest rules](https://developer.chrome.com/docs/extensions/reference/api/declarativeNetRequest).
-Regex syntax follows RE2. Disable the profile while editing an incomplete regex;
-inline validation is not yet available. Chrome controls which headers and browser
-pages extensions can modify.
-
-Try **Options → Import profile** with [this localhost example](docs/examples/local-profile.json).
-Imports start disabled. The extension requests site access to apply headers across
-the URLs you configure; keep test profiles scoped to the intended hosts.
+The screenshots show the current source. Features added after the latest tag
+will be included in the next release.
 
 ## Develop and test
 
-Use Node **26.7.0** and pnpm **11.25.0** (also declared in the repository):
+Use Node and pnpm versions declared in the repository.
 
 ```sh
 pnpm install --frozen-lockfile
-pnpm build
+pnpm check          # types, formatting, coverage, extension ZIP and Storybook
+pnpm test:headers   # real header fixture at http://127.0.0.1:3002
 ```
 
-Load `dist/` unpacked in Chrome. `pnpm dev:extension` rebuilds on changes; reload
-ChHeader in Chrome after rebuilding. `pnpm dev` serves a web preview, while
-`pnpm storybook` opens isolated component examples.
-
-```sh
-pnpm typecheck
-pnpm format:check
-pnpm test:coverage
-pnpm build:package
-pnpm storybook:build
-pnpm test:headers
-```
-
-The last command starts the localhost fixture at `http://127.0.0.1:3002/`.
-It shows the headers received by the server and returned through Chrome, so you
-can verify the installed extension rather than relying on mocked APIs.
-
-<details>
-<summary>See a real localhost test result</summary>
-
-![Local fixture showing modified request and response headers](docs/screenshots/header-check.jpg)
-
-Captured in Chrome with the localhost profile enabled and **All request types**
-selected. The popup screenshot above uses the same setting.
-
-</details>
-
-See [TESTING.md](TESTING.md) for the test matrix, results, known limits and release
-checklist; [AGENTS.md](AGENTS.md) for contributor guidance; and
-[design QA](design-qa.md) for the before/after review.
+Load `dist/` unpacked in Chrome. `pnpm dev:extension` rebuilds on edits; reload
+ChHeader after rebuilding. `pnpm test:workflows` runs focused sharing/action tests.
+See [testing](TESTING.md) and [contributor guidance](AGENTS.md).
 
 ## Roadmap and releases
 
-The aim is a dependable, compact developer tool that feels at home in Chrome.
-This is a rough sequence, not a promise of delivery dates.
+| Stage      | Focus                                                                 | Timing                  |
+| ---------- | --------------------------------------------------------------------- | ----------------------- |
+| 0.3.0      | Chrome-style UI, matching fixes, automated releases                   | Released September 2026 |
+| Next minor | Profile sharing, right-click actions, visible status, cleanup         | After verification      |
+| Next       | Inline rule errors, light/system theme, broader accessibility testing | As ready                |
+| Later      | Wider platform testing and Chrome Web Store distribution              | To be evaluated         |
 
-| Stage        | Focus                                                                                       | Timing                       |
-| ------------ | ------------------------------------------------------------------------------------------- | ---------------------------- |
-| 0.3.0        | Chrome-style UI, refreshed identity, matching fixes, repeatable QA and release automation   | September 2026               |
-| Next patches | Feedback-driven fixes, clearer rule errors and inline matcher validation                    | As fixes are verified        |
-| Next minor   | Light/system theme, stronger import validation, broader keyboard and accessibility coverage | After the current UI settles |
-| Later        | Profile export, wider browser/platform testing and Chrome Web Store distribution            | To be evaluated              |
-
-CI runs on pull requests and main-branch pushes. An annotated `vX.Y.Z` tag runs the
-release checks, validates the package version, and publishes a ZIP and checksum.
-There are no scheduled CI jobs. Patch releases follow verified fixes; minor
-releases group coherent improvements. See [release notes](RELEASE_NOTES.md).
+CI checks pull requests and main pushes. An annotated `vX.Y.Z` tag validates the
+version and publishes a ZIP and SHA-256 checksum. Release dates are tentative;
+there are no scheduled CI jobs. [Release notes](RELEASE_NOTES.md).

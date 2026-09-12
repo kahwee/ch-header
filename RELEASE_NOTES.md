@@ -1,3 +1,11 @@
+## Unreleased
+
+- Right-click profile actions, recoverable deletion, and explicit On/Off sidebar badges.
+- Copy, download and import portable JSON; import validates the whole batch and starts profiles off.
+- Common credential header values are hidden in exports by default.
+- Plain CSS cleanup, simple profile color names, updated screenshots and shorter documentation.
+- Real-template workflow tests and a single `pnpm check` command shared with CI.
+
 ## ChHeader 0.3.0
 
 A calmer, tighter header editor with Chrome-inspired colors and a new header-controls

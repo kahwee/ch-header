@@ -32,9 +32,9 @@ describe('popup-template', () => {
 
     it('should have stored color tokens', () => {
       const colorTokens = COLOR_PALETTE.map((c) => c.token)
-      expect(colorTokens).toContain('red-700')
-      expect(colorTokens).toContain('blue-700')
-      expect(colorTokens).toContain('purple-700')
+      expect(colorTokens).toContain('red')
+      expect(colorTokens).toContain('blue')
+      expect(colorTokens).toContain('purple')
     })
 
     it('should have unique color names', () => {
@@ -138,7 +138,7 @@ describe('popup-template', () => {
     const testProfile = {
       id: 'profile-123',
       name: 'Test Profile',
-      color: 'blue-700',
+      color: 'blue',
       enabled: true,
     }
 

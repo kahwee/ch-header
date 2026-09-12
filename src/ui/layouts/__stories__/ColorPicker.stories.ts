@@ -68,7 +68,7 @@ export const Default: Story = {
     const colorGrid = document.createElement('div')
     colorGrid.className = 'color-grid'
 
-    const selectedColor = 'purple-700'
+    const selectedColor = 'purple'
 
     COLOR_PALETTE.forEach((color) => {
       const colorBtn = document.createElement('button')
@@ -216,7 +216,7 @@ export const FullProfileForm: Story = {
     const colorGrid = document.createElement('div')
     colorGrid.className = 'color-grid'
 
-    const selectedColor = 'blue-700'
+    const selectedColor = 'blue'
 
     COLOR_PALETTE.forEach((color) => {
       const colorBtn = document.createElement('button')

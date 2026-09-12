@@ -16,7 +16,7 @@ describe('profile appearance', () => {
     const avatar = document.createElement('button')
     const initials = document.createElement('span')
 
-    renderProfileAppearance(avatar, initials, 'Production', undefined, 'blue-700')
+    renderProfileAppearance(avatar, initials, 'Production', undefined, 'blue')
 
     expect(initials.textContent).toBe('P')
     expect(avatar.style.backgroundColor).toBe('rgb(168, 199, 250)')
@@ -24,13 +24,13 @@ describe('profile appearance', () => {
 
   it('marks only the selected color option', () => {
     document.body.innerHTML = `
-      <button class="color-option" data-color="blue-700"></button>
-      <button class="color-option selected" data-color="red-700"></button>
+      <button class="color-option" data-color="blue"></button>
+      <button class="color-option selected" data-color="red"></button>
     `
 
-    updateColorSelection(document, 'blue-700')
+    updateColorSelection(document, 'blue')
 
-    expect(document.querySelector('[data-color="blue-700"]')?.classList).toContain('selected')
-    expect(document.querySelector('[data-color="red-700"]')?.classList).not.toContain('selected')
+    expect(document.querySelector('[data-color="blue"]')?.classList).toContain('selected')
+    expect(document.querySelector('[data-color="red"]')?.classList).not.toContain('selected')
   })
 })

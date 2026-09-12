@@ -156,10 +156,10 @@ describe('sectionHeader - Integration Tests', () => {
       // Simulate wrapping in popup context
       const popupMarkup = `
         <div class="pb-4">
-          <p class="mb-4 text-sm text-gray-300">HTTP headers description</p>
+          <p class="editor-section__description">HTTP headers description</p>
           ${headersSection}
           <div class="mt-4 flow-root">
-            <table class="min-w-full">
+            <table class="header-table">
               <tbody id="reqHeaders"></tbody>
             </table>
           </div>

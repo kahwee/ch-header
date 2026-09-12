@@ -6,7 +6,7 @@ const profiles: Profile[] = [
   {
     id: 'production',
     name: 'Production',
-    color: 'purple-700',
+    color: 'purple',
     notes: 'Public API',
     enabled: true,
     matchers: [],
@@ -16,7 +16,7 @@ const profiles: Profile[] = [
   {
     id: 'local',
     name: 'Local development',
-    color: 'blue-700',
+    color: 'blue',
     notes: 'Debug headers',
     enabled: false,
     matchers: [],

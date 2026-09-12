@@ -29,19 +29,18 @@
     "storybook": "storybook dev -p 6006",
     "storybook:build": "storybook build",
     "dev:extension": "vite build --watch",
-    "test:headers": "node scripts/header-check.js"
+    "test:headers": "node scripts/header-check.js",
+    "check": "pnpm typecheck && pnpm format:check && pnpm test:coverage && pnpm build:package && pnpm storybook:build",
+    "test:workflows": "vitest run src/ui/core/__tests__/profile-workflows.integration.test.ts src/lib/__tests__/profile-transfer.test.ts"
   },
   "devDependencies": {
     "@storybook/html": "^10.6.0",
     "@storybook/html-vite": "^10.6.0",
     "@types/chrome": "0.2.9",
     "@types/node": "^26.5.1",
-    "@vitest/browser": "^5.0.0",
-    "@vitest/browser-playwright": "^5.0.0",
     "@vitest/coverage-v8": "^5.0.0",
     "@vitest/ui": "^5.0.0",
     "jsdom": "^30.0.1",
-    "playwright": "^1.63.0",
     "prettier": "^3.9.6",
     "storybook": "^10.6.0",
     "terser": "^5.51.2",

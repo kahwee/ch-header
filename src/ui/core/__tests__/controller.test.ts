@@ -30,7 +30,7 @@ describe('PopupController - Refactored Methods', () => {
     return {
       id: 'test-1',
       name: 'Test Profile',
-      color: 'blue-700',
+      color: 'blue',
       enabled: false,
       notes: 'Test notes',
       matchers: [{ id: 'matcher-1', urlFilter: 'localhost:3000', resourceTypes: [] }],
@@ -401,9 +401,9 @@ describe('PopupController - Refactored Methods', () => {
     })
 
     it('should change profile color', () => {
-      controller.onProfileColorChange('red-700')
+      controller.onProfileColorChange('red')
 
-      expect(state.current!.color).toBe('red-700')
+      expect(state.current!.color).toBe('red')
       expect(callbacks.syncAndRender).toHaveBeenCalled()
     })
 
@@ -562,7 +562,7 @@ describe('PopupController - Refactored Methods', () => {
     it('should import full profile from JSON', () => {
       const importData = {
         name: 'Imported Profile',
-        color: 'green-700',
+        color: 'green',
         matchers: [{ urlFilter: 'example.com' }],
         requestHeaders: [{ header: 'X-Test', value: 'test' }],
       }
@@ -570,7 +570,7 @@ describe('PopupController - Refactored Methods', () => {
       controller.onImportProfile(importData)
 
       expect(state.current!.name).toBe('Imported Profile')
-      expect(state.current!.color).toBe('green-700')
+      expect(state.current!.color).toBe('green')
       expect(state.current!.matchers.length).toBeGreaterThan(0)
       expect(state.current!.requestHeaders.length).toBeGreaterThan(0)
     })

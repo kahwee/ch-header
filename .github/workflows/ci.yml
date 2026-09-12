@@ -23,11 +23,8 @@ jobs:
           cache: pnpm
       - run: test ! -e package-lock.json
       - run: pnpm install --frozen-lockfile
-      - run: pnpm typecheck
-      - run: pnpm format:check
-      - run: pnpm test:coverage
-      - run: pnpm build:package
-      - run: pnpm storybook:build
+      - name: Check types, formatting, tests and release builds
+        run: pnpm check
       - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
           name: extension-and-coverage

@@ -195,10 +195,10 @@ describe('matcherRow', () => {
         urlFilter: 'example.com',
       })
 
-      // Input should have flex-1 to grow and fill space
+      // Input uses the shared matcher field styling
       expect(html).toContain('matcher-row__url')
 
-      // Select should have rounded-r-md for right-rounded corners
+      // Select uses the shared resource type styling
       expect(html).toContain('matcher-row__select')
     })
 
