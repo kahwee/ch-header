@@ -43,7 +43,7 @@ export function buildMatcherRowHTML(m: MatcherRowOptions): string {
             <option value="stylesheet" ${selectedTypes.includes('stylesheet') ? 'selected' : ''}>Stylesheets</option>
             <option value="image" ${selectedTypes.includes('image') ? 'selected' : ''}>Images</option>
             <option value="font" ${selectedTypes.includes('font') ? 'selected' : ''}>Fonts</option>
-            <option value="document" ${selectedTypes.includes('document') ? 'selected' : ''}>Documents</option>
+            <option value="main_frame" ${selectedTypes.includes('main_frame') || selectedTypes.includes('document') ? 'selected' : ''}>Documents</option>
             <option value="sub_frame" ${selectedTypes.includes('sub_frame') ? 'selected' : ''}>Iframes</option>
           </select>
           <svg viewBox="0 0 16 16" fill="currentColor" aria-hidden="true" class="matcher-row__chevron">

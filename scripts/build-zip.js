@@ -1,60 +1,28 @@
 #!/usr/bin/env node
-/**
- * Build script to create ZIP package of Chrome extension
- * Usage: node scripts/build-zip.js
- */
+import { execFileSync } from 'node:child_process'
+import { createHash } from 'node:crypto'
+import { existsSync, readFileSync, rmSync, writeFileSync } from 'node:fs'
+import { resolve } from 'node:path'
 
-import { execSync } from 'child_process'
-import { existsSync, readFileSync, statSync } from 'fs'
-import { resolve } from 'path'
-
-const distDir = resolve('./dist')
-const packageJsonPath = resolve('./package.json')
-
-// Check if dist folder exists
-if (!existsSync(distDir)) {
-  console.error('❌ dist/ folder not found. Run `pnpm run build` first.')
-  process.exit(1)
+const root = resolve(import.meta.dirname, '..')
+const dist = resolve(root, 'dist')
+const { name, version } = JSON.parse(readFileSync(resolve(root, 'package.json'), 'utf8'))
+const manifest = JSON.parse(readFileSync(resolve(dist, 'manifest.json'), 'utf8'))
+if (manifest.version !== version) throw new Error('Stale build: run pnpm build first')
+for (const file of [
+  manifest.action.default_popup,
+  manifest.background.service_worker,
+  ...Object.values(manifest.icons),
+]) {
+  if (!existsSync(resolve(dist, file))) throw new Error(`Missing extension file: ${file}`)
 }
-
-// Read package.json to get version and name
-const packageJson = JSON.parse(readFileSync(packageJsonPath, 'utf-8'))
-const { name, version } = packageJson
-
-const zipName = `${name}-${version}.zip`
-const distFolder = resolve('./dist')
-const zipPath = resolve(distFolder, zipName)
-
-try {
-  console.log(`📦 Creating ${zipName}...`)
-
-  // Create ZIP file from dist directory (output to dist folder)
-  // Exclude common unwanted files and the zip file itself
-  execSync(
-    `cd dist && zip -r "${zipName}" . -x "*.DS_Store" ".git/*" "node_modules/*" "*.zip" && cd ..`,
-    { stdio: 'inherit' }
-  )
-
-  console.log(`✅ Successfully created: ${zipName}`)
-  console.log(`📍 Location: ${zipPath}`)
-  console.log(`📊 Size: ${getFileSizeString(zipPath)}`)
-  console.log()
-  console.log('📖 Next steps:')
-  console.log('1. Test locally: Load unpacked folder in chrome://extensions/')
-  console.log('2. Or upload to Chrome Web Store for distribution')
-  console.log()
-} catch (err) {
-  console.error('❌ Failed to create ZIP file:')
-  console.error(err.message)
-  process.exit(1)
-}
-
-function getFileSizeString(filePath) {
-  const stats = statSync(filePath)
-  const bytes = stats.size
-  if (bytes === 0) return '0 Bytes'
-  const k = 1024
-  const sizes = ['Bytes', 'KB', 'MB']
-  const i = Math.floor(Math.log(bytes) / Math.log(k))
-  return Math.round((bytes / Math.pow(k, i)) * 100) / 100 + ' ' + sizes[i]
-}
+const filename = `${name}-${version}.zip`
+const archive = resolve(dist, filename)
+rmSync(archive, { force: true })
+execFileSync('zip', ['-qr', filename, '.', '-x', '*.zip', '*.sha256', '*.DS_Store'], {
+  cwd: dist,
+  stdio: 'inherit',
+})
+const hash = createHash('sha256').update(readFileSync(archive)).digest('hex')
+writeFileSync(`${archive}.sha256`, `${hash}  ${filename}\n`)
+console.log(`Created ${archive} and SHA-256 checksum`)

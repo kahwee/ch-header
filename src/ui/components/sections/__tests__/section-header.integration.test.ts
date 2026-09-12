@@ -2,6 +2,25 @@ import { describe, it, expect } from 'vitest'
 import { sectionHeader } from '../section-header'
 
 describe('sectionHeader - Integration Tests', () => {
+  it('does not submit the profile form when adding a row', () => {
+    const form = document.createElement('form')
+    form.innerHTML = sectionHeader({
+      title: 'Request headers',
+      addButtonId: 'addReq',
+      addButtonTitle: 'Add header',
+      menuItems: [],
+    })
+    document.body.append(form)
+    let submissions = 0
+    form.addEventListener('submit', (event) => {
+      event.preventDefault()
+      submissions++
+    })
+    form.querySelector<HTMLButtonElement>('#addReq')!.click()
+    expect(submissions).toBe(0)
+    form.remove()
+  })
+
   describe('Popup template integration patterns', () => {
     it('should render matchers header with correct config', () => {
       const html = sectionHeader({

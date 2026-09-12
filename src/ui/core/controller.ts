@@ -52,7 +52,7 @@ export class PopupController {
     const newProfile: Profile = {
       id: crypto.randomUUID(),
       name: 'New profile',
-      color: '#6b4eff',
+      color: 'blue-700',
       enabled: false,
       notes: '',
       matchers: [{ id: crypto.randomUUID(), urlFilter: '*', resourceTypes: [] }],
@@ -326,7 +326,7 @@ export class PopupController {
       const newProfile: Profile = {
         id: crypto.randomUUID(),
         name: typeof profileData.name === 'string' ? profileData.name : 'Imported profile',
-        color: typeof profileData.color === 'string' ? profileData.color : '#6b4eff',
+        color: typeof profileData.color === 'string' ? profileData.color : 'blue-700',
         enabled: false,
         notes: typeof profileData.notes === 'string' ? profileData.notes : '',
         matchers: this.validateMatchers(profileData.matchers),

@@ -34,6 +34,12 @@ const DEFAULT_RESOURCE_TYPES = [
   'script',
   'image',
   'stylesheet',
+  'font',
+  'media',
+  'csp_report',
+  'websocket',
+  'webtransport',
+  'webbundle',
   'object',
   'ping',
   'other',
@@ -120,10 +126,15 @@ export function buildRulesFromProfile(
 
   for (const m of uniqueMatchers) {
     const condition: chrome.declarativeNetRequest.RuleCondition = {
-      urlFilter: m.urlFilter || '*',
+      ...(m.urlFilter?.startsWith('regex:')
+        ? { regexFilter: m.urlFilter.slice(6) }
+        : { urlFilter: m.urlFilter || '*' }),
       resourceTypes: (m.resourceTypes?.length
         ? m.resourceTypes
-        : Array.from(DEFAULT_RESOURCE_TYPES)) as chrome.declarativeNetRequest.ResourceType[],
+        : Array.from(DEFAULT_RESOURCE_TYPES)
+      ).map((type) =>
+        type === 'document' ? 'main_frame' : type
+      ) as chrome.declarativeNetRequest.ResourceType[],
     }
 
     const action = buildModifyHeadersAction(requestHeaders, responseHeaders)

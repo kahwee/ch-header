@@ -30,6 +30,27 @@ describe('DNR Rules', () => {
   })
 
   describe('buildRulesFromProfile', () => {
+    it('uses a Chrome regex condition and normalizes legacy document types', () => {
+      const rules = buildRulesFromProfile({
+        id: 'regex-profile',
+        name: 'Regex',
+        color: '#000000',
+        enabled: true,
+        matchers: [
+          {
+            id: 'regex',
+            urlFilter: 'regex:^http://127\\.0\\.0\\.1:3002/match/',
+            resourceTypes: ['document'],
+          },
+        ],
+        requestHeaders: [{ id: 'header', header: 'X-Test', value: 'enabled' }],
+        responseHeaders: [],
+      })
+      expect(rules[0].condition.regexFilter).toBe('^http://127\\.0\\.0\\.1:3002/match/')
+      expect(rules[0].condition).not.toHaveProperty('urlFilter')
+      expect(rules[0].condition.resourceTypes).toEqual(['main_frame'])
+    })
+
     it('should return empty array for null profile', () => {
       const rules = buildRulesFromProfile(null)
       expect(rules).toEqual([])
@@ -49,6 +70,9 @@ describe('DNR Rules', () => {
       const rules = buildRulesFromProfile(profile)
 
       expect(rules).toHaveLength(1)
+      expect(rules[0].condition.resourceTypes).toEqual(
+        expect.arrayContaining(['main_frame', 'font', 'media', 'websocket'])
+      )
       expect(rules[0].action.type).toBe('modifyHeaders')
       expect(rules[0].action.requestHeaders).toHaveLength(1)
       expect(rules[0].action.requestHeaders![0].header).toBe('X-Custom')

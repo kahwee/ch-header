@@ -1,77 +1,39 @@
 name: ChHeader CI
-
 on:
   push:
-    branches: [main, develop]
+    branches: [main]
   pull_request:
-    branches: [main, develop]
-
+    branches: [main]
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
 jobs:
-  test:
+  verify:
     runs-on: ubuntu-latest
-
+    timeout-minutes: 15
     steps:
-      - uses: actions/checkout@v4
-
-      - name: Reject npm lockfiles
-        run: test ! -e package-lock.json
-
-      - name: Setup pnpm
-        uses: pnpm/action-setup@v6
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: pnpm/action-setup@ea17c68df8912ef543352723c149a84f56e3d413 # v6.1.0
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
         with:
-          version: 11.24.0
-
-      - name: Use Node.js 25.1.0
-        uses: actions/setup-node@v4
+          node-version-file: .node-version
+          cache: pnpm
+      - run: test ! -e package-lock.json
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm typecheck
+      - run: pnpm format:check
+      - run: pnpm test:coverage
+      - run: pnpm build:package
+      - run: pnpm storybook:build
+      - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
-          node-version: '25.1.0'
-          cache: 'pnpm'
-
-      - name: Install dependencies
-        run: pnpm install --frozen-lockfile
-
-      - name: Type check
-        run: pnpm run typecheck
-
-      - name: Format check
-        run: pnpm run format:check
-
-      - name: Run tests
-        run: pnpm run test
-
-      - name: Build extension
-        run: pnpm run build
-
-  coverage:
-    runs-on: ubuntu-latest
-    needs: test
-
-    steps:
-      - uses: actions/checkout@v4
-
-      - name: Reject npm lockfiles
-        run: test ! -e package-lock.json
-
-      - name: Setup pnpm
-        uses: pnpm/action-setup@v6
-        with:
-          version: 11.24.0
-
-      - name: Use Node.js 25.1.0
-        uses: actions/setup-node@v4
-        with:
-          node-version: '25.1.0'
-          cache: 'pnpm'
-
-      - name: Install dependencies
-        run: pnpm install --frozen-lockfile
-
-      - name: Generate coverage report
-        run: pnpm run test:coverage
-
-      - name: Upload coverage to Coveralls
-        uses: coverallsapp/github-action@v2
-        with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
-          files: ./coverage/lcov.info
-          fail-on-error: false
+          name: extension-and-coverage
+          path: |
+            dist/*.zip
+            dist/*.sha256
+            coverage/
+          if-no-files-found: error
+          retention-days: 14

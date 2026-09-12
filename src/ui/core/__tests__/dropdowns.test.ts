@@ -37,5 +37,19 @@ describe('setupDropdowns', () => {
     trigger.click()
     document.body.click()
     expect(menu.hidden).toBe(true)
+    expect(trigger.getAttribute('aria-expanded')).toBe('false')
+  })
+  it('supports arrow-key entry and Escape with focus restored', () => {
+    const trigger = document.querySelector<HTMLButtonElement>('.dropdown__trigger')!
+    const menu = document.querySelector<HTMLElement>('.dropdown__menu')!
+    const item = menu.querySelector('button')!
+    trigger.focus()
+    trigger.dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowDown', bubbles: true }))
+    expect(document.activeElement).toBe(item)
+    expect(menu.hidden).toBe(false)
+    item.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape', bubbles: true }))
+    expect(menu.hidden).toBe(true)
+    expect(trigger.getAttribute('aria-expanded')).toBe('false')
+    expect(document.activeElement).toBe(trigger)
   })
 })

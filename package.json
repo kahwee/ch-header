@@ -1,17 +1,17 @@
 {
   "name": "ch-header",
   "description": "ChHeader - Profile-based header editor with Manifest V3",
-  "version": "0.2.2",
+  "version": "0.3.0",
   "type": "module",
   "devEngines": {
     "packageManager": {
       "name": "pnpm",
-      "version": "11.24.0",
+      "version": "11.25.0",
       "onFail": "error"
     }
   },
   "engines": {
-    "node": ">=25.1.0"
+    "node": ">=26.7.0"
   },
   "scripts": {
     "dev": "vite",
@@ -21,16 +21,15 @@
     "preview": "vite preview",
     "test": "vitest",
     "test:ui": "vitest --ui",
-    "test:unit": "vitest run --project unit",
-    "test:browser": "vitest --project browser",
-    "test:browser:ui": "vitest --project browser --ui",
     "test:run": "vitest run",
     "test:coverage": "vitest run --coverage",
     "typecheck": "tsc --noEmit",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
     "storybook": "storybook dev -p 6006",
-    "storybook:build": "storybook build"
+    "storybook:build": "storybook build",
+    "dev:extension": "vite build --watch",
+    "test:headers": "node scripts/header-check.js"
   },
   "devDependencies": {
     "@storybook/html": "^10.6.0",
@@ -52,5 +51,6 @@
   },
   "optionalDependencies": {
     "@rollup/rollup-linux-x64-gnu": "^4.63.1"
-  }
+  },
+  "packageManager": "pnpm@11.25.0"
 }

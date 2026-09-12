@@ -1,228 +1,125 @@
-# ChHeader
+<p align="center"><img src="public/icons/logo.svg" width="64" height="64" alt="ChHeader logo"></p>
+<h1 align="center">ChHeader</h1>
+<p align="center">HTTP headers, organized into profiles.</p>
+<p align="center">
+  <a href="https://github.com/kahwee/ch-header/actions/workflows/ci.yml"><img src="https://github.com/kahwee/ch-header/actions/workflows/ci.yml/badge.svg" alt="CI status"></a>
+  <a href="https://github.com/kahwee/ch-header/releases/latest">Download the latest release</a>
+</p>
 
-A profile-based HTTP header editor for Chrome using Manifest V3 and declarativeNetRequest.
+ChHeader is a small Chrome extension for developers testing APIs and websites.
+Set request and response headers, scope them to URLs and request types, and
+switch between saved profiles. It uses Manifest V3 declarative rules and stores
+profiles locally in your browser.
 
-[![CI Status](https://github.com/kahwee/ch-header/workflows/ChHeader%20CI/badge.svg)](https://github.com/kahwee/ch-header/actions)
-[![Coverage Status](https://coveralls.io/repos/github/kahwee/ch-header/badge.svg?branch=main)](https://coveralls.io/github/kahwee/ch-header?branch=main)
+![ChHeader toolbar popup with a localhost development profile](docs/screenshots/popup.jpg)
 
-## Features
+## What it does
 
-- Multiple header profiles with search and filtering
-- Three matcher formats: simple domains, wildcards, and regex patterns
-- Apply headers to specific request types (XHR, scripts, stylesheets, images, fonts, documents, iframes)
-- Modify request and response headers
-- Profile colors for quick identification
-- Declarative rules for immediate application
+- Set or replace request and response headers, with per-header toggles.
+- Match domains, wildcard paths or `regex:` patterns; filter Documents, XHR/Fetch
+  and other request types.
+- Search profiles, add notes, choose a color, duplicate, or import JSON.
+- Keep editing compact: Chrome-inspired dark colors, a scrolling editor and an
+  always-visible Apply footer. One profile is active at a time.
 
-## Installation
+<details>
+<summary>Profile colors and controls</summary>
 
-### 1. Install dependencies
+![Tonal profile palette in the Chrome toolbar popup](docs/screenshots/palette.jpg)
 
-```bash
-pnpm install
+A cohesive tonal palette, legible initials, and subtle elevation on menus and
+controls keep profiles distinct without overwhelming the editor.
+
+</details>
+
+## Install
+
+1. Download the ZIP from [Releases](https://github.com/kahwee/ch-header/releases/latest)
+   and extract it into a permanent folder.
+2. Open `chrome://extensions/`, enable **Developer mode**, and choose **Load unpacked**.
+3. Select the extracted folder containing `manifest.json`, then open ChHeader from
+   Chrome's Extensions menu. Pin it for easy access.
+
+To update, replace the files in that folder and click **Reload** in Chrome's
+Extensions page. The release includes a SHA-256 checksum for the ZIP. GitHub is
+currently the distribution channel; this is not a Chrome Web Store installation.
+
+## Use a profile
+
+Click **New**, name the profile, and add a URL matcher before enabling it. Add
+header names and values, turn on **Enable this profile**, and click **Apply**.
+Edits are saved locally, and edits to an enabled profile update its rules.
+Turn the profile off to restore normal requests.
+
+| Matcher             | Example                                  |
+| ------------------- | ---------------------------------------- |
+| Domain or localhost | `127.0.0.1:3002`                         |
+| Wildcard path       | `127.0.0.1:3002/match/*`                 |
+| Regular expression  | `regex:^http://127\.0\.0\.1:3002/match/` |
+| All URLs            | Leave the matcher empty                  |
+
+Matchers follow Chrome's [declarativeNetRequest rules](https://developer.chrome.com/docs/extensions/reference/api/declarativeNetRequest).
+Regex syntax follows RE2. Disable the profile while editing an incomplete regex;
+inline validation is not yet available. Chrome controls which headers and browser
+pages extensions can modify.
+
+Try **Options → Import profile** with [this localhost example](docs/examples/local-profile.json).
+Imports start disabled. The extension requests site access to apply headers across
+the URLs you configure; keep test profiles scoped to the intended hosts.
+
+## Develop and test
+
+Use Node **26.7.0** and pnpm **11.25.0** (also declared in the repository):
+
+```sh
+pnpm install --frozen-lockfile
+pnpm build
 ```
 
-### 2. Build the extension
+Load `dist/` unpacked in Chrome. `pnpm dev:extension` rebuilds on changes; reload
+ChHeader in Chrome after rebuilding. `pnpm dev` serves a web preview, while
+`pnpm storybook` opens isolated component examples.
 
-```bash
-pnpm run build
+```sh
+pnpm typecheck
+pnpm format:check
+pnpm test:coverage
+pnpm build:package
+pnpm storybook:build
+pnpm test:headers
 ```
 
-### 3. Load in Chrome
+The last command starts the localhost fixture at `http://127.0.0.1:3002/`.
+It shows the headers received by the server and returned through Chrome, so you
+can verify the installed extension rather than relying on mocked APIs.
 
-1. Open `chrome://extensions/`
-2. Enable **Developer mode** (toggle in top right)
-3. Click **Load unpacked**
-4. Select the `dist/` folder
+<details>
+<summary>See a real localhost test result</summary>
 
-### 4. Development mode
+![Local fixture showing modified request and response headers](docs/screenshots/header-check.jpg)
 
-```bash
-pnpm run dev
-```
+Captured in Chrome with the localhost profile enabled and **All request types**
+selected. The popup screenshot above uses the same setting.
 
-Watch mode builds the extension automatically. Reload the extension in `chrome://extensions/` to see changes.
+</details>
 
-## Usage
+See [TESTING.md](TESTING.md) for the test matrix, results, known limits and release
+checklist; [AGENTS.md](AGENTS.md) for contributor guidance; and
+[design QA](design-qa.md) for the before/after review.
 
-### Creating a Profile
+## Roadmap and releases
 
-1. Click **New** to create a profile
-2. Enter a profile name, optional notes, and select a color
-3. Add matchers to specify which URLs the headers apply to
-4. Add request and/or response headers
-5. Toggle **Enable this profile** and click **Apply**
+The aim is a dependable, compact developer tool that feels at home in Chrome.
+This is a rough sequence, not a promise of delivery dates.
 
-### URL Matchers
+| Stage        | Focus                                                                                       | Timing                       |
+| ------------ | ------------------------------------------------------------------------------------------- | ---------------------------- |
+| 0.3.0        | Chrome-style UI, refreshed identity, matching fixes, repeatable QA and release automation   | September 2026               |
+| Next patches | Feedback-driven fixes, clearer rule errors and inline matcher validation                    | As fixes are verified        |
+| Next minor   | Light/system theme, stronger import validation, broader keyboard and accessibility coverage | After the current UI settles |
+| Later        | Profile export, wider browser/platform testing and Chrome Web Store distribution            | To be evaluated              |
 
-The extension supports three matcher formats:
-
-**Simple Format**
-
-Type a domain to match that domain and all its paths:
-
-```
-localhost:3002         → localhost:3002 and all paths
-api.example.com        → api.example.com and all paths
-```
-
-Empty matcher applies to all domains.
-
-**Wildcard Format**
-
-Use `*` for flexible matching:
-
-```
-localhost:300*         → localhost:3000-3009
-*.api.example.com      → All subdomains
-example.com/api/*      → Only /api/* paths
-```
-
-**Regex Format**
-
-Use `regex:` prefix for regular expressions:
-
-```
-regex:localhost:30(0[0-9])
-regex:(staging|prod)\.example\.com
-regex:^https://.*\.example\.com/api
-```
-
-### Request Type Filtering
-
-Headers can be filtered by request type:
-
-- All request types (default)
-- XHR/Fetch
-- Scripts
-- Stylesheets
-- Images
-- Fonts
-- Documents
-- Iframes
-
-### Header Modification
-
-Headers are added if they don't exist, or replaced if they do. Both request and response headers are supported.
-
-## Development
-
-### Code Quality
-
-```bash
-# Type checking
-pnpm run typecheck
-
-# Format code with Prettier
-pnpm run format
-
-# Check formatting
-pnpm run format:check
-
-# Run tests
-pnpm run test
-
-# Run tests in UI mode
-pnpm run test:ui
-
-# Run Storybook for component testing
-pnpm run storybook
-```
-
-### Project Structure
-
-```
-src/
-├── manifest.json              # Extension manifest (V3)
-├── background.ts              # Service worker with DNR rule management
-├── ui/
-│   ├── popup.html            # Popup UI
-│   ├── popup.ts              # Popup UI logic and event handlers
-│   ├── popup-template.ts      # Shared template functions
-│   ├── controller.ts          # Business logic controller (testable)
-│   ├── utils.ts              # Utility functions (escapeHtml, color helpers)
-│   ├── styles.css            # native CSS styles
-│   ├── components/           # Reusable UI template functions
-│   │   ├── button.ts         # Action button template
-│   │   ├── matcher-row.ts    # Matcher row template (uses matcher-row.render.ts)
-│   │   ├── header-row.ts     # Header row template (uses header-row.render.ts)
-│   │   ├── avatar.ts         # Avatar component
-│   │   └── checkbox-element.ts # Custom checkbox element
-│   ├── lib/                  # Component classes and shared rendering
-│   │   ├── component.ts      # Base Component class (lifecycle management)
-│   │   ├── matcher-row.render.ts  # Shared buildMatcherRowHTML() function
-│   │   ├── matcher-row.component.ts # MatcherRowComponent
-│   │   ├── header-row.render.ts    # Shared buildHeaderRowHTML() function
-│   │   ├── header-row.component.ts # HeaderRowComponent
-│   │   ├── matcher-table-component.ts # MatcherTableComponent
-│   │   ├── header-table-component.ts  # HeaderTableComponent
-│   │   ├── profile-card-component.ts # ProfileCard
-│   │   └── __tests__/        # Component tests
-│   │       ├── component.test.ts
-│   │       ├── matcher-row.component.test.ts
-│   │       ├── header-row.component.test.ts
-│   │       ├── matcher-table-component.test.ts
-│   │       ├── header-table-component.test.ts
-│   │       └── profile-card-component.test.ts
-│   ├── __tests__/            # UI tests
-│   │   ├── matcher-row.test.ts
-│   │   ├── popup.ui.test.ts
-│   │   └── controller.test.ts
-│   └── stories/              # Storybook component stories
-├── lib/
-│   ├── types.ts              # TypeScript type definitions
-│   ├── matcher.ts            # Matcher format parsing and validation
-│   ├── dnr-rules.ts          # DNR rule generation
-│   ├── storage.ts            # Chrome storage management
-│   └── __tests__/            # Library tests
-│       ├── matcher.test.ts   # 38 matcher format tests
-│       ├── dnr-rules.test.ts # DNR rule tests
-│       └── types.test.ts     # Type validation tests
-└── icons/                    # Extension icons (16, 32, 128px PNGs)
-```
-
-### File Naming Convention
-
-The codebase uses a consistent naming convention for UI components:
-
-- **`{name}.render.ts`** - Shared HTML builder function (single source of truth)
-  - Example: `matcher-row.render.ts` exports `buildMatcherRowHTML()`
-  - Used by both template functions and component classes
-
-- **`{name}.ts`** (in `components/`) - Template function for Storybook
-  - Example: `components/matcher-row.ts` imports from `matcher-row.render.ts`
-  - Delegates to the shared builder function
-
-- **`{name}.component.ts`** (in `lib/`) - Interactive Component class
-  - Example: `lib/matcher-row.component.ts` extends `Component` base class
-  - Handles event listeners and lifecycle management
-
-- **`{name}.component.test.ts`** - Component tests
-  - Tests the interactive component behavior
-
-## Implementation
-
-### APIs Used
-
-- `declarativeNetRequest` for header modification
-- `chrome.storage.local` for profile persistence
-- `chrome.runtime.sendMessage` for inter-process communication
-- Service worker for background processing
-
-### Code Structure
-
-- **popup.ts**: UI event handling and DOM manipulation
-- **controller.ts**: Business logic (no DOM dependencies, fully testable)
-- **matcher.ts**: Matcher format parsing and validation
-- **dnr-rules.ts**: Declarative rule generation
-- **background.ts**: Service worker for rule management
-
-### Language & Type Safety
-
-- TypeScript with strict mode
-- Zero `any` types
-- Full Chrome API type definitions
-
-## License
-
-MIT
+CI runs on pull requests and main-branch pushes. An annotated `vX.Y.Z` tag runs the
+release checks, validates the package version, and publishes a ZIP and checksum.
+There are no scheduled CI jobs. Patch releases follow verified fixes; minor
+releases group coherent improvements. See [release notes](RELEASE_NOTES.md).

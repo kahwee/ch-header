@@ -24,8 +24,8 @@ const CHECKBOX_STYLES = `
     display: grid;
     grid-template-columns: 1fr;
     grid-template-rows: 1fr;
-    width: 1.25rem;
-    height: 1.25rem;
+    width: 16px;
+    height: 16px;
   }
 
   .checkbox-input {
@@ -33,8 +33,8 @@ const CHECKBOX_STYLES = `
     grid-row: 1;
     appearance: none;
     border-radius: 0.125rem;
-    border: 1px solid rgb(255 255 255 / 0.1);
-    background-color: rgb(255 255 255 / 0.05);
+    border: 1px solid var(--line-strong, #5f6368);
+    background-color: var(--field, #292a2d);
     cursor: pointer;
     margin: 0;
     padding: 0;
@@ -44,18 +44,47 @@ const CHECKBOX_STYLES = `
   }
 
   .checkbox-input:checked {
-    border-color: rgb(29 78 216);
-    background-color: rgb(29 78 216);
+    border-color: var(--accent, #8ab4f8);
+    background-color: var(--accent, #8ab4f8);
   }
 
   .checkbox-input:indeterminate {
-    border-color: rgb(29 78 216);
-    background-color: rgb(29 78 216);
+    border-color: var(--accent, #8ab4f8);
+    background-color: var(--accent, #8ab4f8);
   }
 
   .checkbox-input:focus-visible {
-    outline: 2px solid rgb(29 78 216);
+    outline: 2px solid var(--accent, #8ab4f8);
     outline-offset: 2px;
+  }
+
+  :host([switch]) .group {
+    width: 32px;
+    height: 18px;
+  }
+  :host([switch]) .checkbox-input {
+    border-radius: 10px;
+    background: var(--line-strong, #5f6368);
+  }
+  :host([switch]) .checkbox-input::after {
+    content: '';
+    display: block;
+    width: 12px;
+    height: 12px;
+    margin: 2px;
+    border-radius: 50%;
+    background: var(--text, #e8eaed);
+    transition: transform 140ms;
+  }
+  :host([switch]) .checkbox-input:checked {
+    background: var(--accent, #8ab4f8);
+  }
+  :host([switch]) .checkbox-input:checked::after {
+    transform: translateX(14px);
+    background: var(--on-accent, #202124);
+  }
+  :host([switch]) .checkbox-icon {
+    display: none;
   }
 
   .checkbox-input:disabled {
@@ -76,7 +105,7 @@ const CHECKBOX_STYLES = `
     height: 0.875rem;
     align-self: center;
     justify-self: center;
-    stroke: white;
+    stroke: var(--on-accent, #202124);
     stroke-width: 2;
   }
 
@@ -132,6 +161,11 @@ export class CheckboxElement extends HTMLElement {
   }
 
   connectedCallback() {
+    this.input.setAttribute(
+      'aria-label',
+      this.getAttribute('aria-label') || this.title || 'Enabled'
+    )
+    if (this.hasAttribute('switch')) this.input.setAttribute('role', 'switch')
     this.setupEventListeners()
   }
 

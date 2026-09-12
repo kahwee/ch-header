@@ -39,7 +39,7 @@ export function buildSectionHeaderHTML(opts: SectionHeaderOptions): string {
     <h2 class="section-header__title">${opts.title}</h2>
     <div aria-hidden="true" class="section-header__rule"></div>
     <div class="section-header__actions">
-      <button id="${opts.addButtonId}" class="button button--primary button--sm" title="${opts.addButtonTitle}">
+      <button type="button" id="${opts.addButtonId}" class="button button--secondary button--sm" title="${opts.addButtonTitle}">
         <span class="button__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg></span>
         <span>Add</span>
       </button>

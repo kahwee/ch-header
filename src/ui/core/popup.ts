@@ -1,3 +1,4 @@
+import { resolveProfileColor, profileColorInk } from './profile-colors'
 import { STORAGE_KEYS, type ExtensionStorage, Profile, State } from '../../lib/types'
 import { PopupController } from './controller'
 import { profileListItem, getPopupTemplate, COLOR_PALETTE } from './popup-template'
@@ -194,52 +195,23 @@ function saveProfiles(): Promise<void> {
 }
 
 function renderList(): void {
-  const q = (el.sidebarSearch?.value || '').toLowerCase()
+  const q = (el.sidebarSearch?.value || '').trim().toLowerCase()
+  state.filtered = state.profiles.filter(
+    (p) => p.name.toLowerCase().includes(q) || (p.notes || '').toLowerCase().includes(q)
+  )
 
-  // Always show all profiles in "All Profiles" section
+  // Filter the existing list so each profile appears once and keyboard navigation
+  // follows the same visible results.
   if (el.list) {
-    el.list.innerHTML = state.profiles
+    el.list.innerHTML = state.filtered
       .map((p) => profileListItem(p, p.id === state.current?.id))
       .join('')
   }
-
-  // Handle search results filtering
-  if (q.length > 0) {
-    state.filtered = state.profiles.filter(
-      (p) => p.name.toLowerCase().includes(q) || (p.notes || '').toLowerCase().includes(q)
-    )
-
-    // Show search results group and populate with filtered items
-    if (el.searchResults) {
-      el.searchResults.removeAttribute('hidden')
-      el.searchResults.classList.add('p-2')
-      el.searchResults.innerHTML = `
-        <h2 class="search-results__title">Search results</h2>
-        <ul class="search-results__list" role="list">
-          ${state.filtered.map((p) => profileListItem(p, p.id === state.current?.id)).join('')}
-        </ul>
-      `
-    }
-
-    // Hide no results only if we have matches
-    const hasResults = state.filtered.length > 0
-    if (el.noResults) {
-      el.noResults.classList.toggle('hidden', hasResults)
-    }
-  } else {
-    // Hide search results group when search is empty
-    if (el.searchResults) {
-      el.searchResults.setAttribute('hidden', '')
-      el.searchResults.classList.remove('p-2')
-    }
-
-    // Hide no results when no search
-    if (el.noResults) {
-      el.noResults.classList.add('hidden')
-    }
+  if (el.searchResults) el.searchResults.hidden = true
+  if (el.noResults) {
+    el.noResults.classList.remove('hidden')
+    el.noResults.hidden = q.length === 0 || state.filtered.length > 0
   }
-
-  // Reset keyboard navigation state
   keyboardSelectedIndex = -1
 }
 
@@ -265,8 +237,9 @@ function select(id: string | null): void {
 
   if (el.name) el.name.value = p.name || ''
   if (el.profileAvatarBtn) {
-    const colorEntry = COLOR_PALETTE.find((c) => c.token === (p.color || 'purple-700'))
-    el.profileAvatarBtn.style.backgroundColor = colorEntry?.hex || '#7e22ce'
+    const color = resolveProfileColor(p.color)
+    el.profileAvatarBtn.style.backgroundColor = color
+    el.profileAvatarBtn.style.color = profileColorInk(color)
   }
   if (el.initials) el.initials.value = p.initials || ''
   if (el.notes) el.notes.value = p.notes || ''
@@ -276,7 +249,7 @@ function select(id: string | null): void {
   updateAvatarPreview(p.name, p.initials)
 
   // Highlight the selected color in the color picker
-  const colorToken = p.color || 'purple-700'
+  const colorToken = p.color || 'blue-700'
   updateSelectedColorIndicator(colorToken)
 
   renderMatchers()
@@ -300,6 +273,10 @@ function renderHeaders(): void {
 
 // Set up event listeners (called after elements are initialized)
 function setupEventListeners(): void {
+  el.detailPane?.addEventListener('submit', (event) => {
+    event.preventDefault()
+    void controller.onApply()
+  })
   if (el.sidebarSearch) {
     el.sidebarSearch.addEventListener('input', () => {
       renderList()
@@ -374,6 +351,7 @@ function setupEventListeners(): void {
         const colorEntry = COLOR_PALETTE.find((c) => c.token === colorToken)
         if (el.profileAvatarBtn && colorEntry) {
           el.profileAvatarBtn.style.backgroundColor = colorEntry.hex
+          el.profileAvatarBtn.style.color = profileColorInk(colorEntry.hex)
         }
         // Update the selected color visual indicator
         updateSelectedColorIndicator(colorToken)
@@ -429,7 +407,6 @@ document.addEventListener('click', (e) => {
   if (btn === el.addMatcher) return controller.onAddMatcher()
   if (btn === el.addReq) return controller.onAddHeader(true)
   if (btn === el.addRes) return controller.onAddHeader(false)
-  if (btn === el.apply) return controller.onApply()
 
   // Import menu items
   if (action === 'importHeaders') {
@@ -514,26 +491,16 @@ function updateAvatarPreview(name: string, customInitials?: string): void {
 
   if (el.profileAvatarInitials) {
     el.profileAvatarInitials.textContent = displayAvatar
-    // Ensure text shadow is applied
-    el.profileAvatarInitials.style.textShadow = '0 1px 3px rgba(0,0,0,0.5)'
+    el.profileAvatarInitials.style.textShadow = 'none'
   }
 }
 
 function updateSelectedColorIndicator(selectedColorToken: string): void {
-  const colorOptions = document.querySelectorAll('.color-option')
-  colorOptions.forEach((btn) => {
-    const buttonColorToken = btn.getAttribute('data-color')
-    const btnHex = btn.getAttribute('data-hex')
-    if (buttonColorToken === selectedColorToken) {
-      // Selected color - prominent white border
-      btn.setAttribute('style', `background-color: ${btnHex}; border: 3px solid white;`)
-    } else {
-      // Not selected - subtle border
-      btn.setAttribute(
-        'style',
-        `background-color: ${btnHex}; border: 2px solid rgba(255,255,255,0.2);`
-      )
-    }
+  const selectedColor = resolveProfileColor(selectedColorToken)
+  document.querySelectorAll<HTMLElement>('.color-option').forEach((button) => {
+    const selected = button.dataset.hex === selectedColor
+    button.classList.toggle('selected', selected)
+    button.setAttribute('aria-pressed', String(selected))
   })
 }
 

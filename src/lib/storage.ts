@@ -56,7 +56,7 @@ export async function initializeStorage(): Promise<void> {
     const sample: Profile = {
       id: crypto.randomUUID(),
       name: 'Sample: Staging APIs',
-      color: '#6b4eff',
+      color: 'blue-700',
       enabled: false,
       notes: 'Adds X-Env: staging to example.com',
       matchers: [{ id: crypto.randomUUID(), urlFilter: 'example.com' }],

@@ -8,35 +8,12 @@ import { renderAvatar } from '../components/common/avatar'
 import { menuItem } from '../components/menus/menu-item'
 import { escapeHtml } from './utils'
 import plusIcon from '../icons/plus.svg?raw'
+import logo from '../../../public/icons/logo.svg?raw'
 import searchIcon from '../icons/search.svg?raw'
 import folderPlusIcon from '../icons/folder-plus.svg?raw'
 
-/**
- * Stable profile color tokens retained for storage compatibility.
- */
-export const COLOR_PALETTE = [
-  { name: 'Red', token: 'red-700', hex: '#b91c1c' },
-  { name: 'Orange', token: 'orange-700', hex: '#b45309' },
-  { name: 'Amber', token: 'amber-700', hex: '#ca8a04' },
-  { name: 'Yellow', token: 'yellow-700', hex: '#a16207' },
-  { name: 'Lime', token: 'lime-700', hex: '#65a30d' },
-  { name: 'Green', token: 'green-700', hex: '#15803d' },
-  { name: 'Emerald', token: 'emerald-700', hex: '#047857' },
-  { name: 'Teal', token: 'teal-700', hex: '#0d9488' },
-  { name: 'Cyan', token: 'cyan-700', hex: '#0891b2' },
-  { name: 'Sky', token: 'sky-700', hex: '#0369a1' },
-  { name: 'Blue', token: 'blue-700', hex: '#1d4ed8' },
-  { name: 'Indigo', token: 'indigo-700', hex: '#4f46e5' },
-  { name: 'Violet', token: 'violet-700', hex: '#6d28d9' },
-  { name: 'Purple', token: 'purple-700', hex: '#7e22ce' },
-  { name: 'Fuchsia', token: 'fuchsia-700', hex: '#a21caf' },
-  { name: 'Pink', token: 'pink-700', hex: '#be185d' },
-  { name: 'Rose', token: 'rose-700', hex: '#be123c' },
-  { name: 'Gray', token: 'gray-700', hex: '#374151' },
-  { name: 'Zinc', token: 'zinc-700', hex: '#3f3f46' },
-  { name: 'Neutral', token: 'neutral-700', hex: '#404040' },
-  { name: 'Stone', token: 'stone-700', hex: '#44403c' },
-]
+import { COLOR_PALETTE, resolveProfileColor } from './profile-colors'
+export { COLOR_PALETTE } from './profile-colors'
 
 /**
  * Build a headers section (Request or Response)
@@ -92,8 +69,8 @@ function headersSection(type: 'req' | 'res', title: string, description: string)
 export function getSidebarTemplate(): string {
   return `<aside class="sidebar">
     <div class="sidebar__brand">
-      <div class="sidebar__brand-copy"><strong>ChHeader</strong><span>HTTP header profiles</span></div>
-      ${solidButton({ id: 'footerNewProfile', text: 'New', icon: plusIcon, variant: 'primary', size: 'md', title: 'Add new profile' })}
+      <div class="sidebar__brand-copy"><span class="brand-mark" aria-hidden="true">${logo}</span><strong>ChHeader</strong></div>
+      ${solidButton({ id: 'footerNewProfile', text: 'New', icon: plusIcon, variant: 'secondary', size: 'sm', title: 'Add new profile' })}
     </div>
     <div class="sidebar__toolbar">
       <div class="search-field">
@@ -144,7 +121,7 @@ export function getPopupTemplate(options?: { containerClass?: string }): string 
               <span id="profileAvatarInitials" style="text-shadow: 0 1px 3px rgba(0,0,0,0.5);">P</span>
             </button>
             <div class="profile-heading__name">
-              <input id="profileName" type="text" name="profileName" placeholder="Profile name" class="field field--profile-name" required />
+              <input id="profileName" type="text" name="profileName" placeholder="Profile name" aria-label="Profile name" class="field field--profile-name" required />
             </div>
             <div class="dropdown">
               <button type="button" class="button button--secondary button--md dropdown__trigger" aria-haspopup="menu" aria-expanded="false">
@@ -197,8 +174,9 @@ export function getPopupTemplate(options?: { containerClass?: string }): string 
             </div>
           </div>
           <input type="file" id="importFile" accept=".json" style="display: none;" />
+          <div class="profile-editor__body">
           <div class="profile-notes">
-            <textarea id="profileNotes" name="profileNotes" rows="3" class="field field--notes" placeholder="Describe what this profile changes…"></textarea>
+            <textarea id="profileNotes" name="profileNotes" rows="1" aria-label="Profile notes" class="field field--notes" placeholder="Describe what this profile changes…"></textarea>
           </div>
 
           ${headersSection('req', 'Request headers', '')}
@@ -214,9 +192,10 @@ export function getPopupTemplate(options?: { containerClass?: string }): string 
             <div id="matchers"></div>
           </section>
 
+          </div>
           <footer class="profile-footer">
             <div class="profile-footer__status">
-              <ch-checkbox id="enabled" data-role="enabled"></ch-checkbox>
+              <ch-checkbox id="enabled" data-role="enabled" aria-label="Enable this profile" switch></ch-checkbox>
               <div><strong>Enable this profile</strong><span>Apply these rules to matching requests</span></div>
             </div>
             <div>
@@ -257,9 +236,7 @@ export function profileListItem(
   const labelId = `profile-label-${p.id}`
 
   // Resolve the stored color token to its display value.
-  const colorToken = p.color || 'purple-700'
-  const colorEntry = COLOR_PALETTE.find((c) => c.token === colorToken)
-  const hexColor = colorEntry?.hex || '#7e22ce'
+  const hexColor = resolveProfileColor(p.color)
 
   return `
     <a href="#" aria-labelledby="${labelId}" aria-selected="${isActive}" data-id="${p.id}" class="profile-item ${isActive ? 'active' : ''}">

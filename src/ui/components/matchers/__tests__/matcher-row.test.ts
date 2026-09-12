@@ -140,7 +140,7 @@ describe('matcherRow', () => {
 
       // Unselected types should not have selected attribute
       expect(html).toContain('<option value="xmlhttprequest" >')
-      expect(html).toContain('<option value="document" >')
+      expect(html).toContain('<option value="main_frame" >')
     })
 
     it('should handle all resource types being selected', () => {
@@ -150,7 +150,7 @@ describe('matcherRow', () => {
         'stylesheet',
         'image',
         'font',
-        'document',
+        'main_frame',
         'sub_frame',
       ]
 

@@ -66,7 +66,7 @@ describe('sectionHeader', () => {
       expect(html).toContain('title="Add header"')
     })
 
-    it('should have primary button styling', () => {
+    it('should have secondary button styling', () => {
       const html = sectionHeader({
         title: 'Matchers',
         addButtonId: 'addMatcher',
@@ -74,9 +74,9 @@ describe('sectionHeader', () => {
         menuItems: [{ label: 'Clear all', action: 'clearMatchers' }],
       })
 
-      expect(html).toContain('button--primary')
-      expect(html).toContain('button--primary')
-      expect(html).toContain('button--primary')
+      expect(html).toContain('button--secondary')
+      expect(html).toContain('button--secondary')
+      expect(html).toContain('button--secondary')
     })
 
     it('should include icon in add button', () => {
