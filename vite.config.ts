@@ -21,6 +21,7 @@ const copyPlugin = {
     try {
       const distDir = resolve(projectDir, 'dist')
       mkdirSync(distDir, { recursive: true })
+      cpSync(resolve(projectDir, 'LICENSE'), resolve(distDir, 'LICENSE'))
 
       // Read package.json version
       const packageJsonPath = resolve(projectDir, 'package.json')

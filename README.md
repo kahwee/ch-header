@@ -71,3 +71,7 @@ pnpm dev:extension  # rebuild on edits; load dist/ unpacked and reload in Chrome
 `pnpm test:fast` runs focused workflow tests. `pnpm test:headers` starts the local
 header fixture at `http://127.0.0.1:3002`. See [TESTING.md](TESTING.md) for actual
 Chrome checks and [AGENTS.md](AGENTS.md) for contributor guidance.
+
+## License
+
+[MIT](LICENSE) · Copyright 2026 KahWee Teng.

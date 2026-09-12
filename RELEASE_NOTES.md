@@ -1,7 +1,11 @@
-## ChHeader 0.4.1 — prepared for submission
+## ChHeader 0.4.1
 
 - Blue gecko mascot across the popup, Chrome icons, README and store artwork.
+- MIT license included in the source and extension ZIP.
 - No changes to header rules or permissions.
+
+This GitHub release includes the 0.4.0 improvements below. Chrome Web Store
+approval is separate; this release does not imply Store availability.
 
 ## ChHeader 0.4.0 — prepared for submission
 
