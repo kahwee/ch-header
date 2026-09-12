@@ -1,5 +1,5 @@
 :root {
-  color-scheme: dark;
+  color-scheme: light dark;
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
   font-synthesis: none;
   text-rendering: optimizeLegibility;
@@ -19,9 +19,50 @@
   --accent-soft: #344158;
   --on-accent: #202124;
   --danger: #f28b82;
+  --danger-soft: rgb(242 139 130 / 10%);
+  --footer: #26282c;
+  --field-line: var(--line);
+  --color-ring: #ffffff;
+  --color-border: rgb(255 255 255 / 18%);
+  --switch-thumb: var(--text);
+  --status-on-text: #a8dab5;
+  --status-on-surface: #293c31;
+  --status-on-line: #4d765b;
   --radius-sm: 6px;
   --radius-md: 7px;
   --shadow-menu: 0 8px 24px rgb(0 0 0 / 32%), 0 2px 6px rgb(0 0 0 / 24%);
+}
+
+/* Follow the browser/OS appearance without changing saved profile colors. */
+@media (prefers-color-scheme: light) {
+  :root {
+    --canvas: #ffffff;
+    --sidebar: #f1f3f4;
+    --surface: #ffffff;
+    --surface-raised: #ffffff;
+    --surface-hover: #e8eaed;
+    --field: #ffffff;
+    --line: #dadce0;
+    --line-strong: #80868b;
+    --field-line: #80868b;
+    --text: #202124;
+    --text-soft: #3c4043;
+    --muted: #5f6368;
+    --accent: #185abc;
+    --accent-hover: #174ea6;
+    --accent-soft: #dce7fb;
+    --on-accent: #ffffff;
+    --danger: #b3261e;
+    --danger-soft: #fce8e6;
+    --footer: #f8f9fa;
+    --color-ring: #202124;
+    --color-border: rgb(32 33 36 / 25%);
+    --switch-thumb: #ffffff;
+    --status-on-text: #137333;
+    --status-on-surface: #e6f4ea;
+    --status-on-line: #34834b;
+    --shadow-menu: 0 8px 24px rgb(60 64 67 / 16%), 0 2px 6px rgb(60 64 67 / 12%);
+  }
 }
 
 * {
@@ -121,7 +162,7 @@ svg {
   padding: 0 8px 0 30px;
   color: var(--text);
   background: var(--field);
-  border: 1px solid var(--line);
+  border: 1px solid var(--field-line);
   border-radius: var(--radius-sm);
   outline: none;
 }
@@ -201,7 +242,7 @@ svg {
   font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
   font-size: 13px;
   font-weight: 600;
-  border: 1px solid rgb(255 255 255 / 18%);
+  border: 1px solid var(--color-border);
   border-radius: 50%;
   box-shadow: none;
 }
@@ -281,7 +322,7 @@ svg {
   min-width: 0;
   color: var(--text);
   background: var(--field);
-  border: 1px solid var(--line);
+  border: 1px solid var(--field-line);
   border-radius: var(--radius-sm);
   box-shadow: inset 0 1px 0 rgb(255 255 255 / 3%);
   outline: none;
@@ -452,7 +493,7 @@ svg {
 }
 .icon-button--danger:hover {
   color: var(--danger);
-  background: rgb(242 139 130 / 10%);
+  background: var(--danger-soft);
 }
 .icon-button--circle {
   border-radius: 50%;
@@ -552,7 +593,7 @@ svg {
   gap: 16px;
   min-height: 56px;
   padding: 12px 16px;
-  background: #26282c;
+  background: var(--footer);
   border-top: 1px solid var(--line);
   box-shadow: 0 -2px 8px rgb(0 0 0 / 12%);
 }
@@ -647,7 +688,7 @@ svg {
   width: 28px;
   height: 28px;
   padding: 0;
-  border: 2px solid rgb(255 255 255 / 18%);
+  border: 2px solid var(--color-border);
   border-radius: 50%;
   cursor: pointer;
   transition: 140ms ease;
@@ -658,7 +699,7 @@ svg {
 .color-option.selected {
   box-shadow:
     0 0 0 2px var(--surface-raised),
-    0 0 0 4px white;
+    0 0 0 4px var(--color-ring);
 }
 .color-popover__initials {
   display: grid;
@@ -805,9 +846,9 @@ svg {
   flex-shrink: 0;
 }
 .profile-status--on {
-  color: #a8dab5;
-  background: #293c31;
-  border-color: #4d765b;
+  color: var(--status-on-text);
+  background: var(--status-on-surface);
+  border-color: var(--status-on-line);
 }
 .profile-item__meta .profile-item__note {
   margin: 0;

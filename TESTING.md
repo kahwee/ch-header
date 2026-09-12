@@ -13,6 +13,30 @@ and action tests. `pnpm test:fast:watch` keeps it running while editing.
 Undo and status updates using the real popup template. `pnpm test` watches;
 `pnpm test:run` exits. Tests use jsdom and mocked Chrome APIs, so also test Chrome.
 
+## Fast harness
+
+`src/test/popup-harness.ts` mounts the production popup and custom checkbox, with
+real controller, storage and background modules. Its Chrome boundary clones stored
+values, emits storage events and records dynamic rules. Use `createPopupHarness()`,
+`click()` / `input()`, then `await chrome.settle()` before asserting rules. The
+settle operation queues Apply after earlier storage events; it needs no polling or
+sleep. DOM listeners, globals and module state are cleaned up after each test.
+
+The focused run passed 18 tests in 4 files in 0.77 seconds locally (Vitest-reported
+wall time; not a performance guarantee). It caught metadata edits replacing header
+inputs. Name, notes and color edits now save and update the list without rebuilding
+editor rows. Search also no longer renders the list twice per input event.
+
+After rebuilding and reloading the actual Chrome toolbar popup, the localhost-only
+“Harness smoke verified” profile imported off. Typing its name and pressing Enter
+preserved the rows and popup. Enabling it produced `enabled` on the document and
+`enabled` / `modified` for all three fetch paths. Disabling restored absent request
+headers and `original` responses. The demo profile remains off. Existing historical
+regex errors were retained; no additional entries appeared during the apply check.
+
+The harness does not validate Chrome's rule schema, measure layout at 744 × 440,
+or simulate real network requests. Keep the Chrome matrix below for those checks.
+
 ## Real Chrome check
 
 Build and reload `dist/` in `chrome://extensions/`. Open the toolbar popup,
@@ -71,6 +95,22 @@ Limits: this is not certification of every Chrome version, platform, screen read
 or resource type. Incomplete regex edits can still produce Chrome errors. Historical
 regex errors were retained; the new local profile applied successfully. Common
 credential-name masking is not a guarantee that an export contains no secrets.
+
+## Light appearance verification — September 12, 2026
+
+The actual toolbar popup now follows the system appearance. Computer Use checks
+covered the 744 × 440 editor, keyboard focus, color selection, invalid-import
+feedback, On/Off states and returning to dark mode. The localhost demo was left off
+and the original Auto system appearance was restored. Menu keyboard dismissal and
+focus restoration passed, but Computer Use could not capture the open menus.
+
+Light-theme contrast calculations: muted text on selection 4.86:1, primary actions
+6.51:1, error text 6.54:1, On badge 5.24:1 and field boundaries 3.68:1. These are
+source-token calculations, not full accessibility certification. Saved palette
+colors retain their existing values. `pnpm check` passed all 415 tests in 23 files,
+types, formatting, coverage, extension packaging and Storybook after the CSS change.
+
+See the [light-mode screenshot review](docs/qa/light-mode.md) for evidence and limits.
 
 ## Release checklist
 

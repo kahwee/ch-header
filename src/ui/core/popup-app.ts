@@ -426,7 +426,7 @@ export async function mountPopup(document: Document = globalThis.document): Prom
     renderList()
   }
 
-  // Initialize: template → elements → icons → event listeners → load
+  // Initialize the template and storage before wiring controls that use the controller.
   initializeTemplate()
   el = queryPopupElements(document)
   await load()

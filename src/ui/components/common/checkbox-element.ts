@@ -73,7 +73,7 @@ const CHECKBOX_STYLES = `
     height: 12px;
     margin: 2px;
     border-radius: 50%;
-    background: var(--text, #e8eaed);
+    background: var(--switch-thumb, #e8eaed);
     transition: transform 140ms;
   }
   :host([switch]) .checkbox-input:checked {

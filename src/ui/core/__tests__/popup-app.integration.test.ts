@@ -1,10 +1,5 @@
-import { afterEach, describe, expect, it, vi } from 'vitest'
+import { describe, expect, it } from 'vitest'
 import { createPopupHarness, localProfile } from '../../../test/popup-harness'
-
-afterEach(() => {
-  vi.unstubAllGlobals()
-  vi.resetModules()
-})
 
 describe('real popup through storage to background rules', () => {
   it('keeps selection separate from activation, persists edits, and clears disabled rules', async () => {

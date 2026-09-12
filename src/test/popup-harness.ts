@@ -21,6 +21,8 @@ afterEach(() => {
   cleanups.splice(0).forEach((cleanup) => {
     cleanup()
   })
+  vi.unstubAllGlobals()
+  vi.resetModules()
 })
 
 /** Uses production markup, event wiring, controller, storage and rule generation. */
