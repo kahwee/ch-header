@@ -1,0 +1,8 @@
+{
+  "name": "Local API",
+  "color": "#1d4ed8",
+  "notes": "Localhost request and response header check.",
+  "matchers": [{ "urlFilter": "127.0.0.1:3002" }],
+  "requestHeaders": [{ "header": "X-ChHeader-Test", "value": "enabled" }],
+  "responseHeaders": [{ "header": "X-ChHeader-Response", "value": "modified" }]
+}
