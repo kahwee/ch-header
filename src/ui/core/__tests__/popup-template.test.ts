@@ -252,7 +252,7 @@ describe('popup-template', () => {
     it('should have empty state section', () => {
       const html = getPopupTemplate()
       expect(html).toContain('id="detailEmpty"')
-      expect(html).toContain('No profiles')
+      expect(html).toContain('Make your first profile')
       expect(html).toContain('id="newProfileEmpty"')
     })
 

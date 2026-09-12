@@ -210,6 +210,27 @@ all profiles remained off. Storage failure and delayed results were injected onl
 the automated Chrome boundary. Dark appearance and real network tests were not
 repeated in this pass; previous network results remain documented above.
 
+## Empty-library first-run review (2026-09-12)
+
+Fixed initialization creating and activating a sample profile, including after a
+user intentionally emptied their library. First install now starts empty. Welcome
+explains the setup steps, offers Create/Import, and disables empty search/export.
+Create focuses the name; unmatched searches have a Clear search action.
+
+Automated: pinned Node 26.7.0 / pnpm 11.25.0 frozen install and `test:fast`
+passed; final `pnpm check` passed (432 tests in 25 files, types, format, lint,
+coverage, extension package and Storybook). Regression cases cover fresh/empty
+storage, first creation, deleting the last profile and Undo, creation during an
+unmatched search, clearing search, and importing from the welcome screen.
+
+Chrome browser preview used the production popup module and markup at 744 × 440
+with an isolated in-memory Chrome boundary. Light welcome layout, initial focus,
+Create/name focus/off state, Clear search and opening Import were checked through
+the requested browser tool. Computer Use found an unrelated sign-in prompt blocking
+the native toolbar; actual fresh-install toolbar and dark appearance checks were
+unavailable in this pass. Existing extension profiles were not changed. The preview
+does not establish Chrome storage or DNR acceptance.
+
 ## Release checklist
 
 1. Align `package.json` and `src/manifest.json`; update release notes and screenshots.

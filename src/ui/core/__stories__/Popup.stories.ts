@@ -281,6 +281,10 @@ export const Empty: Story = {
     const app = container.querySelector('#app')
     if (!app) throw new Error('App element not found')
 
+    app.querySelector<HTMLInputElement>('#sidebarSearch')!.disabled = true
+    app.querySelector<HTMLButtonElement>('[data-action="exportAll"]')!.disabled = true
+    app.querySelector<HTMLElement>('#emptyProfileList')!.hidden = false
+
     // Keep detail empty - no profile selected
     const detailPane = app.querySelector('#detail')
     if (detailPane) detailPane.classList.add('hidden')

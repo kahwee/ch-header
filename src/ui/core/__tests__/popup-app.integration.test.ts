@@ -209,3 +209,61 @@ describe('storage failure recovery', () => {
     )
   })
 })
+
+describe('first profile and empty library', () => {
+  it('offers a focused create action, disables unusable controls, and creates an off profile', async () => {
+    const h = await createPopupHarness([])
+    expect(h.query('#detailEmpty').classList.contains('hidden')).toBe(false)
+    expect(h.root.activeElement).toBe(h.query('#newProfileEmpty'))
+    expect(h.query<HTMLInputElement>('#sidebarSearch').disabled).toBe(true)
+    expect(h.query<HTMLButtonElement>('[data-action="exportAll"]').disabled).toBe(true)
+    h.click('#newProfileEmpty')
+    await h.chrome.settle()
+    expect(h.root.activeElement).toBe(h.query('#profileName'))
+    expect(h.query<HTMLInputElement>('#sidebarSearch').disabled).toBe(false)
+    expect(h.chrome.rules()).toEqual([])
+    expect(h.chrome.snapshot().profiles).toEqual([expect.objectContaining({ enabled: false })])
+    h.click('[data-action="delete"]')
+    expect(h.query('#detailEmpty').classList.contains('hidden')).toBe(false)
+    expect(h.root.activeElement).toBe(h.query('#newProfileEmpty'))
+    h.click('#undoDelete')
+    expect(h.query('#detailEmpty').classList.contains('hidden')).toBe(true)
+    expect(h.chrome.snapshot().profiles).toEqual([expect.objectContaining({ enabled: false })])
+  })
+  it('does not hide newly created profiles behind a stale search', async () => {
+    const h = await createPopupHarness()
+    h.input('#sidebarSearch', 'no-match')
+    h.click('#footerNewProfile')
+    expect(h.query<HTMLInputElement>('#sidebarSearch').value).toBe('')
+    expect(h.query('#profileList').textContent).toContain('New profile')
+    expect(h.query('#noResults').hidden).toBe(true)
+  })
+  it('recovers from no search results without altering profile data', async () => {
+    const h = await createPopupHarness()
+    const before = h.chrome.snapshot()
+    h.input('#sidebarSearch', 'no-match')
+    h.click('#clearProfileSearch')
+    expect(h.query('#noResults').hidden).toBe(true)
+    expect(h.root.activeElement).toBe(h.query('#sidebarSearch'))
+    expect(h.chrome.snapshot()).toEqual(before)
+  })
+})
+
+it('imports a first profile from the welcome screen and keeps it off', async () => {
+  const h = await createPopupHarness([])
+  const dialog = h.query<HTMLDialogElement>('#sharingDialog')
+  dialog.showModal = () => {
+    dialog.open = true
+  }
+  dialog.close = () => {
+    dialog.open = false
+  }
+  h.click('#detailEmpty [data-action="importProfile"]')
+  expect(h.query<HTMLDialogElement>('#sharingDialog').open).toBe(true)
+  h.input('#sharingJSON', JSON.stringify(localProfile()))
+  h.click('#sharingImport')
+  await h.chrome.settle()
+  expect(h.query('#detailEmpty').classList.contains('hidden')).toBe(true)
+  expect(h.query('#profileList').textContent).toContain('Local demo')
+  expect(h.chrome.rules()).toEqual([])
+})

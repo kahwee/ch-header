@@ -93,6 +93,7 @@ export function getSidebarTemplate(): string {
     </div>
     <div class="sidebar__list">
         <div id="profileList" class="profile-list"></div>
+        <p id="emptyProfileList" class="sidebar-empty" hidden>Your profiles will appear here.</p>
         <div hidden id="searchResults" class="search-results"></div>
         <div id="noResults" hidden class="empty-search">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" data-slot="icon" aria-hidden="true" class="empty-search__icon">
@@ -100,6 +101,7 @@ export function getSidebarTemplate(): string {
           </svg>
           <p class="empty-search__title">No results found</p>
           <p class="empty-search__copy">Try a different profile name or note.</p>
+          <button id="clearProfileSearch" type="button" class="button button--secondary button--sm">Clear search</button>
         </div>
     </div>
     <footer class="sidebar__footer"><button type="button" data-action="importProfile" class="button button--secondary button--sm">Import</button><button type="button" data-action="exportAll" class="button button--secondary button--sm">Export all</button></footer>
@@ -114,11 +116,18 @@ export function getPopupTemplate(options?: { containerClass?: string }): string 
       <section class="editor">
         <div id="detailEmpty" class="empty-state">
           ${folderPlusIcon}
-          <h3>No profiles</h3>
-          <p>Get started by creating a new profile.</p>
-          <div>
-            ${solidButton({ id: 'newProfileEmpty', text: 'New Profile', icon: plusIcon, variant: 'primary', size: 'md' })}
+          <h3>Make your first profile</h3>
+          <p>A profile groups the headers you want to change<br />and the sites where they apply.</p>
+          <ol class="empty-state__steps">
+            <li>Choose a site or URL rule.</li>
+            <li>Add a request or response header.</li>
+            <li>Turn the profile on when you’re ready.</li>
+          </ol>
+          <div class="empty-state__actions">
+            ${solidButton({ id: 'newProfileEmpty', text: 'Create profile', icon: plusIcon, variant: 'primary', size: 'md' })}
+            <button type="button" data-action="importProfile" class="button button--secondary button--md">Import profiles…</button>
           </div>
+          <p class="empty-state__reassurance">Profiles stay on this device. New profiles start off.</p>
         </div>
         <form id="detail" class="profile-editor hidden">
           <div class="profile-heading">

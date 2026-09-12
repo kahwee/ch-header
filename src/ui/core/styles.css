@@ -1034,3 +1034,36 @@ svg {
   color: var(--muted);
   background: var(--footer);
 }
+
+.sidebar-empty {
+  margin: 12px 8px;
+  color: var(--muted);
+  font-size: 12px;
+  line-height: 1.5;
+}
+.empty-state__steps {
+  margin: 0 0 22px;
+  padding-left: 22px;
+  text-align: left;
+  color: var(--text-soft);
+  font-size: 13px;
+  line-height: 1.9;
+}
+.empty-state__steps li::marker {
+  color: var(--accent);
+  font-weight: 600;
+}
+.empty-state__actions {
+  display: flex;
+  gap: 8px;
+}
+.empty-state .empty-state__reassurance {
+  margin: 16px 0 0;
+  font-size: 11px;
+}
+.empty-search .button {
+  margin-top: 12px;
+}
+.search-field__input:disabled {
+  opacity: 0.65;
+}

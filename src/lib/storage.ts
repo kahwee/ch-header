@@ -51,19 +51,12 @@ export async function deleteProfile(id: string): Promise<void> {
 }
 
 export async function initializeStorage(): Promise<void> {
-  const profiles = await getProfiles()
-  if (profiles.length === 0) {
-    const sample: Profile = {
-      id: crypto.randomUUID(),
-      name: 'Sample: Staging APIs',
-      color: 'blue',
-      enabled: false,
-      notes: 'Adds X-Env: staging to example.com',
-      matchers: [{ id: crypto.randomUUID(), urlFilter: 'example.com' }],
-      requestHeaders: [{ id: crypto.randomUUID(), header: 'X-Env', value: 'staging' }],
-      responseHeaders: [],
-    }
-    await saveProfiles([sample])
-    await setActiveProfile(sample.id)
+  const data = await chrome.storage.local.get<Partial<ExtensionStorage>>(STORAGE_KEYS.PROFILES)
+  // An intentionally empty library stays empty on updates. Never enable demo rules.
+  if (data[STORAGE_KEYS.PROFILES] === undefined) {
+    await chrome.storage.local.set({
+      [STORAGE_KEYS.PROFILES]: [],
+      [STORAGE_KEYS.ACTIVE_PROFILE_ID]: null,
+    })
   }
 }

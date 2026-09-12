@@ -138,6 +138,13 @@ export async function mountPopup(document: Document = globalThis.document): Prom
   }
 
   function renderList(): void {
+    const empty = state.profiles.length === 0
+    if (el.sidebarSearch) {
+      el.sidebarSearch.disabled = empty
+      if (empty) el.sidebarSearch.value = ''
+    }
+    document.querySelector<HTMLElement>('#emptyProfileList')!.hidden = !empty
+    document.querySelector<HTMLButtonElement>('[data-action="exportAll"]')!.disabled = empty
     state.filtered = renderProfileList(
       el,
       state.profiles,
@@ -150,6 +157,16 @@ export async function mountPopup(document: Document = globalThis.document): Prom
   function select(id: string | null): void {
     const p = state.profiles.find((x) => x.id === id) || state.profiles[0]
     state.current = p || null
+    const query = el.sidebarSearch?.value.trim().toLowerCase()
+    if (
+      p &&
+      query &&
+      !p.name.toLowerCase().includes(query) &&
+      !p.notes?.toLowerCase().includes(query)
+    ) {
+      el.sidebarSearch!.value = ''
+      renderList()
+    }
 
     // Update list items with aria-selected and active class
     $$('a[data-id]').forEach((link) => {
@@ -161,6 +178,7 @@ export async function mountPopup(document: Document = globalThis.document): Prom
     if (!p) {
       el.detailPane?.classList.add('hidden')
       el.detailEmpty?.classList.remove('hidden')
+      document.querySelector<HTMLButtonElement>('#newProfileEmpty')?.focus()
       return
     }
 
@@ -353,8 +371,19 @@ export async function mountPopup(document: Document = globalThis.document): Prom
 
     const action = btn.dataset.action
 
-    if (btn === el.newProfileButton || btn.id === 'newProfileEmpty')
-      return controller.onNewProfile()
+    if (btn === el.newProfileButton || btn.id === 'newProfileEmpty') {
+      if (el.sidebarSearch) el.sidebarSearch.value = ''
+      controller.onNewProfile()
+      el.profileName?.focus()
+      el.profileName?.select()
+      return
+    }
+    if (btn.id === 'clearProfileSearch') {
+      if (el.sidebarSearch) el.sidebarSearch.value = ''
+      renderList()
+      el.sidebarSearch?.focus()
+      return
+    }
     if (btn === el.addMatcherButton) return controller.onAddMatcher()
     if (btn === el.addRequestHeaderButton) return controller.onAddHeader(true)
     if (btn === el.addResponseHeaderButton) return controller.onAddHeader(false)
