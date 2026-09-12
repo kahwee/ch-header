@@ -29,7 +29,7 @@ This README describes main. See the release notes for what is in each download.
 2. Under **URL rules**, choose **Site** and enter `127.0.0.1:3002`.
 3. Add a request header: `X-Env` with the value `staging`.
 4. Set **Allowed sites** to `127.0.0.1`, then turn the profile **on** to approve access.
-5. If Chrome closes the popup, reopen it and turn the profile **on** again. Reload the target page.
+5. If Chrome closes the popup, reopen it, select that profile, and turn it **on** again. Reload the target page.
 
 New profiles start **off**. Only one profile can be on at a time; selecting a
 profile opens its editor without enabling it. Changes save on edit; URL rules save
@@ -53,6 +53,8 @@ Start with Site mode; most profiles do not need a regular expression.
 Version 0.4.2 requests website access only when you approve a profile’s allowed
 sites. Domain grants include subdomains, HTTP/HTTPS and all ports; URL rules narrow
 header changes further. Regex rules cannot escape that profile’s site list.
+For cross-site API calls, approve both the page and API hosts; use URL rules to
+limit header changes to the API.
 **Revoke all website access** removes grants and turns profiles off. Updates also
 reset website grants, so you must approve sites again. See [permissions](docs/permissions.md).
 

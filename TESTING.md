@@ -361,3 +361,29 @@ permissions may require additional review. Submission is not approval.
   that every packaged file matches the Store upload (archive metadata differs).
   Replaced the 0.4.1 review submission with 0.4.2; dashboard confirms Pending
   review, with automatic publication after approval.
+
+## Released 0.4.2 network retest — September 12, 2026
+
+Verified the downloaded GitHub release checksum and that every installed `dist`
+file matches it. Reloaded that build in Chrome and tested the actual toolbar
+popup with a local HTTP server and three loopback hostnames. No extension API or
+network behavior was mocked. Results:
+
+| Case | Actual Chrome result |
+| --- | --- |
+| No grant / denied grant | Profiles off; headers absent/original. |
+| Grant `qa.localhost`, broad URL rule | Parent and `api.qa.localhost` modified; `outside.localhost` untouched. |
+| Fetch from unapproved `outside.localhost` into approved API | Headers unchanged: the initiating page also needs host access. |
+| Explicitly grant `outside.localhost` via a separate profile | Cross-origin calls into the active profile's allowed hosts work; the outside host itself remains unmodified. |
+| Narrow allowed sites to `api.qa.localhost` | Editing turns the profile off. After re-enabling, only the child is modified, despite retained parent/other grants. |
+| Revoke all access | All profiles off, no granted sites, and every tested request/response back to absent/original. |
+
+Usability finding: Chrome closes the popup for a new permission prompt, then
+ChHeader reopens on the previously active profile. Select the newly approved
+profile again before enabling it. README and permission documentation now explain
+this and the cross-origin initiating-page requirement. No runtime code changed.
+
+The full automated check passed again (443 tests). Evidence remains local under
+`.local/qa/permission-retest/`. Test profiles were left off with grants revoked;
+server and test tabs were closed. Full browser restart and remote HTTPS were not
+tested in this run. Subdomains and cross-origin requests above used loopback HTTP.

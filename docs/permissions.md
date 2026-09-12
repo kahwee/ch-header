@@ -15,7 +15,8 @@ grant are not accepted. Site-mode URL rules can suggest a hostname; arbitrary
 URL filters and regex never determine permission scope automatically.
 
 Chrome requests consent for those sites when you turn the profile on. Its prompt
-may close the popup; reopen ChHeader and turn the profile on after approving.
+may close the popup; reopen ChHeader, select the profile you approved, and turn
+it on. The popup initially returns to the previously active profile.
 Denied requests leave the profile off. Approved permissions persist across tabs
 and browser sessions. A site-list change turns the profile off and requires you
 to enable it again. Imports and duplicates also start off.
@@ -51,8 +52,12 @@ This reduces granted access; it does not guarantee a shorter Store review.
 
 `activeTab` is temporary and scoped to the current main-frame origin. It is not a
 replacement for profiles that must keep working across tabs and API hosts.
-Cross-origin request contexts still need actual Chrome testing; ChHeader does not
-silently grant additional initiating sites. See [test results](../TESTING.md).
+Cross-site API calls need host access for both the destination and the page making
+the request. For example, put `app.example.com` and `api.example.com` in Allowed
+sites, then use a **Site** URL rule for `api.example.com` so headers only go to the
+API. A profile can be on while requests from an unapproved initiating page remain
+unchanged. ChHeader does not silently grant that extra access. This behavior was
+verified with separate localhost origins; see [test results](../TESTING.md).
 
 Sources checked September 12, 2026:
 [declarativeNetRequest](https://developer.chrome.com/docs/extensions/reference/api/declarativeNetRequest),
