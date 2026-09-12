@@ -1,7 +1,9 @@
 import type { Preview, Decorator } from '@storybook/html'
-import '@tailwindplus/elements'
 import '../src/ui/core/styles.css'
 import '../src/ui/components/common/checkbox-element'
+import { setupDropdowns } from '../src/ui/core/dropdowns'
+
+setupDropdowns()
 
 /**
  * Chrome Extension Layout Decorator
@@ -57,7 +59,6 @@ const preview: Preview = {
           },
         },
       },
-      defaultViewport: 'popup',
     },
   },
 }

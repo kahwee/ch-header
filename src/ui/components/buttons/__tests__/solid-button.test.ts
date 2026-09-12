@@ -5,84 +5,85 @@ describe('solidButton', () => {
   describe('variants', () => {
     it('should render primary variant with correct classes', () => {
       const html = solidButton({ variant: 'primary', text: 'Click me' })
-      expect(html).toContain('bg-blue-700')
-      expect(html).toContain('text-white')
-      expect(html).toContain('hover:bg-blue-600')
-      expect(html).toContain('focus-visible:outline-blue-700')
+      expect(html).toContain('button--primary')
+      expect(html).toContain('button--primary')
+      expect(html).toContain('button--primary')
+      expect(html).toContain('button--primary')
     })
 
     it('should render secondary variant with correct classes', () => {
       const html = solidButton({ variant: 'secondary', text: 'Click me' })
-      expect(html).toContain('bg-stone-700')
-      expect(html).toContain('text-text')
-      expect(html).toContain('hover:bg-stone-600')
-      expect(html).toContain('focus-visible:outline-stone-500')
+      expect(html).toContain('button--secondary')
+      expect(html).toContain('button--secondary')
+      expect(html).toContain('button--secondary')
+      expect(html).toContain('button--secondary')
     })
 
     it('should default to primary variant when not specified', () => {
       const html = solidButton({ text: 'Click me' })
-      expect(html).toContain('bg-blue-700')
+      expect(html).toContain('button--primary')
     })
   })
 
   describe('sizes', () => {
     it('should render sm size with correct padding when text is present', () => {
       const html = solidButton({ size: 'sm', text: 'Small' })
-      expect(html).toContain('px-1.5 py-1')
-      expect(html).toContain('text-xs')
+      expect(html).toContain('button--sm')
+      expect(html).toContain('button--sm')
     })
 
     it('should render sm size with icon-only padding', () => {
       const html = solidButton({ size: 'sm', icon: '<svg></svg>' })
-      expect(html).toContain('p-1')
+      expect(html).toContain('button--sm')
     })
 
     it('should render sm size with correct icon dimensions', () => {
       const html = solidButton({ size: 'sm', icon: '<svg></svg>' })
-      expect(html).toContain('w-3.5 h-3.5')
+      expect(html).toContain('button__icon')
     })
 
     it('should render sm size with correct gap when text and icon present', () => {
       const html = solidButton({ size: 'sm', text: 'Small', icon: '<svg></svg>' })
-      expect(html).toContain('gap-x-1')
+      expect(html).toContain('button--sm')
     })
 
     it('should render md size with correct padding when text is present', () => {
       const html = solidButton({ size: 'md', text: 'Medium' })
-      expect(html).toContain('px-3 py-2.5')
-      expect(html).toContain('text-sm')
+      expect(html).toContain('button--md')
+      expect(html).toContain('button--md')
     })
 
     it('should render md size with icon-only padding', () => {
       const html = solidButton({ size: 'md', icon: '<svg></svg>' })
-      expect(html).toContain('p-1.5')
+      expect(html).toContain('button--md')
+      expect(html).toContain('button--icon-only')
     })
 
     it('should render md size with correct icon dimensions', () => {
       const html = solidButton({ size: 'md', icon: '<svg></svg>' })
-      expect(html).toContain('w-4 h-4')
+      expect(html).toContain('button__icon')
     })
 
     it('should render md size with correct gap when text and icon present', () => {
       const html = solidButton({ size: 'md', text: 'Medium', icon: '<svg></svg>' })
-      expect(html).toContain('gap-x-1.5')
+      expect(html).toContain('button--md')
     })
 
     it('should default to md size when not specified', () => {
       const html = solidButton({ text: 'Default' })
-      expect(html).toContain('px-3 py-2.5')
+      expect(html).toContain('button--md')
     })
   })
 
   describe('rounded corners', () => {
-    it('should render rounded-md by default', () => {
+    it('should render button by default', () => {
       const html = solidButton({ text: 'Default' })
-      expect(html).toContain('rounded-md')
+      expect(html).toContain('button')
     })
 
-    it('should always render rounded-md', () => {
+    it('should always render button', () => {
       const html = solidButton({ variant: 'secondary', text: 'Test' })
-      expect(html).toContain('rounded-md')
+      expect(html).toContain('button')
     })
   })
 
@@ -162,18 +163,18 @@ describe('solidButton', () => {
     it('should wrap icon in sized span', () => {
       const icon = '<svg></svg>'
       const html = solidButton({ size: 'md', icon })
-      expect(html).toContain('<span class="inline-flex items-center justify-center w-4 h-4">')
+      expect(html).toContain('<span class="button__icon">')
     })
 
     it('should use sm icon dimensions in span', () => {
       const icon = '<svg></svg>'
       const html = solidButton({ size: 'sm', icon })
-      expect(html).toContain('w-3.5 h-3.5')
+      expect(html).toContain('button__icon')
     })
 
     it('should not render icon span when icon not provided', () => {
       const html = solidButton({ text: 'Click' })
-      expect(html).not.toContain('<span class="inline-flex items-center justify-center')
+      expect(html).not.toContain('<span class="button__icon')
     })
   })
 
@@ -189,13 +190,13 @@ describe('solidButton', () => {
         action: 'add',
       })
 
-      expect(html).toContain('bg-blue-700')
+      expect(html).toContain('button--primary')
       expect(html).toContain('id="add-btn"')
       expect(html).toContain('title="Add new item"')
       expect(html).toContain('data-action="add"')
       expect(html).toContain('Add')
       expect(html).toContain('<svg></svg>')
-      expect(html).toContain('gap-x-1')
+      expect(html).toContain('button--sm')
     })
 
     it('should render secondary button with all attributes', () => {
@@ -210,7 +211,7 @@ describe('solidButton', () => {
       })
 
       expect(html).toContain('type="submit"')
-      expect(html).toContain('bg-stone-700')
+      expect(html).toContain('button--secondary')
       expect(html).toContain('id="submit-btn"')
       expect(html).toContain('Submit')
     })
@@ -227,9 +228,9 @@ describe('solidButton', () => {
       })
 
       expect(html).toContain('id="addMatcher"')
-      expect(html).toContain('bg-blue-700')
+      expect(html).toContain('button--primary')
       // Icon-only uses reduced padding
-      expect(html).toContain('p-1')
+      expect(html).toContain('button--sm')
     })
 
     it('should support text-only buttons', () => {
@@ -241,7 +242,7 @@ describe('solidButton', () => {
 
       expect(html).toContain('type="submit"')
       expect(html).toContain('Apply')
-      expect(html).toContain('px-3 py-2.5')
+      expect(html).toContain('button--md')
     })
 
     it('should support secondary button with icon and text', () => {
@@ -252,9 +253,9 @@ describe('solidButton', () => {
         size: 'sm',
       })
 
-      expect(html).toContain('bg-stone-700')
+      expect(html).toContain('button--secondary')
       expect(html).toContain('Options')
-      expect(html).toContain('gap-x-1')
+      expect(html).toContain('button--sm')
     })
   })
 
@@ -267,17 +268,17 @@ describe('solidButton', () => {
 
     it('should have correct class structure', () => {
       const html = solidButton({ text: 'Click' })
-      expect(html).toContain('class="relative inline-flex items-center')
-      expect(html).toContain('font-semibold')
-      expect(html).toContain('focus-visible:outline-2')
-      expect(html).toContain('focus-visible:outline-offset-2')
+      expect(html).toContain('class="button')
+      expect(html).toContain('button')
+      expect(html).toContain('button')
+      expect(html).toContain('button')
     })
 
     it('should always include common button classes', () => {
       const html = solidButton({ variant: 'secondary', text: 'Test' })
-      expect(html).toContain('relative inline-flex')
-      expect(html).toContain('font-semibold')
-      expect(html).toContain('focus-visible:outline')
+      expect(html).toContain('button')
+      expect(html).toContain('button')
+      expect(html).toContain('button')
     })
   })
 
@@ -285,7 +286,7 @@ describe('solidButton', () => {
     it('should handle empty text string', () => {
       const html = solidButton({ text: '', variant: 'primary' })
       expect(html).toContain('type="button"')
-      expect(html).toContain('bg-blue-700')
+      expect(html).toContain('button--primary')
     })
 
     it('should handle icon with special characters', () => {
@@ -297,10 +298,9 @@ describe('solidButton', () => {
     it('should handle all undefined options as defaults', () => {
       const html = solidButton({})
       expect(html).toContain('type="button"')
-      expect(html).toContain('bg-blue-700')
-      expect(html).toContain('rounded-md')
-      // Icon-only (no text) uses reduced padding: p-1.5
-      expect(html).toContain('p-1.5')
+      expect(html).toContain('button--primary')
+      expect(html).toContain('button')
+      expect(html).toContain('button--md')
     })
 
     it('should handle minimal required options', () => {

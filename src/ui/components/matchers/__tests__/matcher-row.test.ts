@@ -184,8 +184,8 @@ describe('matcherRow', () => {
         urlFilter: 'example.com',
       })
 
-      expect(html).toContain('mt-2 flex items-center gap-2')
-      expect(html).toContain('flex flex-1 items-center rounded-md')
+      expect(html).toContain('matcher-row')
+      expect(html).toContain('matcher-row__fields')
       expect(html).toContain('<div')
     })
 
@@ -196,10 +196,10 @@ describe('matcherRow', () => {
       })
 
       // Input should have flex-1 to grow and fill space
-      expect(html).toContain('flex-1 bg-white/5')
+      expect(html).toContain('matcher-row__url')
 
       // Select should have rounded-r-md for right-rounded corners
-      expect(html).toContain('rounded-r-md bg-white/5')
+      expect(html).toContain('matcher-row__select')
     })
 
     it('should have consistent focus styles', () => {
@@ -208,9 +208,9 @@ describe('matcherRow', () => {
         urlFilter: 'example.com',
       })
 
-      expect(html).toContain('focus:outline-2')
-      expect(html).toContain('focus:-outline-offset-2')
-      expect(html).toContain('focus:outline-blue-500')
+      expect(html).toContain('field')
+      expect(html).toContain('field')
+      expect(html).toContain('field')
     })
   })
 

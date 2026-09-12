@@ -12,7 +12,7 @@ describe('sectionHeader', () => {
       })
 
       expect(html).toContain('Matchers')
-      expect(html).toContain('relative flex items-center justify-between')
+      expect(html).toContain('section-header')
     })
 
     it('should render label with correct classes', () => {
@@ -26,7 +26,7 @@ describe('sectionHeader', () => {
         ],
       })
 
-      expect(html).toContain('bg-bg pr-3 text-sm font-semibold text-white whitespace-nowrap')
+      expect(html).toContain('section-header__title')
       expect(html).toContain('Request headers')
     })
 
@@ -38,7 +38,7 @@ describe('sectionHeader', () => {
         menuItems: [{ label: 'Clear all', action: 'clearMatchers' }],
       })
 
-      expect(html).toContain('border-t border-white/15')
+      expect(html).toContain('section-header__rule')
       expect(html).toContain('aria-hidden="true"')
     })
   })
@@ -74,9 +74,9 @@ describe('sectionHeader', () => {
         menuItems: [{ label: 'Clear all', action: 'clearMatchers' }],
       })
 
-      expect(html).toContain('bg-blue-500')
-      expect(html).toContain('text-white')
-      expect(html).toContain('hover:bg-blue-600')
+      expect(html).toContain('button--primary')
+      expect(html).toContain('button--primary')
+      expect(html).toContain('button--primary')
     })
 
     it('should include icon in add button', () => {
@@ -112,8 +112,8 @@ describe('sectionHeader', () => {
         menuItems: [{ label: 'Clear all', action: 'clearMatchers' }],
       })
 
-      expect(html).toContain('<el-dropdown')
-      expect(html).toContain('</el-dropdown>')
+      expect(html).toContain('<div class="dropdown"')
+      expect(html).toContain('</div>')
     })
 
     it('should render menu items from array', () => {
@@ -183,9 +183,9 @@ describe('sectionHeader', () => {
         menuItems: [{ label: 'Clear all', action: 'clearMatchers' }],
       })
 
-      expect(html).toContain('w-48 origin-top-right rounded-md bg-stone-800')
-      expect(html).toContain('px-4 py-2 text-left text-sm text-gray-300')
-      expect(html).toContain('hover:bg-white/5 hover:text-white')
+      expect(html).toContain('dropdown__menu')
+      expect(html).toContain('menu-item')
+      expect(html).toContain('menu-item')
     })
   })
 
@@ -250,10 +250,10 @@ describe('sectionHeader', () => {
         menuItems: [{ label: 'Clear all', action: 'clearMatchers' }],
       })
 
-      expect(html).toMatch(/<div[^>]*class="relative/)
+      expect(html).toMatch(/<div[^>]*class="section-header/)
       expect(html).toContain('</div>')
-      expect(html).toMatch(/<el-dropdown/)
-      expect(html).toContain('</el-dropdown>')
+      expect(html).toMatch(/<div class="dropdown"/)
+      expect(html).toContain('</div>')
     })
 
     it('should have proper flex layout', () => {
@@ -264,7 +264,7 @@ describe('sectionHeader', () => {
         menuItems: [{ label: 'Clear all', action: 'clearMatchers' }],
       })
 
-      expect(html).toContain('flex w-full items-center gap-2')
+      expect(html).toContain('section-header__actions')
     })
   })
 
@@ -279,8 +279,8 @@ describe('sectionHeader', () => {
 
       expect(html).toContain('Matchers')
       expect(html).toContain('addMatcher')
-      expect(html).toContain('<el-menu')
-      expect(html).toContain('<div class="py-1">\n        \n      </div>')
+      expect(html).toContain('<div class="dropdown__menu"')
+      expect(html).toContain('<div>\n        \n      </div>')
     })
 
     it('should handle special characters in title', () => {

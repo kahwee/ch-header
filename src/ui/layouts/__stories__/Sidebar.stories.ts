@@ -1,7 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/html'
 import { getSidebarTemplate, profileListItem } from '../../core/popup-template'
 import '../../components/common/checkbox-element'
-import '@tailwindplus/elements'
 
 /**
  * Sidebar command palette component showing profile search, filtering, and selection.
@@ -60,7 +59,7 @@ const sampleProfiles = [
 export const Default: Story = {
   render: () => {
     const container = document.createElement('div')
-    container.className = 'w-full h-full'
+    container.className = 'app-shell'
     container.innerHTML = getSidebarTemplate()
 
     const profileList = container.querySelector('#profileList')
@@ -77,7 +76,7 @@ export const Default: Story = {
 export const WithSearchResults: Story = {
   render: () => {
     const container = document.createElement('div')
-    container.className = 'w-full h-full'
+    container.className = 'app-shell'
     container.innerHTML = getSidebarTemplate()
 
     const profileList = container.querySelector('#profileList')
@@ -88,10 +87,10 @@ export const WithSearchResults: Story = {
     const searchResults = container.querySelector('#searchResults')
     if (searchResults) {
       searchResults.removeAttribute('hidden')
-      searchResults.classList.add('p-2')
+      searchResults.classList.add('search-results')
       const searchResultsHtml = `
-        <h2 class="mt-2 mb-2 px-3 text-xs font-semibold text-gray-400">Search results</h2>
-        <ul class="list-none m-0 p-0 text-sm text-gray-300" role="list">
+        <h2 class="search-results__title">Search results</h2>
+        <ul class="search-results__list" role="list">
           ${sampleProfiles
             .filter((p) => p.name.toLowerCase().includes('dev'))
             .map((p) => profileListItem(p, false))
@@ -108,7 +107,7 @@ export const WithSearchResults: Story = {
 export const NoProfiles: Story = {
   render: () => {
     const container = document.createElement('div')
-    container.className = 'w-full h-full'
+    container.className = 'app-shell'
     container.innerHTML = getSidebarTemplate()
 
     const profileList = container.querySelector('#profileList')

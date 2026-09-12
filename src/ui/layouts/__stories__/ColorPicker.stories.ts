@@ -1,6 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/html'
 import { COLOR_PALETTE } from '../../core/popup-template'
-import '@tailwindplus/elements'
 
 /**
  * Color Picker Component
@@ -15,7 +14,7 @@ const meta = {
     docs: {
       description: {
         component:
-          'A popover component that displays a grid of 21 Tailwind colors and an optional initials input. Colors scale on hover, and clicking a color automatically closes the popover.',
+          'A popover component that displays a curated grid of 21 profile colors and an optional initials input.',
       },
     },
   },
@@ -48,37 +47,33 @@ export const Default: Story = {
     btn.id = 'colorPickerBtn'
     btn.type = 'button'
     btn.popovertarget = 'colorPickerPopover'
-    btn.className =
-      'flex shrink-0 items-center justify-center rounded-md bg-blue-500 hover:bg-blue-400 px-4 py-2.5 focus:outline-2 focus:-outline-offset-2 focus:outline-blue-500 cursor-pointer transition-colors'
+    btn.className = 'button button--primary button--md'
     btn.title = 'Choose color'
     btn.innerHTML = `
-      <span class="w-6 h-6 rounded-md" style="background-color: #6b4eff; border: 2px solid rgba(255,255,255,0.3)"></span>
-      <span class="ml-2 text-sm font-semibold text-white">Pick Color</span>
+      <span class="button__icon" style="background-color: #6b4eff; border-radius: 4px"></span>
+      <span>Pick Color</span>
     `
 
     // Popover element
-    const popover = document.createElement('el-popover')
+    const popover = document.createElement('div')
     popover.id = 'colorPickerPopover'
     popover.setAttribute('anchor', 'colorPickerBtn')
     popover.setAttribute('popover', '')
-    popover.className =
-      'w-screen max-w-max overflow-visible bg-transparent px-4 transition transition-discrete [--anchor-gap:--spacing(5)] backdrop:bg-transparent open:flex data-closed:translate-y-1 data-closed:opacity-0 data-enter:duration-200 data-enter:ease-out data-leave:duration-150 data-leave:ease-in'
+    popover.className = 'color-popover'
 
     const popoverContent = document.createElement('div')
-    popoverContent.className =
-      'flex flex-col gap-3 p-4 bg-stone-800 rounded-lg border border-gray-700 shadow-xl'
+    popoverContent.className = 'color-popover__content'
 
     // Color grid
     const colorGrid = document.createElement('div')
-    colorGrid.className = 'grid grid-cols-7 gap-3'
+    colorGrid.className = 'color-grid'
 
     const selectedColor = 'purple-700'
 
     COLOR_PALETTE.forEach((color) => {
       const colorBtn = document.createElement('button')
       colorBtn.type = 'button'
-      colorBtn.className =
-        'w-8 h-8 rounded-full transition-all hover:scale-110 focus:outline-2 focus:-outline-offset-2 focus:outline-blue-500 cursor-pointer color-option'
+      colorBtn.className = 'color-option'
       colorBtn.title = color.name
       colorBtn.setAttribute('data-color', color.hex)
       colorBtn.setAttribute('popovertarget', 'colorPickerPopover')
@@ -119,8 +114,7 @@ export const Default: Story = {
     initialsInput.type = 'text'
     initialsInput.maxLength = 2
     initialsInput.placeholder = 'AB'
-    initialsInput.className =
-      'w-full rounded-md bg-white/10 px-2 py-1.5 text-center text-sm font-semibold text-white outline-1 -outline-offset-1 outline-gray-600 placeholder:text-gray-500 focus:outline-2 focus:-outline-offset-2 focus:outline-blue-500 uppercase'
+    initialsInput.className = 'field field--initials'
 
     popoverContent.appendChild(colorGrid)
     popoverContent.appendChild(initialsInput)
@@ -137,7 +131,7 @@ export const Default: Story = {
     docs.innerHTML = `
       <h2 style="color: #e6e9ef; margin-top: 0; margin-bottom: 8px; font-size: 16px; font-weight: 600;">Color Picker Features</h2>
       <ul style="margin: 0; padding-left: 20px;">
-        <li><strong>21 Colors:</strong> Full Tailwind color palette</li>
+        <li><strong>21 Colors:</strong> Curated profile palette</li>
         <li><strong>Hover Effect:</strong> Colors scale up on hover</li>
         <li><strong>Custom Initials:</strong> Up to 2 characters, auto-uppercase</li>
         <li><strong>Click to Select:</strong> Colors close popover automatically</li>
@@ -189,51 +183,45 @@ export const FullProfileForm: Story = {
     colorPickerBtn.id = 'colorPickerBtn'
     colorPickerBtn.type = 'button'
     colorPickerBtn.popovertarget = 'colorPickerPopover'
-    colorPickerBtn.className =
-      'flex shrink-0 items-center justify-center rounded-l-md bg-white/10 hover:bg-white/20 px-3 py-1.5 focus:outline-2 focus:-outline-offset-2 focus:outline-blue-500 cursor-pointer'
+    colorPickerBtn.className = 'profile-avatar profile-avatar--button'
     colorPickerBtn.title = 'Choose color'
-    colorPickerBtn.innerHTML = `<span class="w-5 h-5 rounded-md" style="background-color: #3b82f6; border: 1px solid rgba(255,255,255,0.2)"></span>`
+    colorPickerBtn.innerHTML = `<span style="background-color: #3b82f6">P</span>`
 
     const nameInput = document.createElement('input')
     nameInput.type = 'text'
     nameInput.placeholder = 'Profile name'
     nameInput.value = 'Production API'
-    nameInput.className =
-      'flex-1 bg-white/5 px-3 py-1.5 text-base text-white font-semibold outline-1 -outline-offset-1 outline-gray-700 placeholder:text-gray-500 focus:outline-2 focus:-outline-offset-2 focus:outline-blue-500'
+    nameInput.className = 'field field--profile-name'
 
     const menuBtn = document.createElement('button')
     menuBtn.type = 'button'
-    menuBtn.className =
-      'flex shrink-0 items-center rounded-r-md bg-white/10 hover:bg-white/20 px-3 py-1.5 focus:outline-2 focus:-outline-offset-2 focus:outline-blue-500 cursor-pointer text-sm'
+    menuBtn.className = 'icon-button'
     menuBtn.title = 'Profile options'
-    menuBtn.innerHTML = '<span class="text-xs font-bold">⋯</span>'
+    menuBtn.textContent = '⋯'
 
     nameSection.appendChild(colorPickerBtn)
     nameSection.appendChild(nameInput)
     nameSection.appendChild(menuBtn)
 
     // Color picker popover
-    const popover = document.createElement('el-popover')
+    const popover = document.createElement('div')
     popover.id = 'colorPickerPopover'
     popover.setAttribute('anchor', 'colorPickerBtn')
     popover.setAttribute('popover', '')
-    popover.className =
-      'w-screen max-w-max overflow-visible bg-transparent px-4 transition transition-discrete [--anchor-gap:--spacing(5)] backdrop:bg-transparent open:flex data-closed:translate-y-1 data-closed:opacity-0 data-enter:duration-200 data-enter:ease-out data-leave:duration-150 data-leave:ease-in'
+    popover.className = 'color-popover'
 
     const popoverContent = document.createElement('div')
-    popoverContent.className =
-      'flex flex-col gap-3 p-4 bg-stone-800 rounded-lg border border-gray-700 shadow-xl'
+    popoverContent.className = 'color-popover__content'
 
     const colorGrid = document.createElement('div')
-    colorGrid.className = 'grid grid-cols-7 gap-3'
+    colorGrid.className = 'color-grid'
 
     const selectedColor = 'blue-700'
 
     COLOR_PALETTE.forEach((color) => {
       const colorBtn = document.createElement('button')
       colorBtn.type = 'button'
-      colorBtn.className =
-        'w-8 h-8 rounded-full transition-all hover:scale-110 focus:outline-2 focus:-outline-offset-2 focus:outline-blue-500 cursor-pointer color-option'
+      colorBtn.className = 'color-option'
       colorBtn.title = color.name
       colorBtn.setAttribute('data-color', color.hex)
       colorBtn.setAttribute('popovertarget', 'colorPickerPopover')
@@ -273,8 +261,7 @@ export const FullProfileForm: Story = {
     initialsInput.maxLength = 2
     initialsInput.placeholder = 'AB'
     initialsInput.value = 'PA'
-    initialsInput.className =
-      'w-full rounded-md bg-white/10 px-2 py-1.5 text-center text-sm font-semibold text-white outline-1 -outline-offset-1 outline-gray-600 placeholder:text-gray-500 focus:outline-2 focus:-outline-offset-2 focus:outline-blue-500 uppercase'
+    initialsInput.className = 'field field--initials'
 
     popoverContent.appendChild(colorGrid)
     popoverContent.appendChild(initialsInput)
@@ -290,8 +277,7 @@ export const FullProfileForm: Story = {
 
     const notesInput = document.createElement('textarea')
     notesInput.placeholder = 'Add notes about this profile...'
-    notesInput.className =
-      'w-full rounded-md bg-white/5 px-3 py-1.5 text-base text-white outline-1 -outline-offset-1 outline-gray-700 placeholder:text-gray-500 focus:outline-2 focus:-outline-offset-2 focus:outline-blue-500'
+    notesInput.className = 'field field--notes'
     notesInput.style.minHeight = '80px'
     notesInput.style.fontFamily = 'inherit'
     notesInput.value = 'Authentication headers for production API endpoints'
@@ -303,8 +289,7 @@ export const FullProfileForm: Story = {
     // Submit button
     const submitBtn = document.createElement('button')
     submitBtn.type = 'submit'
-    submitBtn.className =
-      'rounded-md bg-blue-500 hover:bg-blue-400 px-4 py-2 text-white font-semibold focus:outline-2 focus:-outline-offset-2 focus:outline-blue-500 cursor-pointer transition-colors'
+    submitBtn.className = 'button button--primary button--md'
     submitBtn.textContent = 'Save Profile'
 
     form.appendChild(title)

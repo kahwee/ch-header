@@ -3,7 +3,6 @@ import { getPopupTemplate, profileListItem } from '../popup-template'
 import { headerRow } from '../../components/headers/header-row'
 import { matcherRow } from '../../components/matchers/matcher-row'
 import '../../components/common/checkbox-element'
-import '@tailwindplus/elements'
 
 /**
  * Full Popup Layout
@@ -16,9 +15,7 @@ const meta = {
   title: 'ChHeader/Layouts/Full Layout',
   parameters: {
     layout: 'fullscreen',
-    viewport: {
-      defaultViewport: 'iphonese',
-    },
+    globals: { viewport: 'popup' },
     docs: {
       description: {
         component:
@@ -51,7 +48,15 @@ const sampleProfiles = [
       },
       { id: 'h3', header: 'x-api-key', value: 'api_key_secret', op: 'set' as const, enabled: true },
     ],
-    responseHeaders: [],
+    responseHeaders: [
+      {
+        id: 'rh1',
+        header: 'cache-control',
+        value: 'no-store, no-cache',
+        op: 'set' as const,
+        enabled: true,
+      },
+    ],
   },
   {
     id: 'dev-1',
@@ -323,6 +328,11 @@ export const WithProfile: Story = {
     const reqHeaders = app.querySelector('#reqHeaders')
     if (reqHeaders) {
       reqHeaders.innerHTML = sampleProfile.requestHeaders.map((h) => headerRow(h)).join('')
+    }
+
+    const resHeaders = app.querySelector('#resHeaders')
+    if (resHeaders) {
+      resHeaders.innerHTML = sampleProfile.responseHeaders.map((h) => headerRow(h)).join('')
     }
 
     // Populate matchers

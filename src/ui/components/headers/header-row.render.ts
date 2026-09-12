@@ -23,29 +23,29 @@ export function buildHeaderRowHTML(h: HeaderRowOptions): string {
   const kind = h.kind || 'req'
 
   return `
-    <tr class="hover:bg-white/3 transition-colors" data-hid="${h.id}" data-kind="${kind}">
-      <td class="text-sm whitespace-nowrap w-8 pl-3 pr-3 align-middle flex items-center justify-center">
+    <tr class="header-row" data-hid="${h.id}" data-kind="${kind}">
+      <td class="header-row__toggle">
         <ch-checkbox
           data-role="enabled"
           ${isEnabled ? 'checked' : ''}
           title="Enable/disable this header"
         ></ch-checkbox>
       </td>
-      <td class="text-sm px-0">
-        <div class="grid grid-cols-2 gap-0">
-          <div>
+      <td class="header-row__fields">
+        <div class="header-row__grid">
+          <div class="header-row__field">
             <input
               type="text"
-              class="w-full rounded-l-md bg-white/5 px-3 py-2 text-sm text-text outline-1 -outline-offset-1 outline-gray-700 placeholder:text-gray-500 focus:outline-2 focus:-outline-offset-2 focus:outline-blue-500"
+              class="field field--header-name"
               data-role="header"
               placeholder="Header name (e.g. X-Custom-Header)"
               value="${escapeHtml(h.header || '')}"
             />
           </div>
-          <div>
+          <div class="header-row__field">
             <input
               type="text"
-              class="w-full rounded-r-md bg-white/5 px-3 py-2 text-sm text-text outline-1 -outline-offset-1 outline-gray-700 placeholder:text-gray-500 focus:outline-2 focus:-outline-offset-2 focus:outline-blue-500"
+              class="field field--header-value"
               data-role="value"
               placeholder="Value"
               value="${escapeHtml(h.value || '')}"
@@ -53,7 +53,7 @@ export function buildHeaderRowHTML(h: HeaderRowOptions): string {
           </div>
         </div>
       </td>
-      <td class="text-sm whitespace-nowrap w-10 pl-3 pr-3 align-middle flex items-center justify-center">
+      <td class="header-row__actions">
         ${ghostButton({
           icon: trashIcon,
           action: 'removeHeader',

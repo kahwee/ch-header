@@ -141,7 +141,7 @@ src/
 │   ├── popup-template.ts      # Shared template functions
 │   ├── controller.ts          # Business logic controller (testable)
 │   ├── utils.ts              # Utility functions (escapeHtml, color helpers)
-│   ├── styles.css            # Tailwind v4 styles
+│   ├── styles.css            # native CSS styles
 │   ├── components/           # Reusable UI template functions
 │   │   ├── button.ts         # Action button template
 │   │   ├── matcher-row.ts    # Matcher row template (uses matcher-row.render.ts)

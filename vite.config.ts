@@ -11,19 +11,20 @@ import {
   writeFileSync,
 } from 'fs'
 
-const srcDir = resolve(__dirname, 'src')
-const publicDir = resolve(__dirname, 'public')
+const projectDir = import.meta.dirname
+const srcDir = resolve(projectDir, 'src')
+const publicDir = resolve(projectDir, 'public')
 
 // Custom plugin to copy manifest.json and other static assets
 const copyPlugin = {
   name: 'copy-assets',
   generateBundle() {
     try {
-      const distDir = resolve(__dirname, 'dist')
+      const distDir = resolve(projectDir, 'dist')
       mkdirSync(distDir, { recursive: true })
 
       // Read package.json version
-      const packageJsonPath = resolve(__dirname, 'package.json')
+      const packageJsonPath = resolve(projectDir, 'package.json')
       const packageJson = JSON.parse(readFileSync(packageJsonPath, 'utf-8'))
       const version = packageJson.version
 
@@ -48,15 +49,15 @@ const copyPlugin = {
   writeBundle() {
     // Move src/ui/popup.html to ui/popup.html
     try {
-      const from = resolve(__dirname, 'dist/src/ui/popup.html')
-      const to = resolve(__dirname, 'dist/ui/popup.html')
+      const from = resolve(projectDir, 'dist/src/ui/popup.html')
+      const to = resolve(projectDir, 'dist/ui/popup.html')
 
       if (existsSync(from)) {
-        mkdirSync(resolve(__dirname, 'dist/ui'), { recursive: true })
+        mkdirSync(resolve(projectDir, 'dist/ui'), { recursive: true })
         renameSync(from, to)
 
         // Clean up empty src directory if it exists
-        const srcPath = resolve(__dirname, 'dist/src')
+        const srcPath = resolve(projectDir, 'dist/src')
         try {
           rmSync(srcPath, { recursive: true, force: true })
         } catch (e) {
@@ -93,12 +94,12 @@ export default defineConfig({
         assetFileNames: 'assets/[name]-[hash][extname]',
       },
     },
-    outDir: resolve(__dirname, 'dist'),
+    outDir: resolve(projectDir, 'dist'),
     emptyOutDir: true,
   },
   resolve: {
     alias: {
-      '@': resolve(__dirname, './src'),
+      '@': resolve(projectDir, './src'),
     },
   },
   plugins: [copyPlugin],

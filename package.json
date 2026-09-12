@@ -33,32 +33,24 @@
     "storybook:build": "storybook build"
   },
   "devDependencies": {
-    "@storybook/html": "^10.5.10",
-    "@storybook/html-vite": "^10.5.10",
-    "@tailwindcss/postcss": "^4.3.3",
-    "@types/chrome": "0.2.7",
-    "@types/node": "^26.4.0",
-    "@vitest/browser": "^4.1.11",
-    "@vitest/browser-playwright": "^4.1.11",
-    "@vitest/coverage-v8": "^4.1.11",
-    "@vitest/ui": "^4.1.11",
-    "autoprefixer": "^10.5.4",
+    "@storybook/html": "^10.6.0",
+    "@storybook/html-vite": "^10.6.0",
+    "@types/chrome": "0.2.9",
+    "@types/node": "^26.5.1",
+    "@vitest/browser": "^5.0.0",
+    "@vitest/browser-playwright": "^5.0.0",
+    "@vitest/coverage-v8": "^5.0.0",
+    "@vitest/ui": "^5.0.0",
     "jsdom": "^30.0.1",
-    "playwright": "^1.62.1",
-    "postcss": "^8.5.26",
+    "playwright": "^1.63.0",
     "prettier": "^3.9.6",
-    "prettier-plugin-tailwindcss": "^0.8.1",
-    "storybook": "^10.5.10",
-    "tailwindcss": "^4.3.3",
+    "storybook": "^10.6.0",
     "terser": "^5.51.2",
     "typescript": "^7.0.2",
-    "vite": "^8.2.2",
-    "vitest": "^4.1.11"
-  },
-  "dependencies": {
-    "@tailwindplus/elements": "^1.0.22"
+    "vite": "^8.3.0",
+    "vitest": "^5.0.0"
   },
   "optionalDependencies": {
-    "@rollup/rollup-linux-x64-gnu": "*"
+    "@rollup/rollup-linux-x64-gnu": "^4.63.1"
   }
 }

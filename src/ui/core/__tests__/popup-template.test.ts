@@ -15,10 +15,10 @@ describe('popup-template', () => {
     it('should have correct structure for each color', () => {
       COLOR_PALETTE.forEach((color) => {
         expect(color).toHaveProperty('name')
-        expect(color).toHaveProperty('tailwind')
+        expect(color).toHaveProperty('token')
         expect(color).toHaveProperty('hex')
         expect(typeof color.name).toBe('string')
-        expect(typeof color.tailwind).toBe('string')
+        expect(typeof color.token).toBe('string')
         expect(typeof color.hex).toBe('string')
       })
     })
@@ -30,11 +30,11 @@ describe('popup-template', () => {
       })
     })
 
-    it('should have tailwind color classes', () => {
-      const tailwindClasses = COLOR_PALETTE.map((c) => c.tailwind)
-      expect(tailwindClasses).toContain('red-700')
-      expect(tailwindClasses).toContain('blue-700')
-      expect(tailwindClasses).toContain('purple-700')
+    it('should have stored color tokens', () => {
+      const colorTokens = COLOR_PALETTE.map((c) => c.token)
+      expect(colorTokens).toContain('red-700')
+      expect(colorTokens).toContain('blue-700')
+      expect(colorTokens).toContain('purple-700')
     })
 
     it('should have unique color names', () => {
@@ -43,7 +43,7 @@ describe('popup-template', () => {
       expect(uniqueNames.size).toBe(COLOR_PALETTE.length)
     })
 
-    it('should include standard Tailwind colors', () => {
+    it('should include standard profile colors', () => {
       const expectedColors = ['Red', 'Orange', 'Yellow', 'Green', 'Blue', 'Purple', 'Pink']
       expectedColors.forEach((expectedColor) => {
         expect(COLOR_PALETTE.some((color) => color.name === expectedColor)).toBe(true)
@@ -65,8 +65,8 @@ describe('popup-template', () => {
 
     it('should include command palette element', () => {
       const html = getSidebarTemplate()
-      expect(html).toContain('<el-command-palette')
-      expect(html).toContain('</el-command-palette>')
+      expect(html).toContain('class="sidebar"')
+      expect(html).toContain('</aside>')
     })
 
     it('should have search input with correct attributes', () => {
@@ -101,9 +101,9 @@ describe('popup-template', () => {
 
     it('should have correct styling classes', () => {
       const html = getSidebarTemplate()
-      expect(html).toContain('bg-stone-900')
-      expect(html).toContain('border-r')
-      expect(html).toContain('border-stone-800')
+      expect(html).toContain('class="sidebar"')
+      expect(html).toContain('sidebar__list')
+      expect(html).toContain('sidebar__toolbar')
     })
 
     it('should include footer with new profile button', () => {
@@ -163,12 +163,12 @@ describe('popup-template', () => {
 
     it('should include active class when isActive is true', () => {
       const html = profileListItem(testProfile, true)
-      expect(html).toContain('active bg-white/5')
+      expect(html).toContain('profile-item active')
     })
 
     it('should not include active class when isActive is false', () => {
       const html = profileListItem(testProfile, false)
-      expect(html).not.toContain('active bg-white/5')
+      expect(html).not.toContain('profile-item active')
     })
 
     it('should render profile name', () => {
@@ -187,7 +187,7 @@ describe('popup-template', () => {
 
     it('should not render notes section when not provided', () => {
       const html = profileListItem(testProfile, false)
-      expect(html).not.toContain('text-gray-400')
+      expect(html).not.toContain('profile-item__note')
     })
 
     it('should have aria-labelledby attribute', () => {
@@ -240,7 +240,7 @@ describe('popup-template', () => {
     it('should have main app container', () => {
       const html = getPopupTemplate()
       expect(html).toContain('id="app"')
-      expect(html).toContain('w-full h-full')
+      expect(html).toContain('app-shell')
     })
 
     it('should include sidebar template', () => {

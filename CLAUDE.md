@@ -8,7 +8,7 @@ ChHeader is a profile-based HTTP header editor Chrome extension with Manifest V3
 
 - Runtime: Chrome Extension Manifest V3
 - Language: TypeScript (strict mode, zero `any`)
-- Styling: Tailwind CSS v4
+- Styling: native semantic CSS
 - Testing: Vitest with 388 tests across 16 files
 - UI: Component Pattern with vanilla DOM and template functions
 - Build: esbuild with watch mode
@@ -18,7 +18,7 @@ ChHeader is a profile-based HTTP header editor Chrome extension with Manifest V3
 - 388 tests passing across 16 test files (100% pass rate)
 - Zero `any` types in codebase
 - Fully typed Chrome API usage
-- 21 Tailwind profile colors
+- 21 profile colors
 - Component Pattern architecture with lifecycle management
 - `.render.ts` pattern for centralized HTML generation
 
@@ -243,7 +243,7 @@ src/
 │   ├── popup-template.ts         # Template functions (getPopupTemplate, profileListItem, customCheckbox)
 │   ├── controller.ts             # Business logic (fully testable, no DOM)
 │   ├── utils.ts                  # Utilities (escapeHtml, color helpers)
-│   ├── styles.css                # Tailwind v4 styles
+│   ├── styles.css                # native CSS styles
 │   ├── components/               # Reusable UI template functions
 │   │   ├── button.ts             # Action button with variants
 │   │   ├── matcher-row.ts        # Matcher row template
@@ -551,7 +551,7 @@ const component: any = this.matchers.get(id)
 Primary color: **Blue-500** (`#3b82f6`)
 Secondary color: **Stone** (for neutral elements)
 
-Available profile colors (21 Tailwind colors):
+Available profile colors (21 profile colors):
 Red, Orange, Amber, Yellow, Lime, Green, Emerald, Teal, Cyan, Sky, Blue, Indigo, Violet, Purple, Fuchsia, Pink, Rose, Gray, Zinc, Neutral, Stone
 
 ## Development Workflow
@@ -656,7 +656,7 @@ interface State {
 
 ### Styling Changes
 
-All styles use Tailwind v4:
+All styles use native CSS:
 
 - Primary buttons: `bg-blue-500 hover:bg-blue-400`
 - Secondary buttons: `bg-stone-700 hover:bg-stone-600`
@@ -711,7 +711,6 @@ pnpm run test
 
 - [Chrome Manifest V3 Docs](https://developer.chrome.com/docs/extensions/mv3/)
 - [declarativeNetRequest API](https://developer.chrome.com/docs/extensions/reference/declarativeNetRequest/)
-- [Tailwind CSS v4](https://tailwindcss.com/)
 - [Chrome Extension Types](https://www.npmjs.com/package/@types/chrome)
 
 ## License

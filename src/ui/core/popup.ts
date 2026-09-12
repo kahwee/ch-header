@@ -4,10 +4,10 @@ import { profileListItem, getPopupTemplate, COLOR_PALETTE } from './popup-templa
 import { MatcherTableComponent } from '../lib/matcher-table.component'
 import { HeaderTableComponent } from '../lib/header-table.component'
 import '../components/common/checkbox-element'
-import '@tailwindplus/elements'
 import searchIcon from '../icons/search.svg?raw'
 import plusIcon from '../icons/plus.svg?raw'
 import folderPlusIcon from '../icons/folder-plus.svg?raw'
+import { setupDropdowns } from './dropdowns'
 
 const K = STORAGE_KEYS
 
@@ -117,7 +117,7 @@ function injectIcons(): void {
     .querySelector('#newProfileEmpty')
     ?.querySelector('svg')?.parentElement
   if (newProfileEmptyBtn) {
-    newProfileEmptyBtn.innerHTML = `<span class="mr-1.5 -ml-0.5 w-5 h-5 flex items-center justify-center">${plusIcon}</span>`
+    newProfileEmptyBtn.innerHTML = `<span class="button__icon">${plusIcon}</span>`
   }
 
   // Inject SVG icons into header action buttons
@@ -214,8 +214,8 @@ function renderList(): void {
       el.searchResults.removeAttribute('hidden')
       el.searchResults.classList.add('p-2')
       el.searchResults.innerHTML = `
-        <h2 class="mt-2 mb-2 px-3 text-xs font-semibold text-gray-400">Search results</h2>
-        <ul class="list-none m-0 p-0 text-sm text-gray-300" role="list">
+        <h2 class="search-results__title">Search results</h2>
+        <ul class="search-results__list" role="list">
           ${state.filtered.map((p) => profileListItem(p, p.id === state.current?.id)).join('')}
         </ul>
       `
@@ -252,8 +252,6 @@ function select(id: string | null): void {
     const isActive = link.dataset.id === p?.id
     link.setAttribute('aria-selected', isActive ? 'true' : 'false')
     link.classList.toggle('active', isActive)
-    link.classList.toggle('bg-white/5', isActive)
-    link.classList.toggle('text-white', isActive)
   })
 
   if (!p) {
@@ -267,7 +265,7 @@ function select(id: string | null): void {
 
   if (el.name) el.name.value = p.name || ''
   if (el.profileAvatarBtn) {
-    const colorEntry = COLOR_PALETTE.find((c) => c.tailwind === (p.color || 'purple-700'))
+    const colorEntry = COLOR_PALETTE.find((c) => c.token === (p.color || 'purple-700'))
     el.profileAvatarBtn.style.backgroundColor = colorEntry?.hex || '#7e22ce'
   }
   if (el.initials) el.initials.value = p.initials || ''
@@ -278,8 +276,8 @@ function select(id: string | null): void {
   updateAvatarPreview(p.name, p.initials)
 
   // Highlight the selected color in the color picker
-  const tailwindColor = p.color || 'purple-700'
-  updateSelectedColorIndicator(tailwindColor)
+  const colorToken = p.color || 'purple-700'
+  updateSelectedColorIndicator(colorToken)
 
   renderMatchers()
   renderHeaders()
@@ -307,6 +305,8 @@ function setupEventListeners(): void {
       renderList()
     })
   }
+
+  setupDropdowns()
 
   // Handle dropdown menu actions (sort/clear)
   const actionHandlers: Record<string, () => void> = {
@@ -367,16 +367,16 @@ function setupEventListeners(): void {
   document.addEventListener('click', (e) => {
     const colorBtn = (e.target as HTMLElement).closest('[data-color]')
     if (colorBtn) {
-      const tailwindColor = colorBtn.getAttribute('data-color')
-      if (tailwindColor) {
-        controller.onProfileColorChange(tailwindColor)
+      const colorToken = colorBtn.getAttribute('data-color')
+      if (colorToken) {
+        controller.onProfileColorChange(colorToken)
         // Update the profile avatar background
-        const colorEntry = COLOR_PALETTE.find((c) => c.tailwind === tailwindColor)
+        const colorEntry = COLOR_PALETTE.find((c) => c.token === colorToken)
         if (el.profileAvatarBtn && colorEntry) {
           el.profileAvatarBtn.style.backgroundColor = colorEntry.hex
         }
         // Update the selected color visual indicator
-        updateSelectedColorIndicator(tailwindColor)
+        updateSelectedColorIndicator(colorToken)
       }
     }
   })
@@ -519,12 +519,12 @@ function updateAvatarPreview(name: string, customInitials?: string): void {
   }
 }
 
-function updateSelectedColorIndicator(selectedTailwindColor: string): void {
+function updateSelectedColorIndicator(selectedColorToken: string): void {
   const colorOptions = document.querySelectorAll('.color-option')
   colorOptions.forEach((btn) => {
-    const btnTailwindColor = btn.getAttribute('data-color')
+    const buttonColorToken = btn.getAttribute('data-color')
     const btnHex = btn.getAttribute('data-hex')
-    if (btnTailwindColor === selectedTailwindColor) {
+    if (buttonColorToken === selectedColorToken) {
       // Selected color - prominent white border
       btn.setAttribute('style', `background-color: ${btnHex}; border: 3px solid white;`)
     } else {

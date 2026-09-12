@@ -24,7 +24,7 @@ const headerMeta: Meta<HeaderRowArgs> = {
     wrapper.style.background = '#0f1115'
 
     const table = document.createElement('table')
-    table.className = 'min-w-full'
+    table.className = 'header-table'
 
     const tbody = document.createElement('tbody')
     tbody.innerHTML = headerRow(args)

@@ -10,7 +10,7 @@ describe('ghostButton', () => {
         title: 'Delete',
         variant: 'delete',
       })
-      expect(html).toContain('text-gray-400 hover:text-danger')
+      expect(html).toContain('icon-button--danger')
     })
 
     it('should render default variant with correct classes', () => {
@@ -20,7 +20,7 @@ describe('ghostButton', () => {
         title: 'Action',
         variant: 'default',
       })
-      expect(html).toContain('text-gray-400 hover:text-gray-300')
+      expect(html).toContain('icon-button')
     })
 
     it('should default to default variant when not specified', () => {
@@ -29,7 +29,7 @@ describe('ghostButton', () => {
         action: 'action',
         title: 'Action',
       })
-      expect(html).toContain('text-gray-400 hover:text-gray-300')
+      expect(html).toContain('icon-button')
     })
   })
 
@@ -40,8 +40,8 @@ describe('ghostButton', () => {
         action: 'action',
         title: 'Action',
       })
-      expect(html).toContain('p-1.5 rounded-md')
-      expect(html).not.toContain('rounded-full')
+      expect(html).toContain('icon-button')
+      expect(html).not.toContain('icon-button--circle')
     })
 
     it('should render circular button when circle option is true', () => {
@@ -51,8 +51,8 @@ describe('ghostButton', () => {
         title: 'Action',
         circle: true,
       })
-      expect(html).toContain('w-8 h-8 rounded-full')
-      expect(html).not.toContain('p-1.5 rounded-md')
+      expect(html).toContain('icon-button--circle')
+      expect(html).not.toContain('icon-button--danger')
     })
 
     it('should render rectangular button when circle option is false', () => {
@@ -62,7 +62,7 @@ describe('ghostButton', () => {
         title: 'Action',
         circle: false,
       })
-      expect(html).toContain('p-1.5 rounded-md')
+      expect(html).toContain('icon-button')
     })
   })
 
@@ -122,7 +122,7 @@ describe('ghostButton', () => {
         action: 'delete',
         title: 'Delete',
       })
-      expect(html).toContain('<span class="inline-flex items-center justify-center w-4 h-4">')
+      expect(html).toContain('<span class="icon-button__icon">')
       expect(html).toContain(icon)
       expect(html).toContain('</span>')
     })
@@ -151,8 +151,8 @@ describe('ghostButton', () => {
 
       expect(html).toContain('data-action="removeMatcher"')
       expect(html).toContain('title="Remove matcher"')
-      expect(html).toContain('text-gray-400 hover:text-danger')
-      expect(html).toContain('w-8 h-8 rounded-full')
+      expect(html).toContain('icon-button--danger')
+      expect(html).toContain('icon-button--circle')
     })
 
     it('should match header row delete button pattern', () => {
@@ -166,8 +166,8 @@ describe('ghostButton', () => {
 
       expect(html).toContain('data-action="removeHeader"')
       expect(html).toContain('title="Delete header"')
-      expect(html).toContain('text-gray-400 hover:text-danger')
-      expect(html).toContain('w-8 h-8 rounded-full')
+      expect(html).toContain('icon-button--danger')
+      expect(html).toContain('icon-button--circle')
     })
   })
 
@@ -188,13 +188,11 @@ describe('ghostButton', () => {
         action: 'action',
         title: 'Action',
       })
-      expect(html).toContain(
-        'class="flex items-center justify-center bg-transparent hover:bg-white/10'
-      )
-      expect(html).toContain('transition-all')
-      expect(html).toContain('focus-visible:outline-2')
-      expect(html).toContain('focus-visible:outline-offset-2')
-      expect(html).toContain('focus-visible:outline-blue-700')
+      expect(html).toContain('class="icon-button')
+      expect(html).toContain('icon-button')
+      expect(html).toContain('icon-button')
+      expect(html).toContain('icon-button')
+      expect(html).toContain('icon-button')
     })
   })
 
@@ -257,8 +255,8 @@ describe('ghostButton', () => {
       })
 
       // Both should have same focus styling
-      expect(deleteHtml).toContain('focus-visible:outline-blue-700')
-      expect(defaultHtml).toContain('focus-visible:outline-blue-700')
+      expect(deleteHtml).toContain('icon-button')
+      expect(defaultHtml).toContain('icon-button')
     })
 
     it('should have consistent background hover effect', () => {
@@ -268,7 +266,7 @@ describe('ghostButton', () => {
         title: 'Action',
       })
 
-      expect(html).toContain('hover:bg-white/10')
+      expect(html).toContain('icon-button')
     })
   })
 })

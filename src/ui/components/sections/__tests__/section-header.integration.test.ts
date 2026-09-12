@@ -161,10 +161,10 @@ describe('sectionHeader - Integration Tests', () => {
       })
 
       // Verify it renders correctly in isolation
-      expect(storyMarkup).toMatch(/<div[^>]*class="relative/)
+      expect(storyMarkup).toMatch(/<div[^>]*class="section-header/)
       expect(storyMarkup).toContain('</div>')
-      expect(storyMarkup).toMatch(/<el-dropdown/)
-      expect(storyMarkup).toContain('</el-dropdown>')
+      expect(storyMarkup).toMatch(/<div class="dropdown"/)
+      expect(storyMarkup).toContain('</div>')
     })
   })
 
