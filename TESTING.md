@@ -276,3 +276,20 @@ Added the title; the raster upload is unchanged. The public policy URL was then
 verified reachable and saved in the dashboard, which enabled Submit for review.
 Reviewer instructions were also saved. The new screenshot is first in the gallery;
 removal of the older image requires confirmation because Google marks it irreversible.
+
+## Demonstration video — September 12, 2026
+
+Computer Use reloaded the actual Chrome toolbar extension as 0.4.0 and created a
+disposable, off-by-default Demo: Local API profile. Site 127.0.0.1:3002, request
+X-ChHeader-Test: enabled, and response X-ChHeader-Response: modified were configured.
+After enabling, the real fixture showed the document request header and all three
+fetch request/response changes. After disabling and deleting the demo profile,
+reloading and rerunning restored absent requests and original responses. Existing
+profiles remained off. The new local fixture process was stopped afterward.
+
+Captured actual popup and network-result screenshots were edited into a 67-second
+1920 × 1080 H.264/AAC captioned walkthrough. Frames were visually inspected and the
+finished MP4 decoded without errors. Personal introduction and closing cards identify
+KahWee Teng and invite viewers to build or audit their tools. The video has no narration. Video, captions,
+and upload copy remain local under `.local/qa/video/` pending YouTube's upload-term
+confirmation; no placeholder YouTube URL was added to README.

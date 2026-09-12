@@ -3,9 +3,19 @@
 <p align="center"><strong>Your headers. The right sites.</strong><br>Request and response headers, organized into local Chrome profiles.</p>
 <p align="center"><a href="https://github.com/kahwee/ch-header/releases/latest">Download for Chrome</a> · <a href="TESTING.md">Testing</a> · <a href="RELEASE_NOTES.md">Release notes</a></p>
 
-Test an API, add a staging header, or change a response header without changing
-application code. Choose where your rules apply, keep related changes in a profile,
-and turn them on when you need them.
+I’m [KahWee Teng](https://kahwee.com). I built ChHeader because I wanted a cleaner
+header editor: local profiles, explicit site rules, and code I could inspect. It
+changes request and response headers for testing APIs and websites, without a
+ChHeader account or a developer-operated backend.
+
+If your needs are small, I encourage you to build your own tools and understand
+what they do with your data. If mine fits, use it, fork it, and audit it. Start with
+the [permissions](src/manifest.json), [URL parsing](src/lib/url-rule.ts), and
+[Chrome rule generation](src/lib/dnr-rules.ts). Owning the code also means owning
+its bugs; the [testing record](TESTING.md) describes what I checked and what I haven’t.
+
+[Why I built ChHeader](https://kahwee.com/2026/why-i-built-chheader/) explains the
+problem, the defaults I changed, and what I’d like other developers to audit.
 
 ## Install
 
