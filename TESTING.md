@@ -331,3 +331,27 @@ were replaced by the approved gecko assets. The current screenshot and demo URL
 were retained. Google confirmed submission of 0.4.1 for compliance review, with
 automatic publication after approval selected. Google warned that broad host
 permissions may require additional review. Submission is not approval.
+
+## Optional site access (0.4.2, September 12, 2026)
+
+- Automated: the production popup/background harness covers denied consent,
+  permission revocation, upgrade resets, scope changes, permission-prompt races,
+  legacy profiles without scopes and composed native switch events. Rule tests
+  verify regex conditions also carry the profile's destination-domain constraint.
+- Actual Chrome toolbar popup: upgraded the existing unpacked extension from
+  0.4.1 to 0.4.2; all profiles were off and no websites were granted. The consent
+  dialog named only `127.0.0.1`; denial left the profile off. After approval,
+  reopening and enabling applied request/response headers to actual document and
+  fetch requests. Chrome closes the popup during a new consent prompt, so the UI
+  documents reopening it; previously approved sites can enable directly.
+- Actual Chrome network checks: an All allowed sites matcher modified
+  `127.0.0.1:3002` but not the unapproved `localhost:3002`. A regex limited to
+  `/match/` modified that fetch alone; document, `/echo` and `/miss/echo` retained
+  original headers. Revoke all website access turned profiles off, removed grants
+  and restored absent/original headers for all local requests.
+- Visual: checked the normal 744 × 440 toolbar popup in light and dark appearance;
+  the editor body scrolls and the footer stays available. Restored macOS Auto
+  appearance. Test profiles are off, grants revoked and the local server stopped.
+- Limits: no full Chrome restart, real remote subdomain or cross-origin initiating
+  page test was performed. Those scenarios are not represented as verified by the
+  harness. IPv6 host literals are deliberately unsupported in this version.

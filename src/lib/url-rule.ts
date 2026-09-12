@@ -11,10 +11,14 @@ export function readURLRule(filter: string): { mode: URLRuleMode; value: string 
 export function writeURLRule(mode: URLRuleMode, value: string): string {
   if (mode === 'all') return '*'
   const input = value.trim()
-  if (!input) throw new Error('Enter a site or rule. Choose All sites to match everywhere.')
+  if (!input)
+    throw new Error(
+      'Enter a site or rule. Choose All allowed sites to match every allowed destination.'
+    )
   if (mode === 'regex') return `regex:${input}`
   if (mode === 'pattern') {
-    if (input === '*') throw new Error('Choose All sites to match everywhere.')
+    if (input === '*')
+      throw new Error('Choose All allowed sites to match every allowed destination.')
     if (input.startsWith('regex:')) throw new Error('Choose Regex mode and omit the regex: prefix.')
     if (/[^\x21-\x7e]/.test(input))
       throw new Error('URL patterns cannot contain spaces or non-ASCII characters.')

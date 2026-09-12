@@ -1067,3 +1067,9 @@ svg {
 .search-field__input:disabled {
   opacity: 0.65;
 }
+
+.field--access-sites {
+  min-height: 30px;
+  padding: 5px 8px;
+  margin-top: 5px;
+}

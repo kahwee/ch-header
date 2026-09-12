@@ -30,7 +30,7 @@ export function buildMatcherRowHTML(m: MatcherRowOptions): string {
           <option value="site" ${mode === 'site' ? 'selected' : ''}>Site</option>
           <option value="pattern" ${mode === 'pattern' ? 'selected' : ''}>URL pattern</option>
           <option value="regex" ${mode === 'regex' ? 'selected' : ''}>Regex</option>
-          <option value="all" ${mode === 'all' ? 'selected' : ''}>All sites</option>
+          <option value="all" ${mode === 'all' ? 'selected' : ''}>All allowed sites</option>
         </select>
         <input
           type="text"
@@ -38,7 +38,7 @@ export function buildMatcherRowHTML(m: MatcherRowOptions): string {
           ${mode === 'all' ? 'disabled' : ''}
           aria-describedby="urlRulesHelp"
           title="Site: hostname only. URL pattern: paths and * wildcards. Regex: Chrome-supported expression without a regex: prefix."
-          placeholder="${mode === 'site' ? 'api.example.com' : mode === 'regex' ? '^https://api\\.example\\.com/' : mode === 'all' ? 'Every site' : 'https://example.com/api/*'}"
+          placeholder="${mode === 'site' ? 'api.example.com' : mode === 'regex' ? '^https://api\\.example\\.com/' : mode === 'all' ? 'Every allowed site' : 'https://example.com/api/*'}"
           value="${escapeHtml(displayUrlFilter)}"
           data-role="urlFilter"
           class="field matcher-row__url"
@@ -70,7 +70,7 @@ export function buildMatcherRowHTML(m: MatcherRowOptions): string {
         variant: 'delete',
         circle: true,
       })}
-      <p data-role="ruleFeedback" class="matcher-row__feedback" aria-live="polite">${mode === 'all' ? 'All sites: headers may be sent to any destination.' : ''}</p>
+      <p data-role="ruleFeedback" class="matcher-row__feedback" aria-live="polite">${mode === 'all' ? 'Headers may be sent to any URL within this profile’s allowed sites.' : ''}</p>
     </div>
   `
 }

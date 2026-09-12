@@ -2,7 +2,7 @@
   "manifest_version": 3,
   "name": "ChHeader",
   "description": "Edit request and response headers, organize profiles, and target specific sites to test APIs and websites.",
-  "version": "0.4.1",
+  "version": "0.4.2",
   "action": {
     "default_popup": "ui/popup.html",
     "default_title": "ChHeader"
@@ -12,8 +12,8 @@
     "32": "icons/32.png",
     "128": "icons/128.png"
   },
-  "permissions": ["declarativeNetRequest", "storage"],
-  "host_permissions": ["<all_urls>"],
+  "permissions": ["declarativeNetRequestWithHostAccess", "storage"],
+  "optional_host_permissions": ["http://*/*", "https://*/*"],
   "declarative_net_request": {
     "rule_resources": []
   },

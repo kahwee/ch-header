@@ -1,3 +1,4 @@
+import { parseAccessSites } from './site-access'
 import type { HeaderOp, Matcher, Profile } from './types'
 
 const RESOURCE_TYPES = new Set([
@@ -90,6 +91,18 @@ export function parseProfileJSON(text: string): Profile[] {
       notes: typeof item.notes === 'string' ? item.notes : '',
       initials: typeof item.initials === 'string' ? item.initials.slice(0, 1) : undefined,
       enabled: false,
+      ...(item.accessSites !== undefined
+        ? {
+            accessSites: parseAccessSites(
+              array(item.accessSites, 'Allowed sites')
+                .map((site) => {
+                  if (typeof site !== 'string') throw new Error('Allowed sites must be hostnames.')
+                  return site
+                })
+                .join(' ')
+            ),
+          }
+        : {}),
       matchers: matchers(item.matchers),
       requestHeaders: headers(item.requestHeaders, `${item.name}: request headers`),
       responseHeaders: headers(item.responseHeaders, `${item.name}: response headers`),
@@ -123,6 +136,7 @@ export function exportProfileJSON(profiles: Profile[], hideSensitive = true): st
         name: profile.name,
         color: profile.color,
         ...(profile.initials ? { initials: profile.initials } : {}),
+        ...(profile.accessSites !== undefined ? { accessSites: profile.accessSites } : {}),
         notes: profile.notes || '',
         matchers: profile.matchers.map(({ urlFilter, resourceTypes }) => ({
           urlFilter,

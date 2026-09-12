@@ -1,67 +1,58 @@
 # Website access in ChHeader
 
-## Why 0.4.1 requests broad access
+## Version 0.4.2: approve sites as needed
 
-The submitted version declares `host_permissions: ["<all_urls>"]`. ChHeader is a
-header editor for destinations chosen by the user: localhost, internal staging
-services and public APIs. These hosts cannot be listed in advance. The current
-model lets saved profiles work without a separate permission request for each host.
+ChHeader has no required host permissions. It declares optional HTTP and HTTPS
+hosts so users can approve specific destinations when turning a profile on.
+The header API permission is `declarativeNetRequestWithHostAccess`, alongside
+`storage`. No content scripts, analytics or developer backend are included.
 
-Chrome requires host access for header modification. ChHeader uses declarative
-rules rather than reading page content to rewrite headers. Its URL rules limit
-which requests it changes; they do **not** reduce the host permissions granted to
-the extension. An off profile is not the same as revoked website access.
+Enter explicit hostnames under **Allowed sites**, separated by commas. A domain
+grant includes its subdomains, HTTP/HTTPS and all ports. Localhost and IPv4
+addresses are supported; IPv6 literals are not currently supported. Paths and
+ports belong in URL rules, not the permission list. Wildcards and an all-website
+grant are not accepted. Site-mode URL rules can suggest a hostname; arbitrary
+URL filters and regex never determine permission scope automatically.
 
-This was a convenience tradeoff, not the only viable design. The source has no
-content scripts or developer backend, but broad access still deserves scrutiny.
-Google flagged it for possible additional review.
+Chrome requests consent for those sites when you turn the profile on. Its prompt
+may close the popup; reopen ChHeader and turn the profile on after approving.
+Denied requests leave the profile off. Approved permissions persist across tabs
+and browser sessions. A site-list change turns the profile off and requires you
+to enable it again. Imports and duplicates also start off.
 
-## Recommended next version: access on demand
+All rules, including regex and **All allowed sites**, are constrained by that
+profile’s destination domains. Grants left over from another profile do not
+expand those rules. Chrome enforces the host permissions; ChHeader checks grants
+before applying rules and removes active rules when required access is revoked.
+No URL rules or no allowed sites means no changes.
 
-Declare HTTP/HTTPS hosts under `optional_host_permissions` instead of requesting
-all hosts at installation. When the user enables a profile, explain the required
-sites and call `chrome.permissions.request()` from that user action. Keep the
-profile off if the user declines. This is a proposal, not behavior in 0.4.1.
+The popup lists granted sites. **Revoke all website access** removes all website
+grants and turns profiles off; Chrome’s extension settings can manage individual
+grants. Turning a profile off alone does not revoke permissions. Updates clear
+website grants and live rules while preserving profiles, so users explicitly
+approve destinations again. This also resets broad access from older versions.
 
-Use `declarativeNetRequestWithHostAccess` with `storage` for this header-only design;
-changing that API permission alone does not narrow website access. Example:
+## Why 0.4.1 requested broad access
 
-```json
-{
-  "permissions": ["declarativeNetRequestWithHostAccess", "storage"],
-  "optional_host_permissions": ["http://*/*", "https://*/*"]
-}
-```
+Version 0.4.1 declared `host_permissions: ["<all_urls>"]` because users choose their
+own local servers, internal services and public APIs. Those hosts were not known
+in advance. This avoided per-site prompts but granted much more access at install
+time. URL rules limited modifications, not the permission itself. Google flagged
+that scope for possible additional review. It was a convenience tradeoff, not an
+inherent requirement for a header editor.
 
-The broad optional declaration permits asking for individual hosts later; it does
-not grant all hosts on installation. Start with explicit Site rules. Ask for
-subdomains only when the profile needs them. Host permission paths are ignored,
-so retain precise path and port matching in the declarative rules.
+## Remaining tradeoffs
 
-For arbitrary regex or URL-filter rules, require an explicit list of allowed
-sites rather than guessing domains from the pattern. Reserve all-site access
-for an explicit advanced choice. Show granted sites and allow revocation;
-handle permission removal, imported profiles, denied requests and existing
-installations without leaving the UI falsely reporting a working profile.
+Permissions cover hostnames and their subdomains, not a single endpoint. Choose
+the narrowest domain (for example `api.example.com` instead of `example.com`) and
+keep path/port rules precise. The optional manifest declaration permits asking
+for any HTTP/HTTPS host, but the application requests only the entered hosts.
+This reduces granted access; it does not guarantee a shorter Store review.
 
-Before shipping, test navigation, same-site and cross-site API calls, multiple
-tabs, subdomains, localhost, browser restart, permission revocation and migration
-from broad access in actual Chrome. Check which request contexts need additional
-grants rather than silently widening access.
-
-## Other options
-
-- `activeTab`: useful for a separate temporary current-tab mode. It grants
-  temporary access to the main-frame origin after a user action, not blanket
-  access to every API host or every tab. It is not a drop-in replacement for
-  persistent profiles.
-- HTTP/HTTPS-only required hosts: removes unnecessary URL schemes, but still
-  grants every website. This is a smaller improvement than per-site consent.
-- Fixed host allowlist: appropriate for an internal tool with known destinations,
-  but would limit this general-purpose editor.
-
-The pending 0.4.1 package is unchanged. A permission redesign needs a new version
-and actual Chrome testing before a separate Store update.
+`activeTab` is temporary and scoped to the current main-frame origin. It is not a
+replacement for profiles that must keep working across tabs and API hosts.
+Cross-origin request contexts still need actual Chrome testing; ChHeader does not
+silently grant additional initiating sites. See [test results](../TESTING.md).
 
 Sources checked September 12, 2026:
 [declarativeNetRequest](https://developer.chrome.com/docs/extensions/reference/api/declarativeNetRequest),

@@ -9,6 +9,7 @@ export function localProfile(overrides: Partial<Profile> = {}): Profile {
     name: 'Local demo',
     color: 'blue',
     enabled: false,
+    accessSites: ['127.0.0.1'],
     matchers: [{ id: 'matcher', urlFilter: '127.0.0.1:3002' }],
     requestHeaders: [{ id: 'request', header: 'X-ChHeader-Test', value: 'enabled' }],
     responseHeaders: [],

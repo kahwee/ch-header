@@ -194,6 +194,14 @@ export function getPopupTemplate(options?: { containerClass?: string }): string 
             <textarea id="profileNotes" name="profileNotes" rows="1" aria-label="Profile notes" class="field field--notes" placeholder="Describe what this profile changes…"></textarea>
           </div>
 
+          <section class="editor-section">
+            <label for="accessSites">Allowed sites</label>
+            <input id="accessSites" class="field field--access-sites" type="text" placeholder="api.example.com, localhost" aria-describedby="accessHelp" />
+            <p id="accessHelp" class="editor-section__hint">HTTP/HTTPS, including subdomains and all ports. URL rules narrow this further. Approve access when prompted, then reopen this popup and turn the profile on.</p>
+            <p id="grantedSites" class="editor-section__hint" aria-live="polite"></p>
+            <button id="revokeAccess" type="button" class="button button--secondary button--md">Revoke all website access</button>
+          </section>
+
           ${headersSection('req', 'Request headers', '')}
           ${headersSection('res', 'Response headers', '')}
 

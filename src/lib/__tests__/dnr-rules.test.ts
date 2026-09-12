@@ -36,6 +36,7 @@ describe('DNR Rules', () => {
         name: 'Regex',
         color: '#000000',
         enabled: true,
+        accessSites: ['example.com'],
         matchers: [
           {
             id: 'regex',
@@ -62,6 +63,7 @@ describe('DNR Rules', () => {
         name: 'Test Profile',
         color: '#ff0000',
         enabled: true,
+        accessSites: ['example.com'],
         matchers: [{ id: 'match-1', urlFilter: 'example.com' }],
         requestHeaders: [{ id: 'header-1', header: 'X-Custom', value: 'test-value' }],
         responseHeaders: [],
@@ -86,6 +88,7 @@ describe('DNR Rules', () => {
         name: 'Test Profile',
         color: '#ff0000',
         enabled: true,
+        accessSites: ['example.com'],
         matchers: [{ id: 'match-1', urlFilter: 'api.example.com' }],
         requestHeaders: [],
         responseHeaders: [{ id: 'header-1', header: 'X-Response', value: 'custom-value' }],
@@ -106,6 +109,7 @@ describe('DNR Rules', () => {
         name: 'Test Profile',
         color: '#ff0000',
         enabled: true,
+        accessSites: ['example.com'],
         matchers: [{ id: 'match-1', urlFilter: '*' }],
         requestHeaders: [{ id: 'header-1', header: 'X-Custom', value: 'test-value' }],
         responseHeaders: [],
@@ -124,6 +128,7 @@ describe('DNR Rules', () => {
         name: 'Test Profile',
         color: '#ff0000',
         enabled: true,
+        accessSites: ['example.com'],
         matchers: [{ id: 'match-1', urlFilter: 'example.com' }],
         requestHeaders: [],
         responseHeaders: [],
@@ -140,6 +145,7 @@ describe('DNR Rules', () => {
         name: 'Test Profile',
         color: '#ff0000',
         enabled: true,
+        accessSites: ['example.com'],
         matchers: [],
         requestHeaders: [{ id: 'header-1', header: 'X-Test', value: 'value' }],
         responseHeaders: [],
@@ -156,6 +162,7 @@ describe('DNR Rules', () => {
         name: 'Test Profile',
         color: '#ff0000',
         enabled: true,
+        accessSites: ['example.com'],
         matchers: [
           { id: 'match-1', urlFilter: 'example.com' },
           { id: 'match-2', urlFilter: 'api.example.com' },
@@ -176,6 +183,7 @@ describe('DNR Rules', () => {
         name: 'Test Profile',
         color: '#ff0000',
         enabled: true,
+        accessSites: ['example.com'],
         matchers: [
           { id: 'match-1', urlFilter: 'example.com' },
           { id: 'match-2', urlFilter: '*api.example.com*' },

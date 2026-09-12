@@ -22,6 +22,8 @@ export interface Profile {
   initials?: string
   notes?: string
   enabled: boolean
+  /** HTTP/HTTPS destinations, including subdomains; never a wildcard all-host grant. */
+  accessSites?: string[]
   matchers: Matcher[]
   requestHeaders: HeaderOp[]
   responseHeaders: HeaderOp[]

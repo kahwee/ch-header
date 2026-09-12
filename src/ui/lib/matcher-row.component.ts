@@ -50,7 +50,7 @@ export class MatcherRowComponent extends Component {
         this.savedSnapshot = JSON.stringify(this.matcher)
         show(
           mode.value === 'all'
-            ? 'All sites: headers may be sent to any destination.'
+            ? 'Headers may be sent to any URL within this profile’s allowed sites.'
             : 'Rule validated.'
         )
       } catch (error) {
@@ -78,7 +78,7 @@ export class MatcherRowComponent extends Component {
           : mode.value === 'regex'
             ? '^https://example.com/'
             : mode.value === 'all'
-              ? 'Every site'
+              ? 'Every allowed site'
               : 'https://example.com/api/*'
       if (mode.value === 'all') void commit()
       else {

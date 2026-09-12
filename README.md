@@ -28,7 +28,8 @@ This README describes main. See the release notes for what is in each download.
 1. Click **Create profile** and give it a name, such as “Local API”.
 2. Under **URL rules**, choose **Site** and enter `127.0.0.1:3002`.
 3. Add a request header: `X-Env` with the value `staging`.
-4. Turn the profile **on**, then reload the page or retry the request.
+4. Set **Allowed sites** to `127.0.0.1`, then turn the profile **on** to approve access.
+5. If Chrome closes the popup, reopen it and turn the profile **on** again. Reload the target page.
 
 New profiles start **off**. Only one profile can be on at a time; selecting a
 profile opens its editor without enabling it. Changes save on edit; URL rules save
@@ -41,7 +42,7 @@ when you leave the field. **Apply** reapplies the enabled profile’s saved rule
 | **Site** | A hostname and optional port, such as `127.0.0.1:3002`. Covers HTTP/HTTPS and subdomains. |
 | **URL pattern** | Chrome URL-filter syntax when you need to narrow matching further. |
 | **Regex** | Advanced matching, checked for support by Chrome before saving. |
-| **All sites** | An explicit choice to affect every supported URL. |
+| **All allowed sites** | Any URL within this profile’s allowed sites. |
 
 You can also limit each rule by request type. **No URL rules means no requests
 are changed.** Invalid drafts show an inline error and leave the saved rule intact.
@@ -49,10 +50,11 @@ Start with Site mode; most profiles do not need a regular expression.
 
 ## Website access
 
-Version 0.4.1 requests broad website access because profiles can target user-chosen
-API hosts and local servers. URL rules limit header changes, but do not narrow the
-permission itself. This is a convenience tradeoff; per-site permission requests
-are a better future direction. See [the rationale and alternatives](docs/permissions.md).
+Version 0.4.2 requests website access only when you approve a profile’s allowed
+sites. Domain grants include subdomains, HTTP/HTTPS and all ports; URL rules narrow
+header changes further. Regex rules cannot escape that profile’s site list.
+**Revoke all website access** removes grants and turns profiles off. Updates also
+reset website grants, so you must approve sites again. See [permissions](docs/permissions.md).
 
 ## Keep and share profiles
 

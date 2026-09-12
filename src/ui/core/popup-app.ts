@@ -1,3 +1,4 @@
+import { parseAccessSites, requestSiteAccess, suggestedAccessSites } from '../../lib/site-access'
 import { setupProfileContextMenu, type ProfileAction } from './profile-context-menu'
 import { setupProfileSharing } from './profile-sharing'
 import { profileColorInk } from './profile-colors'
@@ -55,7 +56,7 @@ export async function mountPopup(document: Document = globalThis.document): Prom
   function profileAction(action: ProfileAction, id: string): void {
     const profile = state.profiles.find((p) => p.id === id)
     if (!profile) return
-    if (action === 'toggle') controller.onSetProfileEnabled(id, !profile.enabled)
+    if (action === 'toggle') setProfileEnabled(id, !profile.enabled)
     if (action === 'rename') {
       select(id)
       el.profileName?.focus()
@@ -66,6 +67,47 @@ export async function mountPopup(document: Document = globalThis.document): Prom
     if (action === 'export') sharing.open('export', id)
     if (action === 'delete' && controller.onDeleteProfile(id))
       notify(`Deleted “${profile.name}”.`, true)
+  }
+
+  let enableAttempt = 0
+  function setProfileEnabled(id: string, enabled: boolean): void {
+    const attempt = ++enableAttempt
+    const profile = state.profiles.find((p) => p.id === id)
+    if (!profile) return
+    if (!enabled) {
+      controller.onSetProfileEnabled(id, false)
+      return
+    }
+    try {
+      const sites = suggestedAccessSites(profile)
+      if (!sites.length) throw new Error('Add allowed sites before turning this profile on.')
+      profile.accessSites = sites
+      const snapshot = JSON.stringify(profile)
+      const request = requestSiteAccess(sites)
+      select(state.current?.id ?? null)
+      void request
+        .then((granted) => {
+          if (attempt !== enableAttempt) return
+          const current = state.profiles.find((p) => p.id === id)
+          if (!current || JSON.stringify(current) !== snapshot) {
+            notify('Profile changed while requesting access. Turn it on again.')
+            return
+          }
+          if (!granted) {
+            notify('Website access was not granted. The profile stays off.')
+            return
+          }
+          controller.onSetProfileEnabled(id, true)
+        })
+        .catch((error) =>
+          notify(
+            `Could not request website access. ${error instanceof Error ? error.message : 'Try reopening the popup.'} The profile stays off.`
+          )
+        )
+    } catch (error) {
+      select(state.current?.id ?? null)
+      notify(error instanceof Error ? error.message : 'Check allowed sites.')
+    }
   }
 
   // Component instances initialized after elements are available
@@ -185,6 +227,12 @@ export async function mountPopup(document: Document = globalThis.document): Prom
     el.detailEmpty?.classList.add('hidden')
     el.detailPane?.classList.remove('hidden')
 
+    const accessInput = document.querySelector<HTMLInputElement>('#accessSites')!
+    try {
+      accessInput.value = suggestedAccessSites(p).join(', ')
+    } catch {
+      accessInput.value = ''
+    }
     if (el.profileName) el.profileName.value = p.name || ''
     if (el.profileInitials) el.profileInitials.value = p.initials || ''
     if (el.profileNotes) el.profileNotes.value = p.notes || ''
@@ -233,6 +281,66 @@ export async function mountPopup(document: Document = globalThis.document): Prom
             document.querySelector<HTMLElement>('#profileNotice')!.hidden = true
         })
         .catch(() => notify(saveFailure))
+    })
+    function renderGrants(): void {
+      chrome.permissions.getAll((grants) => {
+        document.querySelector('#grantedSites')!.textContent = grants.origins?.length
+          ? `Granted to ChHeader: ${[...new Set(grants.origins.map((origin) => origin.replace(/^https?:\/\//, '').replace(/\/\*$/, '')))].join(', ')}`
+          : 'No website access granted.'
+      })
+    }
+    renderGrants()
+    chrome.permissions.onAdded.addListener(renderGrants)
+    chrome.permissions.onRemoved.addListener(renderGrants)
+    document
+      .querySelector<HTMLInputElement>('#accessSites')!
+      .addEventListener('change', (event) => {
+        if (!state.current) return
+        const input = event.target as HTMLInputElement
+        try {
+          const sites = parseAccessSites(input.value)
+          ++enableAttempt
+          state.current.accessSites = sites
+          controller.onSetProfileEnabled(state.current.id, false)
+          notify('Allowed sites saved. Turn the profile on to approve access.')
+        } catch (error) {
+          notify(error instanceof Error ? error.message : 'Check allowed sites.')
+          select(state.current.id)
+        }
+      })
+    document.querySelector('#revokeAccess')!.addEventListener('click', () => {
+      ++enableAttempt
+      void chrome.runtime
+        .sendMessage({ type: 'revokeSiteAccess' })
+        .then((result) => {
+          if (!result?.ok) {
+            notify('Could not revoke access. Try again.')
+            return
+          }
+          state.profiles.forEach((p) => {
+            p.enabled = false
+          })
+          select(state.current?.id ?? null)
+          renderList()
+          notify('Website access revoked. All profiles are off.')
+        })
+        .catch(() => notify('Could not revoke access. Try again.'))
+    })
+    chrome.storage.onChanged.addListener((changes, area) => {
+      if (area !== 'local' || !changes[K.PROFILES]) return
+      const saved = changes[K.PROFILES].newValue as Profile[]
+      // Reflect background permission revocation without discarding an in-progress draft.
+      let changed = false
+      for (const profile of state.profiles) {
+        if (profile.enabled && saved.find((p) => p.id === profile.id)?.enabled === false) {
+          profile.enabled = false
+          changed = true
+        }
+      }
+      if (changed) {
+        select(state.current?.id ?? null)
+        renderList()
+      }
     })
     setupDropdowns(document)
     sharing = setupProfileSharing(document, {
@@ -451,7 +559,7 @@ export async function mountPopup(document: Document = globalThis.document): Prom
 
     if (target === el.profileEnabled) {
       const checked = (el.profileEnabled as HTMLInputElement)?.checked || false
-      controller.onProfileEnabledChange(checked)
+      if (state.current) setProfileEnabled(state.current.id, checked)
     }
   })
 

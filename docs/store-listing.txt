@@ -13,7 +13,7 @@ Organize your headers into named profiles for local development, staging, and de
 • Work in light or dark mode, following your system appearance.
 
 GET STARTED
-Create a profile, add a header, choose a URL rule, and turn the profile on. Reload the target page or make a new request to test the result. Only one profile is enabled at a time. A profile with no URL rules changes no requests.
+Create a profile, add a header, choose a URL rule and allowed sites, then turn the profile on to approve access. If Chrome closes the popup, reopen it and enable the profile again. Reload the target page or make a new request to test the result. Only one profile is enabled at a time. A profile with no URL rules changes no requests.
 
 LOCAL STORAGE AND SHARING
 Profiles are stored locally in your browser. No ChHeader account is required, and the extension includes no analytics or advertising. Header values are sent to destinations matched by your enabled rules, so review their scope before enabling a profile.
@@ -21,7 +21,7 @@ Profiles are stored locally in your browser. No ChHeader account is required, an
 Exports hide common credential header values by default. This is a convenience, not a guarantee that an export contains no secrets; review JSON before sharing it.
 
 PERMISSIONS
-ChHeader uses Chrome’s declarativeNetRequest API to apply your header rules and local storage to save your profiles. Website access allows rules to work on the sites you choose, including local development servers.
+ChHeader uses Chrome’s declarativeNetRequest API to apply your header rules and local storage to save your profiles. Website access is optional and requested only for a profile’s allowed sites, including local development servers. Domain grants include subdomains, HTTP/HTTPS and all ports. Regex and other URL rules stay within that profile’s site list. The popup shows granted sites and can revoke all website access. Updates reset grants and turn profiles off while preserving saved profiles.
 
 Source code and documentation: https://github.com/kahwee/ch-header
 Support: https://github.com/kahwee/ch-header/issues

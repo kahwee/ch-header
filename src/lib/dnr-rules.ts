@@ -2,6 +2,7 @@
  * DNR (Declarative Net Request) rule building for ChHeader extension
  */
 
+import { parseAccessSites } from './site-access'
 import { validateRegexFilter } from './url-rule'
 import type { HeaderOp, Profile } from './types'
 
@@ -85,7 +86,9 @@ function buildModifyHeadersAction(
 export function buildRulesFromProfile(
   profile: Profile | null
 ): chrome.declarativeNetRequest.Rule[] {
-  if (!profile) return []
+  if (!profile?.accessSites?.length) return []
+  const requestDomains = parseAccessSites(profile.accessSites.join(' '))
+  if (!requestDomains.length) return []
 
   const rules: chrome.declarativeNetRequest.Rule[] = []
   // No URL rules means no destinations. Removing the last rule must not widen scope.
@@ -115,6 +118,7 @@ export function buildRulesFromProfile(
       ...(m.urlFilter?.startsWith('regex:')
         ? { regexFilter: m.urlFilter.slice(6) }
         : { urlFilter: m.urlFilter || '*' }),
+      requestDomains,
       resourceTypes: (m.resourceTypes?.length
         ? m.resourceTypes
         : Array.from(DEFAULT_RESOURCE_TYPES)

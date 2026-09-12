@@ -170,7 +170,8 @@ export class CheckboxElement extends HTMLElement {
   }
 
   private setupEventListeners() {
-    this.input.addEventListener('change', () => {
+    this.input.addEventListener('change', (event) => {
+      event.stopPropagation()
       this.dispatchEvent(
         new Event('change', {
           bubbles: true,
@@ -179,7 +180,8 @@ export class CheckboxElement extends HTMLElement {
       )
     })
 
-    this.input.addEventListener('input', () => {
+    this.input.addEventListener('input', (event) => {
+      event.stopPropagation()
       this.dispatchEvent(
         new Event('input', {
           bubbles: true,

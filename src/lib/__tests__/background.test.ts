@@ -16,7 +16,9 @@ describe('background rule updates', () => {
     let change!: (changes: object, area: string) => void
     let message!: (msg: object, sender: object, reply: (result: unknown) => void) => boolean
     vi.stubGlobal('chrome', {
+      permissions: { onRemoved: { addListener: vi.fn() } },
       runtime: {
+        onStartup: { addListener: vi.fn() },
         onInstalled: { addListener: vi.fn() },
         onMessage: {
           addListener: (fn: typeof message) => {

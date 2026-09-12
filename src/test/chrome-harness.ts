@@ -17,7 +17,38 @@ export function createChromeHarness(initial: Partial<ExtensionStorage> = {}) {
   const onChanged = event<[Record<string, chrome.storage.StorageChange>, string]>()
   const onInstalled = event<[]>()
   const onMessage = event<[unknown, object, (response: unknown) => void]>()
+  let origins = [
+    'http://127.0.0.1/*',
+    'https://127.0.0.1/*',
+    'http://localhost/*',
+    'https://localhost/*',
+  ]
+  const onRemoved = event<[chrome.permissions.Permissions]>()
   const api = {
+    permissions: {
+      onRemoved,
+      onAdded: event<[chrome.permissions.Permissions]>(),
+      contains: vi.fn(
+        (requested: chrome.permissions.Permissions, callback: (granted: boolean) => void) =>
+          callback((requested.origins ?? []).every((origin) => origins.includes(origin)))
+      ),
+      request: vi.fn(
+        (requested: chrome.permissions.Permissions, callback: (granted: boolean) => void) => {
+          origins = [...new Set([...origins, ...(requested.origins ?? [])])]
+          callback(true)
+        }
+      ),
+      getAll: vi.fn((callback: (value: chrome.permissions.Permissions) => void) =>
+        callback({ origins: [...origins] })
+      ),
+      remove: vi.fn(
+        (requested: chrome.permissions.Permissions, callback: (removed: boolean) => void) => {
+          origins = origins.filter((origin) => !requested.origins?.includes(origin))
+          onRemoved.emit(requested)
+          callback(true)
+        }
+      ),
+    },
     storage: {
       onChanged,
       local: {
@@ -38,6 +69,7 @@ export function createChromeHarness(initial: Partial<ExtensionStorage> = {}) {
     },
     runtime: {
       onInstalled,
+      onStartup: event<[]>(),
       onMessage,
       sendMessage: vi.fn(
         (message: unknown) =>

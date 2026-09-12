@@ -1,5 +1,6 @@
 {
   "name": "Local API",
+  "accessSites": ["127.0.0.1"],
   "color": "#1d4ed8",
   "notes": "Localhost request and response header check.",
   "matchers": [{ "urlFilter": "127.0.0.1:3002" }],

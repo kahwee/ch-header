@@ -382,6 +382,7 @@ export class PopupController {
       color: src.color,
       notes: src.notes,
       initials: src.initials,
+      accessSites: src.accessSites?.slice(),
       enabled: false, // Always disabled by default
       matchers: src.matchers.map((m) => ({ ...m, id: crypto.randomUUID() })),
       requestHeaders: src.requestHeaders.map((h) => ({ ...h, id: crypto.randomUUID() })),

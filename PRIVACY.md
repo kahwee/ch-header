@@ -30,11 +30,17 @@ the developer. It does not sell user data or use it for advertising.
 
 ## Website permission scope
 
-Version 0.4.1 requests broad host access so profiles can target websites and local
-servers chosen by the user. An enabled profile’s URL rules limit header changes,
-but do not reduce the extension’s granted website access. Turning a profile off
-removes its header rules; it does not revoke host permissions. See the
-[permission rationale and narrower design proposal](docs/permissions.md).
+Starting with version 0.4.2, ChHeader requests optional HTTP/HTTPS host permissions
+for the sites listed in a profile, when you turn it on. Domain grants include
+subdomains and all ports. URL rules further limit header changes, and each
+profile’s rules are constrained to its allowed sites even if other sites were
+previously granted. No all-website access is requested by the app.
+
+Turning a profile off removes its header rules but retains granted permissions.
+Use **Revoke all website access** to remove all host grants and turn profiles off,
+or manage individual grants in Chrome’s extension settings. Updates reset grants
+and turn profiles off. Profiles and header values remain stored locally.
+Version 0.4.1 used broad required host access; see the [permission history](docs/permissions.md).
 
 ## Imports, exports, and support
 
