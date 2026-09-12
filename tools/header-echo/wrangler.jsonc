@@ -4,8 +4,32 @@
   "compatibility_date": "2026-09-12",
   "workers_dev": true,
   "preview_urls": false,
-  "assets": { "directory": "./public", "binding": "ASSETS", "run_worker_first": true },
-  "observability": { "enabled": false },
-  "limits": { "cpu_ms": 10 },
-  "env": { "peer": { "name": "chheader-check-peer" } }
+  "assets": {
+    "directory": "./public",
+    "binding": "ASSETS",
+    "run_worker_first": true
+  },
+  "observability": {
+    "enabled": false
+  },
+  "limits": {
+    "cpu_ms": 10
+  },
+  "env": {
+    "peer": {
+      "name": "chheader-check-peer",
+      "routes": [
+        {
+          "pattern": "headers-peer.kahwee.com",
+          "custom_domain": true
+        }
+      ]
+    }
+  },
+  "routes": [
+    {
+      "pattern": "headers.kahwee.com",
+      "custom_domain": true
+    }
+  ]
 }

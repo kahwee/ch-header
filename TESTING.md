@@ -430,3 +430,15 @@ Application observability is disabled; no storage, analytics or outbound fetches
 Cloudflare still processes requests, so the public fixture is for demo values.
 The new extension hardening is on main only; the existing 0.4.2 Store submission
 was not replaced during these tests.
+
+### Custom domains — September 12, 2026
+
+Added `headers.kahwee.com` and `headers-peer.kahwee.com` after checking both names
+had no existing DNS records. Main website routes are unchanged. Exact peer origins
+are included in CORS/CSP; unrelated origins remain denied. Original workers.dev
+URLs remain available. README links now use the custom domains.
+
+`pnpm check` passed (444 extension tests, five Worker tests). Actual Chrome loaded
+the custom domain over HTTPS and returned HTTP 200 for all three same-origin and
+cross-origin checks. These checks ran with extension profiles off; the earlier
+active-profile checks above used workers.dev. No extra extension grants were added.

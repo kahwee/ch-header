@@ -23,10 +23,10 @@ The video shows 0.4.1, before optional website permissions.
 
 ## Try it
 
-Open the [HTTPS header tester](https://chheader-check.kahwee-teng.workers.dev).
+Open the [HTTPS header tester](https://headers.kahwee.com).
 
-1. Create a profile. Set **Allowed sites** to `chheader-check.kahwee-teng.workers.dev`.
-2. Choose **URL pattern** and enter `|https://chheader-check.kahwee-teng.workers.dev/headers/match|`.
+1. Create a profile. Set **Allowed sites** to `headers.kahwee.com`.
+2. Choose **URL pattern** and enter `|https://headers.kahwee.com/headers/match|`.
 3. Add request header `X-ChHeader-Test: hello-gecko` and response header `X-ChHeader-Response: modified`.
 4. Turn the profile **on** and approve access. If Chrome closes the popup, reopen it,
    select that profile and enable it again.

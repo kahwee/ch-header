@@ -2,6 +2,8 @@
 const visibleHeaders = ['accept', 'content-type', 'x-env', 'x-chheader-test']
 
 function peerOrigin(url) {
+  if (url.origin === 'https://headers.kahwee.com') return 'https://headers-peer.kahwee.com'
+  if (url.origin === 'https://headers-peer.kahwee.com') return 'https://headers.kahwee.com'
   if (!/^chheader-check(?:-peer)?\.[a-z0-9-]+\.workers\.dev$/.test(url.hostname)) return null
   const peer = new URL(url.origin)
   peer.hostname = url.hostname.startsWith('chheader-check-peer.')

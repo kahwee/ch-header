@@ -46,3 +46,26 @@ test('HEAD has no body and static assets receive security headers', async () => 
   assert.equal(await (await request('/headers/match', { method: 'HEAD' })).text(), '')
   assert.equal((await request('/')).headers.get('Cache-Control'), 'no-store')
 })
+
+test('custom domains allow only their exact peer, never the main website', async () => {
+  for (const [host, sibling] of [
+    ['headers.kahwee.com', 'headers-peer.kahwee.com'],
+    ['headers-peer.kahwee.com', 'headers.kahwee.com'],
+  ]) {
+    for (const incoming of [
+      `https://${sibling}`,
+      'https://kahwee.com',
+      'https://headers.kahwee.com.evil.example',
+    ]) {
+      const response = await worker.fetch(
+        new Request(`https://${host}/headers/match`, { headers: { Origin: incoming } }),
+        env
+      )
+      assert.equal(
+        response.headers.get('Access-Control-Allow-Origin'),
+        incoming === `https://${sibling}` ? incoming : null
+      )
+      assert.ok(response.headers.get('Content-Security-Policy').includes(`https://${sibling}`))
+    }
+  }
+})

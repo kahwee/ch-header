@@ -1,9 +1,10 @@
 # ChHeader HTTPS tester
 
-[Open tester](https://chheader-check.kahwee-teng.workers.dev) ·
-[Second origin](https://chheader-check-peer.kahwee-teng.workers.dev)
+[Open tester](https://headers.kahwee.com) ·
+[Second origin](https://headers-peer.kahwee.com)
 
-Two standalone Cloudflare Workers serve the same page. They do not modify kahwee.com.
+Two standalone Cloudflare Workers serve the same page on subdomains of kahwee.com.
+The main website is unchanged.
 Use them to compare matching and excluded paths, redirects, cross-origin requests,
 and behavior before/after enabling or revoking ChHeader.
 
@@ -19,7 +20,7 @@ Responses use `no-store` and a restrictive CSP. The page renders values as text.
 - `/redirect`: fixed redirect to `/headers/other`.
 - `/`: instructions and buttons for same-origin and sibling-origin checks.
 
-With Wrangler 4.131.1 installed and logged into your own Cloudflare account:
+With Wrangler 4.131.1 installed and logged into the kahwee.com Cloudflare account:
 
 ```sh
 node --test tools/header-echo/worker.test.mjs
@@ -29,9 +30,10 @@ wrangler deploy --config tools/header-echo/wrangler.jsonc --env ''
 wrangler deploy --config tools/header-echo/wrangler.jsonc --env peer
 ```
 
-The sibling host is derived from the `chheader-check` / `chheader-check-peer`
-names on the same workers.dev subdomain. No custom domain or secrets are required.
-To use custom domains, explicitly configure the peer origin and CORS/CSP allowlist.
+Custom domains and their exact CORS/CSP peer origins are configured in source.
+The original workers.dev pair remains available. To deploy to your own account,
+replace the custom domains and peer origins, or remove the custom routes to use
+workers.dev alone. No secrets are required.
 
 Requests from unrelated origins cannot read the echo through CORS. Cookies and
 authorization are never reflected. POST bodies are rejected without being read.
