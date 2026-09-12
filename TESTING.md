@@ -293,3 +293,16 @@ finished MP4 decoded without errors. Personal introduction and closing cards ide
 KahWee Teng and invite viewers to build or audit their tools. The video has no narration. The demo is published on
 [YouTube](https://www.youtube.com/watch?v=QAnz_kIL6IQ). Source captures and upload copy
 remain local under `.local/qa/video/`.
+
+## Gecko branding — September 12, 2026
+
+The approved ChatGPT-generated gecko replaces the previous mark in Chrome icon
+exports and the shared popup template. `pnpm check` passed (432 tests), including
+package and Storybook builds. Computer Use reloaded the installed extension as
+0.4.1 and checked the actual toolbar popup at 744 × 440 in light mode; the mascot
+rendered and profiles remained off. No header behavior or permissions changed.
+The refreshed store screenshot uses the production template with isolated demo
+profiles; it is a presentation check, not another network test. The blog image
+uses that same current popup. YouTube's thumbnail was replaced; its published
+footage remains the original 0.4.0 demonstration. Historical captures retain
+what was visible when recorded.

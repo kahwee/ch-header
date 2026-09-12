@@ -9,7 +9,7 @@ import { menuItem } from '../components/menus/menu-item'
 import { sectionHeader } from '../components/sections/section-header'
 import folderPlusIcon from '../icons/folder-plus.svg?raw'
 import plusIcon from '../icons/plus.svg?raw'
-import logo from '../../../public/icons/logo.svg?raw'
+import logo from '../../../public/icons/logo.png'
 import searchIcon from '../icons/search.svg?raw'
 import { getProfileColor, PROFILE_COLORS } from './profile-colors'
 import { escapeHtml } from './utils'
@@ -72,7 +72,7 @@ function headersSection(type: 'req' | 'res', title: string, description: string)
 export function getSidebarTemplate(): string {
   return `<aside class="sidebar">
     <div class="sidebar__brand">
-      <div class="sidebar__brand-copy"><span class="brand-mark" aria-hidden="true">${logo}</span><strong>ChHeader</strong></div>
+      <div class="sidebar__brand-copy"><span class="brand-mark" aria-hidden="true"><img src="${logo}" alt="" /></span><strong>ChHeader</strong></div>
       ${solidButton({ id: 'footerNewProfile', text: 'New', icon: plusIcon, variant: 'secondary', size: 'sm', title: 'Add new profile' })}
     </div>
     <div class="sidebar__toolbar">

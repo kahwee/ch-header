@@ -1,4 +1,4 @@
-<p align="center"><img src="public/icons/logo.svg" width="72" height="72" alt="ChHeader — opposing arrows form an H"></p>
+<p align="center"><img src="public/icons/gecko.png" width="112" height="112" alt="ChHeader’s blue gecko mascot"></p>
 <h1 align="center">ChHeader</h1>
 <p align="center">Edit HTTP request and response headers in Chrome.</p>
 <p align="center"><a href="https://github.com/kahwee/ch-header/releases/latest">Download for Chrome</a> · <a href="TESTING.md">Testing</a> · <a href="RELEASE_NOTES.md">Release notes</a></p>

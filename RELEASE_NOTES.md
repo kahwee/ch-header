@@ -1,3 +1,8 @@
+## ChHeader 0.4.1 — prepared for submission
+
+- Blue gecko mascot across the popup, Chrome icons, README and store artwork.
+- No changes to header rules or permissions.
+
 ## ChHeader 0.4.0 — prepared for submission
 
 - Right-click profile actions, recoverable deletion, and explicit On/Off sidebar badges.

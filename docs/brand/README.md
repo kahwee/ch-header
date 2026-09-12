@@ -1,29 +1,19 @@
 # ChHeader identity
 
-Keep the recognizable product name. The mark shows three header rows with movable
-controls: it reads as a small editing tool even at toolbar size.
+ChHeader’s mascot is a curious blue gecko with cream eyes and tiny toe pads.
+Use the approved [mascot](../../public/icons/gecko.png) for large artwork and
+[logo.png](../../public/icons/logo.png) in the popup. Chrome uses the PNG exports
+at 16, 32, 48 and 128 pixels. Keep the mascot’s proportions and transparent background.
 
-Source artwork: [logo.svg](../../public/icons/logo.svg). The SVG is original vector
-artwork, with PNG exports at 16, 32, 48 and 128 pixels for Chrome.
+The mascot was generated with ChatGPT’s image generator and selected by KahWee Teng.
+Blue remains the interface accent. Profile colors are independent of the brand;
+the popup follows system light and dark appearance.
 
-| Role               | Color     |
-| ------------------ | --------- |
-| Canvas / ink       | `#202124` |
-| Sidebar and fields | `#292a2d` |
-| Raised surface     | `#303238` |
-| Primary text       | `#e8eaed` |
-| Secondary text     | `#bdc1c6` |
-| Accent / logo      | `#a8c7fa` |
-
-Use system UI fonts, restrained borders, compact spacing, and pill-shaped primary
-actions. Profile colors are personal markers; they do not replace the blue brand
-accent. The interface currently has a dark theme and does not follow Chrome's
-custom theme colors automatically.
-
-Regenerate icons with ImageMagick:
+Regenerate the size exports with ImageMagick:
 
 ```sh
+magick public/icons/gecko.png -resize 256x256 public/icons/logo.png
 for size in 16 32 48 128; do
-  magick -background none public/icons/logo.svg -resize "${size}x${size}" "public/icons/${size}.png"
+  magick public/icons/gecko.png -resize "${size}x${size}" "public/icons/${size}.png"
 done
 ```
