@@ -355,3 +355,9 @@ permissions may require additional review. Submission is not approval.
 - Limits: no full Chrome restart, real remote subdomain or cross-origin initiating
   page test was performed. Those scenarios are not represented as verified by the
   harness. IPv6 host literals are deliberately unsupported in this version.
+
+- Release/publication: all 443 tests and the complete local check passed. Main CI
+  and the v0.4.2 release workflow passed. Verified the GitHub release checksum and
+  that every packaged file matches the Store upload (archive metadata differs).
+  Replaced the 0.4.1 review submission with 0.4.2; dashboard confirms Pending
+  review, with automatic publication after approval.
