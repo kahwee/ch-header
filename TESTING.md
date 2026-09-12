@@ -88,8 +88,8 @@ Computer Use. The fixture made real network requests.
 
 | Check                                              | Result                                                                                                         |
 | -------------------------------------------------- | -------------------------------------------------------------------------------------------------------------- |
-| Automated suite                                    | 422 tests across 19 files passed                                                                               |
-| Coverage                                           | 88.1% statements, 79.19% branches, 90.22% functions, 89.66% lines of instrumented code                         |
+| Automated suite                                    | 428 tests across 21 files passed                                                                               |
+| Coverage                                           | 88.67% statements, 78.61% branches, 90.76% functions, 90.15% lines of instrumented code                        |
 | TypeScript, production build, Storybook build      | Passed                                                                                                         |
 | ZIP                                                | Integrity checked; manifest, popup, worker, chunks and icons present; version 0.3.0                            |
 | Simple host, wildcard, regex, Documents, XHR/Fetch | Passed positive and excluded-path checks                                                                       |
@@ -106,6 +106,12 @@ Computer Use. The fixture made real network requests.
 
 The final tonal-palette pass also verified legacy hex colors, blue selection state,
 legible avatar initials, elevated menus and controls, and live document/fetch changes.
+
+The upstream popup-module refactor was integrated before release. The merged build
+passed the full suite and Chrome checks for empty search, filtered keyboard selection,
+and Enter-to-Apply. That last check exposed a delete button acting as the implicit
+submitter; adding `type="button"` fixed it. The rebuilt popup retained both header
+rows after Enter, and a regression now ensures Apply is the sole submit action.
 
 The initial browser tests caught failures that the then-passing unit suite missed:
 form submission, `regexFilter` generation, legacy Documents mapping, overlapping

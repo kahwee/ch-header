@@ -70,19 +70,12 @@ function buildModifyHeadersAction(
   requestHeaders: chrome.declarativeNetRequest.ModifyHeaderInfo[],
   responseHeaders: chrome.declarativeNetRequest.ModifyHeaderInfo[]
 ): chrome.declarativeNetRequest.RuleAction {
-  const action: any = {
+  const action: chrome.declarativeNetRequest.RuleAction = {
     type: 'modifyHeaders' as const,
+    ...(requestHeaders.length > 0 ? { requestHeaders } : {}),
+    ...(responseHeaders.length > 0 ? { responseHeaders } : {}),
   }
-
-  if (requestHeaders.length > 0) {
-    action.requestHeaders = requestHeaders
-  }
-
-  if (responseHeaders.length > 0) {
-    action.responseHeaders = responseHeaders
-  }
-
-  return action as chrome.declarativeNetRequest.RuleAction
+  return action
 }
 
 /**

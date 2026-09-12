@@ -24,6 +24,7 @@ export function ghostButton(options: GhostButtonOptions): string {
 
   return `
     <button
+      type="button"
       class="icon-button ${variantClass} ${shapeClass}"
       data-action="${escapeHtml(action)}"
       title="${escapeHtml(title)}"

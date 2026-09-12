@@ -186,6 +186,10 @@ svg {
 .profile-item:focus-visible {
   box-shadow: 0 0 0 2px var(--accent);
 }
+.profile-item.keyboard-focus {
+  background: var(--surface-hover);
+  box-shadow: inset 0 0 0 1px var(--line-strong);
+}
 .profile-avatar {
   display: inline-flex;
   width: 24px;

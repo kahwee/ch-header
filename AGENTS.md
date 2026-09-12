@@ -6,6 +6,7 @@ header editing. Keep the popup compact and familiar to Chrome users.
 ## Source of truth
 
 - `src/ui/core/popup-template.ts` and `styles.css`: popup layout shared with Storybook.
+- `src/ui/core/profile-*` and `popup-elements.ts`: appearance, list filtering, keyboard navigation and typed DOM queries.
 - `src/ui/components/`: small TypeScript renderers and custom elements.
 - `src/lib/dnr-rules.ts`: Chrome declarativeNetRequest rule generation.
 - `src/background.ts`: serialized updates to installed dynamic rules.

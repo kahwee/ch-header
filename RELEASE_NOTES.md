@@ -7,7 +7,9 @@ scrolling body and persistent Apply footer.
 - Tonal profile palette with legacy-color compatibility, subtle control elevation,
   smaller circular profile markers, compact rows, accessible profile switch,
   restrained blue actions, and keyboard navigation for menus.
-- Fixed Add/Apply form navigation and profile search/empty results.
+- Fixed Add/Apply form navigation, Enter accidentally activating delete controls,
+  and profile search/empty results.
+- Integrated the modular popup architecture for appearance, lists and keyboard navigation.
 - Fixed regex matchers, Documents filtering, and overlapping background rule updates.
 - Added a localhost request/response test fixture and documented browser results.
 - Refreshed README, screenshots, contributor guidance, and tentative roadmap.

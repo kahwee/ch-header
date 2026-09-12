@@ -40,3 +40,16 @@ export function profileColorInk(hex: string): string {
   const luminance = channels[0] * 0.2126 + channels[1] * 0.7152 + channels[2] * 0.0722
   return luminance > 0.179 ? '#202124' : '#ffffff'
 }
+
+export interface ProfileColor {
+  name: string
+  token: string
+  hex: string
+}
+export const PROFILE_COLORS: readonly ProfileColor[] = COLOR_PALETTE
+export const DEFAULT_PROFILE_COLOR = 'blue-700'
+
+export function getProfileColor(value = DEFAULT_PROFILE_COLOR): ProfileColor {
+  const hex = resolveProfileColor(value)
+  return PROFILE_COLORS.find((color) => color.hex === hex) ?? { name: 'Custom', token: value, hex }
+}

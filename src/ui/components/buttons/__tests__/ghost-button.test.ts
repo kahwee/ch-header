@@ -2,6 +2,16 @@ import { describe, it, expect } from 'vitest'
 import { ghostButton } from '../ghost-button'
 
 describe('ghostButton', () => {
+  it('leaves Apply as the implicit submit action when pressing Enter in an editor field', () => {
+    const form = document.createElement('form')
+    form.innerHTML = `<input name="profileName">${ghostButton({ icon: '<svg></svg>', action: 'delete', title: 'Delete header' })}<button type="submit">Apply</button>`
+    const submitters = Array.from(form.querySelectorAll('button')).filter(
+      (button) => button.type === 'submit'
+    )
+    expect(submitters).toHaveLength(1)
+    expect(submitters[0].textContent).toBe('Apply')
+  })
+
   describe('variants', () => {
     it('should render delete variant with correct classes', () => {
       const html = ghostButton({

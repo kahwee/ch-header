@@ -11,10 +11,13 @@ import plusIcon from '../icons/plus.svg?raw'
 import logo from '../../../public/icons/logo.svg?raw'
 import searchIcon from '../icons/search.svg?raw'
 import folderPlusIcon from '../icons/folder-plus.svg?raw'
+import { PROFILE_COLORS, getProfileColor } from './profile-colors'
 
-import { COLOR_PALETTE, resolveProfileColor } from './profile-colors'
-export { COLOR_PALETTE } from './profile-colors'
+export { PROFILE_COLORS as COLOR_PALETTE } from './profile-colors'
 
+/**
+ * Stable profile color tokens retained for storage compatibility.
+ */
 /**
  * Build a headers section (Request or Response)
  * Uses sectionHeader component with dynamic menu items
@@ -146,7 +149,7 @@ export function getPopupTemplate(options?: { containerClass?: string }): string 
           <div id="colorPickerPopover" popover class="color-popover">
             <div class="color-popover__content">
               <div class="color-grid">
-                ${COLOR_PALETTE.map(
+                ${PROFILE_COLORS.map(
                   (color) => `
                   <button
                     type="button"
@@ -236,7 +239,8 @@ export function profileListItem(
   const labelId = `profile-label-${p.id}`
 
   // Resolve the stored color token to its display value.
-  const hexColor = resolveProfileColor(p.color)
+  const colorToken = p.color || 'blue-700'
+  const hexColor = getProfileColor(colorToken).hex
 
   return `
     <a href="#" aria-labelledby="${labelId}" aria-selected="${isActive}" data-id="${p.id}" class="profile-item ${isActive ? 'active' : ''}">
