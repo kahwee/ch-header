@@ -5,6 +5,10 @@ Use the approved [mascot](../../public/icons/gecko.png) for large artwork and
 [logo.png](../../public/icons/logo.png) in the popup. Chrome uses the PNG exports
 at 16, 32, 48 and 128 pixels. Keep the mascot’s proportions and transparent background.
 
+Keep `public/icons/gecko.png` as the source artwork. The README, blog post,
+Chrome icons and video use this same mascot. Pair prominent artwork with
+“ChHeader” and “By KahWee Teng”; keep the writing direct and personal.
+
 The mascot was generated with ChatGPT’s image generator and selected by KahWee Teng.
 Blue remains the interface accent. Profile colors are independent of the brand;
 the popup follows system light and dark appearance.
