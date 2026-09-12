@@ -121,6 +121,19 @@ describe('optional site access', () => {
     expect(h.query('#profileEnabledStatus').textContent).toBe('Profile is off')
   })
 
+  it('clears old rules and disables profiles when Chrome rejects a replacement', async () => {
+    const h = await createPopupHarness([localProfile({ enabled: true })])
+    await h.chrome.settle()
+    expect(h.chrome.rules()).toHaveLength(1)
+    h.chrome.api.declarativeNetRequest.updateDynamicRules.mockRejectedValueOnce(
+      new Error('Chrome rejected replacement')
+    )
+    await h.chrome.api.runtime.sendMessage({ type: 'applyNow' })
+    await h.chrome.settle()
+    expect(h.chrome.rules()).toEqual([])
+    expect(h.chrome.snapshot().profiles).toEqual([expect.objectContaining({ enabled: false })])
+  })
+
   it('requires consent again after allowed sites change', async () => {
     const h = await createPopupHarness([localProfile({ enabled: true })])
     await h.chrome.settle()

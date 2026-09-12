@@ -13,77 +13,68 @@ and [header rules](src/lib/dnr-rules.ts) are welcome.
 
 ## Install
 
-1. Download and extract the ZIP from [GitHub Releases](https://github.com/kahwee/ch-header/releases/latest).
-2. Open `chrome://extensions/` and enable **Developer mode**.
-3. Choose **Load unpacked**, select the extracted folder, then pin ChHeader from
-   Chrome’s Extensions menu.
+Download and extract the ZIP from [GitHub Releases](https://github.com/kahwee/ch-header/releases/latest).
+In `chrome://extensions/`, enable **Developer mode**, choose **Load unpacked**,
+select the extracted folder, then pin ChHeader. To update, replace those files and
+click **Reload**. Version 0.4.2 is awaiting Chrome Web Store review.
 
-To update, replace the extracted files and click **Reload** on the extension card.
-ChHeader 0.4.2 is awaiting Chrome Web Store review; the listing is not public yet.
-Until approval, install the GitHub release using the steps above.
-This README describes main. See the release notes for what is in each download.
+This README describes main; check release notes for your installed version.
+The video shows 0.4.1, before optional website permissions.
 
-## Your first profile
+## Try it
 
-1. Click **Create profile** and give it a name, such as “Local API”.
-2. Under **URL rules**, choose **Site** and enter `127.0.0.1:3002`.
-3. Add a request header: `X-Env` with the value `staging`.
-4. Set **Allowed sites** to `127.0.0.1`, then turn the profile **on** to approve access.
-5. If Chrome closes the popup, reopen it, select that profile, and turn it **on** again. Reload the target page.
+Open the [HTTPS header tester](https://chheader-check.kahwee-teng.workers.dev).
 
-New profiles start **off**. Only one profile can be on at a time; selecting a
-profile opens its editor without enabling it. Changes save on edit; URL rules save
-when you leave the field. **Apply** reapplies the enabled profile’s saved rules.
+1. Create a profile. Set **Allowed sites** to `chheader-check.kahwee-teng.workers.dev`.
+2. Choose **URL pattern** and enter `|https://chheader-check.kahwee-teng.workers.dev/headers/match|`.
+3. Add request header `X-ChHeader-Test: hello-gecko` and response header `X-ChHeader-Response: modified`.
+4. Turn the profile **on** and approve access. If Chrome closes the popup, reopen it,
+   select that profile and enable it again.
+5. Click **Run checks** on the tester. Only the matching path should change.
+   Turn the profile off and run again to compare.
 
-## Choose where headers apply
+Use demo values on the public tester. For secrets, run `pnpm test:headers` locally
+at `http://127.0.0.1:3002`. The [tester source](tools/header-echo) is included.
 
-| Mode | Use it for |
-| --- | --- |
-| **Site** | A hostname and optional port, such as `127.0.0.1:3002`. Covers HTTP/HTTPS and subdomains. |
-| **URL pattern** | Chrome URL-filter syntax when you need to narrow matching further. |
-| **Regex** | Advanced matching, checked for support by Chrome before saving. |
-| **All allowed sites** | Any URL within this profile’s allowed sites. |
+## Access and security
 
-You can also limit each rule by request type. **No URL rules means no requests
-are changed.** Invalid drafts show an inline error and leave the saved rule intact.
-Start with Site mode; most profiles do not need a regular expression.
+- **You choose the sites.** No website access is granted at installation. Approving
+  a hostname includes its subdomains, HTTP/HTTPS and all ports. URL rules narrow
+  where headers change; even regex rules stay within the profile’s allowed sites.
+- **Cross-site APIs need both hosts:** the page making the request and the API.
+  Use a Site or URL rule to keep header changes on the API.
+- **Off means off.** New, imported and duplicated profiles start off. Only one can
+  be on. No URL rules means no changes. On main, rejected rule updates clear old
+  rules and turn profiles off.
+- **Revoke all website access** clears grants and turns profiles off. Updates also
+  reset grants. Editing allowed sites turns the profile off until you enable it again.
+- **Profiles can contain secrets.** They stay in Chrome’s local extension storage,
+  without additional encryption. Exports blank common credential headers by
+  default; review custom values and notes before sharing.
 
-## Website access
+No ads, analytics or remote code. Header values are sent to the sites your rules
+match. Read the [permission details](docs/permissions.md), [privacy policy](PRIVACY.md)
+and [actual test results](TESTING.md).
 
-Version 0.4.2 requests website access only when you approve a profile’s allowed
-sites. Domain grants include subdomains, HTTP/HTTPS and all ports; URL rules narrow
-header changes further. Regex rules cannot escape that profile’s site list.
-For cross-site API calls, approve both the page and API hosts; use URL rules to
-limit header changes to the API.
-**Revoke all website access** removes grants and turns profiles off. Updates also
-reset website grants, so you must approve sites again. See [permissions](docs/permissions.md).
+## Everyday use
 
-## Keep and share profiles
+Use **Site** for a hostname and optional port, **URL pattern** for Chrome’s filter
+syntax, or **Regex** for advanced matching. **All allowed sites** covers the whole
+profile site list. Each rule can also filter request types.
 
-Profiles are stored on this device in Chrome’s local extension storage. Right-click
-a profile or open **Options** to duplicate, export or delete it. **Undo** restores
-the last deleted profile, off, while the popup remains open.
-
-**Import** accepts pasted JSON or a file. Imported profiles get new IDs and start
-off. **Export all** shares a collection; **Options → Export JSON** shares one profile.
-Exports blank common credential headers by default; review custom headers and
-values before sharing. A [localhost example](docs/examples/local-profile.json)
-is included. Read the [privacy policy](PRIVACY.md) for storage and data handling.
+Selecting a profile does not enable it. Edits save automatically; URL rules save
+on blur. Invalid URL drafts keep the last saved rule. **Apply** reapplies saved
+rules. Use **Options** to duplicate, export or delete; **Import** accepts JSON.
 
 ## Develop
 
-Use the Node and pnpm versions declared in the repository.
+Use the pinned Node and pnpm versions in `package.json`.
 
 ```sh
 pnpm install --frozen-lockfile
-pnpm check          # types, format, lint, tests, extension ZIP and Storybook
-pnpm dev:extension  # rebuild on edits; load dist/ unpacked and reload in Chrome
+pnpm test:fast
+pnpm check          # format, lint, types, tests, extension ZIP and Storybook
+pnpm dev:extension  # load dist/ unpacked; reload Chrome after edits
 ```
 
-`pnpm test:fast` runs focused workflow tests. `pnpm test:headers` starts the local
-header fixture at `http://127.0.0.1:3002`. See [TESTING.md](TESTING.md) for actual
-Chrome checks and [AGENTS.md](AGENTS.md) for contributor guidance.
-
-## License
-
-[MIT](LICENSE) · Copyright 2026 KahWee Teng.
+[Contributor guidance](AGENTS.md) · [MIT license](LICENSE) · Copyright 2026 KahWee Teng.

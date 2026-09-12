@@ -20,3 +20,8 @@ private-key.xml
 /.local/qa/
 /docs/qa/
 /docs/screenshots/*/
+
+# Local Cloudflare state and credentials
+.wrangler/
+.dev.vars
+.dev.vars.*

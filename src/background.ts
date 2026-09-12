@@ -14,19 +14,28 @@ import { STORAGE_KEYS, type Profile } from './lib/types'
  */
 async function updateActiveProfile(): Promise<void> {
   const active = await getActiveProfile()
-  if (active && !(await hasSiteAccess(active))) {
-    // Fail closed before changing storage: persistent dynamic rules must be removed too.
-    await applyDNRRules([])
-    const { profiles = [] } = await chrome.storage.local.get<{ profiles?: Profile[] }>('profiles')
-    await chrome.storage.local.set({
-      profiles: profiles.map((p: Profile) => ({ ...p, enabled: false })),
-    })
-    return
+  try {
+    if (active && !(await hasSiteAccess(active))) {
+      await stopProfiles()
+      return
+    }
+    await applyDNRRules(buildRulesFromProfile(active))
+  } catch (error) {
+    // Chrome rejects rule replacements atomically, leaving the previous rules live.
+    // A failed edit or profile switch must not keep sending the previous headers.
+    await stopProfiles()
+    throw error
   }
-  const rules = buildRulesFromProfile(active)
-  await applyDNRRules(rules)
+}
 
-  console.log('ChHeader: applied profile', active?.name)
+async function stopProfiles(): Promise<void> {
+  await applyDNRRules([])
+  const { profiles = [] } = await chrome.storage.local.get<{ profiles?: Profile[] }>('profiles')
+  if (profiles.some((profile) => profile.enabled)) {
+    await chrome.storage.local.set({
+      profiles: profiles.map((profile) => ({ ...profile, enabled: false })),
+    })
+  }
 }
 
 // Serialize the entire read/build/replace operation. Install, storage events and
@@ -48,11 +57,7 @@ function enqueue(operation: () => Promise<void>): Promise<void> {
 }
 
 async function revokeSiteAccess(): Promise<void> {
-  await applyDNRRules([])
-  const { profiles = [] } = await chrome.storage.local.get<{ profiles?: Profile[] }>('profiles')
-  await chrome.storage.local.set({
-    profiles: profiles.map((p: Profile) => ({ ...p, enabled: false })),
-  })
+  await stopProfiles()
   const grants = await new Promise<chrome.permissions.Permissions>((resolve) =>
     chrome.permissions.getAll(resolve)
   )

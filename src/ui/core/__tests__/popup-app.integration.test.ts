@@ -83,19 +83,17 @@ describe('URL rule safety through real modules', () => {
     expect(h.chrome.rules()[0].condition.regexFilter).toBe('^http://127\\.0\\.0\\.1:3002/match/')
   })
 
-  it('validates imported regexes before replacing live rules and can always disable afterward', async () => {
+  it('clears previous headers when a saved regex is rejected', async () => {
     const h = await createPopupHarness([localProfile({ enabled: true })])
     await h.chrome.settle()
-    const originalRules = h.chrome.rules()
+    expect(h.chrome.rules()).toHaveLength(1)
     h.chrome.api.declarativeNetRequest.isRegexSupported.mockResolvedValue({ isSupported: false })
     await h.chrome.api.storage.local.set({
       profiles: [localProfile({ enabled: true, matchers: [{ id: 'bad', urlFilter: 'regex:[' }] })],
     })
-    expect(await h.chrome.settle()).toMatchObject({ ok: false })
-    expect(h.chrome.rules()).toEqual(originalRules)
-    await h.chrome.api.storage.local.set({ profiles: [localProfile({ enabled: false })] })
     await h.chrome.settle()
     expect(h.chrome.rules()).toEqual([])
+    expect(h.chrome.snapshot().profiles).toEqual([expect.objectContaining({ enabled: false })])
   })
 
   it('does not widen scope when the final URL rule is deleted', async () => {

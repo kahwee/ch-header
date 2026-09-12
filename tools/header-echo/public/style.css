@@ -1,0 +1,63 @@
+:root {
+  color-scheme: light dark;
+  font:
+    16px / 1.6 system-ui,
+    sans-serif;
+  background: light-dark(#f5f8fc, #101722);
+  color: light-dark(#192538, #edf3ff);
+}
+body {
+  margin: 0;
+}
+main {
+  max-width: 780px;
+  padding: 32px 24px;
+  margin: auto;
+}
+h1 {
+  font-size: 2rem;
+  line-height: 1.2;
+}
+a {
+  color: light-dark(#1755b0, #91bcff);
+}
+li {
+  margin-block: 10px;
+}
+code,
+pre {
+  overflow-wrap: anywhere;
+}
+pre {
+  white-space: pre-wrap;
+  border: 1px solid light-dark(#bbc9dc, #465770);
+  border-radius: 12px;
+  padding: 18px;
+  font-size: 13px;
+}
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+button {
+  font: inherit;
+  font-weight: 600;
+  padding: 10px 18px;
+  cursor: pointer;
+  border: 1px solid light-dark(#1755b0, #91bcff);
+  border-radius: 8px;
+  background: light-dark(#1755b0, #91bcff);
+  color: light-dark(white, #101722);
+}
+button:disabled {
+  opacity: 0.5;
+  cursor: default;
+}
+:focus-visible {
+  outline: 3px solid light-dark(#1755b0, #91bcff);
+  outline-offset: 4px;
+}
+.note {
+  font-size: 0.875rem;
+}

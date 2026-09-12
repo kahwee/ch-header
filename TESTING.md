@@ -387,3 +387,46 @@ The full automated check passed again (443 tests). Evidence remains local under
 `.local/qa/permission-retest/`. Test profiles were left off with grants revoked;
 server and test tabs were closed. Full browser restart and remote HTTPS were not
 tested in this run. Subdomains and cross-origin requests above used loopback HTTP.
+
+## Security hardening and public HTTPS checks — September 12, 2026
+
+Main now clears existing dynamic rules and turns profiles off when building or
+replacing rules fails. Previously Chrome could reject a replacement while leaving
+the previous rules active. Removed the profile-name console log as well.
+
+Automated: `pnpm install --frozen-lockfile`, `pnpm test:fast` (29), and `pnpm check`
+passed with pinned Node 26.7.0 / pnpm 11.25.0. The full check includes 444 extension
+tests and four new Worker security tests, plus build, package and Storybook.
+The Worker tests cover credential/unknown-header/query omission, sibling-only CORS
+without credentials, JSON reflection, fixed redirects, rejected POST bodies,
+HEAD behavior and security headers. Local Wrangler HTTP checks passed. Live curl
+requests to both Workers confirmed demo-header echo and credential omission.
+Python urllib received a 403 remotely; curl and real Chrome succeeded.
+
+Actual Chrome toolbar popup, rebuilt `dist`, demo values only:
+
+| Case | Observed result |
+| --- | --- |
+| Both HTTPS Workers, profile off | Test request header absent; response header original. |
+| Exact URL pattern for `/headers/match` | Request `X-ChHeader-Test: hello-gecko`; response `X-ChHeader-Response: modified`. |
+| `/headers/other` and `/redirect` → `/headers/other` | Unchanged on both Workers. |
+| Cross-origin fetches in both directions, both hosts approved | Only the exact matching paths changed. |
+| Change enabled request header name to `Bad Header` | Chrome rejected it; profile turned off; previous request and response changes stopped. |
+| Restore valid header and enable again | Matching requests worked again. |
+| Revoke all website access | No grants, all profiles off, both HTTPS Workers unchanged. |
+
+The test profile remains saved but off, with valid demo data and grants revoked.
+The local Wrangler process was stopped; the main tester is left open. No system
+settings were changed. Evidence is ignored under `.local/qa/permission-retest/`.
+No full Chrome restart, incognito, Firefox or Safari testing was performed.
+
+Deployed standalone Workers, without modifying kahwee.com:
+
+- https://chheader-check.kahwee-teng.workers.dev
+- https://chheader-check-peer.kahwee-teng.workers.dev
+
+The [source and deployment instructions](tools/header-echo/README.md) are versioned.
+Application observability is disabled; no storage, analytics or outbound fetches.
+Cloudflare still processes requests, so the public fixture is for demo values.
+The new extension hardening is on main only; the existing 0.4.2 Store submission
+was not replaced during these tests.

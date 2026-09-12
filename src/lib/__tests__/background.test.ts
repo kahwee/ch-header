@@ -27,6 +27,7 @@ describe('background rule updates', () => {
         },
       },
       storage: {
+        local: { get: vi.fn().mockResolvedValue({ profiles: [] }), set: vi.fn() },
         onChanged: {
           addListener: (fn: typeof change) => {
             change = fn

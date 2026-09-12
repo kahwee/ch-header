@@ -33,10 +33,11 @@
     "storybook:build": "storybook build",
     "dev:extension": "vite build --watch",
     "test:headers": "node scripts/header-check.js",
-    "check": "pnpm format:check && pnpm lint && pnpm typecheck && pnpm test:coverage && pnpm build:package && pnpm storybook:build",
+    "check": "pnpm format:check && pnpm lint && pnpm typecheck && pnpm test:coverage && pnpm test:echo && pnpm build:package && pnpm storybook:build",
     "test:workflows": "vitest run src/ui/core/__tests__/profile-workflows.integration.test.ts src/lib/__tests__/profile-transfer.test.ts",
     "test:fast": "vitest run src/ui/core/__tests__/popup-app.integration.test.ts src/ui/core/__tests__/profile-workflows.integration.test.ts src/lib/__tests__/profile-transfer.test.ts src/lib/__tests__/background.test.ts --silent=passed-only",
-    "test:fast:watch": "vitest src/ui/core/__tests__/popup-app.integration.test.ts src/ui/core/__tests__/profile-workflows.integration.test.ts src/lib/__tests__/profile-transfer.test.ts src/lib/__tests__/background.test.ts --silent=passed-only"
+    "test:fast:watch": "vitest src/ui/core/__tests__/popup-app.integration.test.ts src/ui/core/__tests__/profile-workflows.integration.test.ts src/lib/__tests__/profile-transfer.test.ts src/lib/__tests__/background.test.ts --silent=passed-only",
+    "test:echo": "node --test tools/header-echo/worker.test.mjs"
   },
   "devDependencies": {
     "@biomejs/biome": "2.5.13",

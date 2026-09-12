@@ -64,3 +64,8 @@ Sources checked September 12, 2026:
 [optional permissions](https://developer.chrome.com/docs/extensions/reference/api/permissions),
 [activeTab](https://developer.chrome.com/docs/extensions/develop/concepts/activeTab),
 [match patterns](https://developer.chrome.com/docs/extensions/develop/concepts/match-patterns).
+
+On main (after 0.4.2), a failed rule build or Chrome rule replacement clears the
+previous dynamic rules and turns profiles off. Chrome's atomic rejection can
+otherwise leave old headers running after an edit or profile switch. If Chrome
+also refuses the cleanup operation, disable ChHeader in `chrome://extensions/`.

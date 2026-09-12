@@ -1,0 +1,29 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>ChHeader — check your headers</title>
+  <link rel="stylesheet" href="/style.css">
+  <script src="/check.js" defer></script>
+</head>
+<body>
+<main>
+  <p><a href="https://github.com/kahwee/ch-header">ChHeader</a> · by <a href="https://kahwee.com">KahWee Teng</a></p>
+  <h1>Check your headers</h1>
+  <p>See what reaches this Cloudflare Worker and what your browser receives back.</p>
+  <ol>
+    <li>In ChHeader, allow <strong id="host">this hostname</strong>.</li>
+    <li>Add request header <code>X-ChHeader-Test: hello-gecko</code> and response header <code>X-ChHeader-Response: modified</code>.</li>
+    <li>Choose <strong>URL pattern</strong> and enter <code id="pattern">/headers/match</code>. Turn the profile on and approve access. Reopen ChHeader, select that profile and enable it again if needed.</li>
+    <li>Run the checks. The matching path should change; the other path and redirect should stay unchanged.</li>
+  </ol>
+  <p>For cross-site checks, approve this page and the second test site. Add a matching URL rule for the second site too. <a id="peer" href="/" hidden>Open second test site</a></p>
+  <div class="actions"><button type="button" id="run">Run checks</button><button type="button" id="cross" disabled>Check second site</button></div>
+  <p id="status" role="status">No checks run yet.</p>
+  <pre id="results">Results appear here.</pre>
+  <p class="note">Use demo values only. This page displays Accept, Content-Type, X-Env and X-ChHeader-Test. Other headers are omitted, including authorization and cookies. Requests still reach Cloudflare; use a local tester for secrets. This Worker has no application logs, analytics or storage.</p>
+  <p class="note">“Request headers” come from the Worker. “Response header” comes from your browser. A missing value means the rule did not apply; this page never sets the test headers itself.</p>
+</main>
+</body>
+</html>
