@@ -1,10 +1,1 @@
-No account, login, subscription, or paid feature is required. Leave username and password blank.
-
-1. Install the extension and open its toolbar popup. A fresh installation starts with an empty library and no active header rules.
-2. For a local network test, obtain the public source at https://github.com/kahwee/ch-header and run node scripts/header-check.js. Open http://127.0.0.1:3002/ in Chrome. The source includes docs/examples/local-profile.json, which can be imported through the popup. Imports start off.
-3. Enable the imported localhost profile and reload the fixture page. The document request should show X-ChHeader-Test: enabled. Run checks: matching fetch requests show the same request header and X-ChHeader-Response: modified.
-4. Turn the profile off, reload, and run checks again. The test request headers disappear and the response value returns to original. Leave the profile off and stop the local fixture afterward.
-5. Create, rename, duplicate, delete, and Undo a profile. Test JSON import/export. Selecting a profile does not enable it; only one profile can be on at a time.
-6. Deleting all URL rules means no requests are changed. An invalid Regex draft displays an error and retains the last applied valid rules until repaired or disabled.
-
-Profiles are stored locally; user-entered credentials are handled only as configured header values. There is no developer backend, telemetry, or remotely loaded executable code. Website access is needed because target sites and local ports are chosen by the user.
+No login or payment. Clone https://github.com/kahwee/ch-header and run node scripts/header-check.js. Open http://127.0.0.1:3002/. Import docs/examples/local-profile.json in the popup (starts off). Enable it, reload, and click Run checks: requestHeader=enabled; responseHeader=modified. Disable, reload and rerun: requestHeader=(absent); responseHeader=original. Leave it off and stop the server. Also test create/rename/duplicate/delete/Undo and JSON export. No URL rules means no requests change.
