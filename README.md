@@ -19,7 +19,7 @@ and [header rules](src/lib/dnr-rules.ts) are welcome.
    Chrome’s Extensions menu.
 
 To update, replace the extracted files and click **Reload** on the extension card.
-ChHeader 0.4.1 has been submitted to the Chrome Web Store and is awaiting review.
+The Chrome Web Store listing is not public yet.
 Until approval, install the GitHub release using the steps above.
 This README describes main. See the release notes for what is in each download.
 

@@ -127,6 +127,7 @@ export function getPopupTemplate(options?: { containerClass?: string }): string 
             ${solidButton({ id: 'newProfileEmpty', text: 'Create profile', icon: plusIcon, variant: 'primary', size: 'md' })}
             <button type="button" data-action="importProfile" class="button button--secondary button--md">Import profiles…</button>
           </div>
+          <button id="emptyRevokeAccess" data-revoke-access type="button" class="button button--secondary button--sm" hidden>Revoke remaining website access</button>
           <p class="empty-state__reassurance">Profiles stay on this device. New profiles start off.</p>
         </div>
         <form id="detail" class="profile-editor hidden">
@@ -199,7 +200,7 @@ export function getPopupTemplate(options?: { containerClass?: string }): string 
             <input id="accessSites" class="field field--access-sites" type="text" placeholder="api.example.com, localhost" aria-describedby="accessHelp" />
             <p id="accessHelp" class="editor-section__hint">HTTP/HTTPS, including subdomains and all ports. URL rules narrow this further. Approve access when prompted, then reopen this popup and turn the profile on.</p>
             <p id="grantedSites" class="editor-section__hint" aria-live="polite"></p>
-            <button id="revokeAccess" type="button" class="button button--secondary button--md">Revoke all website access</button>
+            <button id="revokeAccess" data-revoke-access type="button" class="button button--secondary button--md">Revoke all website access</button>
           </section>
 
           ${headersSection('req', 'Request headers', '')}

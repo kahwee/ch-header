@@ -99,6 +99,14 @@ describe('optional site access', () => {
     expect(buildRulesFromProfile(localProfile({ accessSites: undefined }))).toEqual([])
   })
 
+  it('can revoke leftover grants even after all profiles are deleted', async () => {
+    const h = await createPopupHarness([])
+    expect(h.query('#emptyRevokeAccess').hidden).toBe(false)
+    h.click('#emptyRevokeAccess')
+    await vi.waitFor(() => expect(h.query('#emptyRevokeAccess').hidden).toBe(true))
+    expect(h.chrome.api.permissions.remove).toHaveBeenCalled()
+  })
+
   it('turns active profiles off and removes persistent rules after permission revocation', async () => {
     const h = await createPopupHarness([localProfile({ enabled: true })])
     await h.chrome.settle()

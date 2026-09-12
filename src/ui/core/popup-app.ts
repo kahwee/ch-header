@@ -284,6 +284,7 @@ export async function mountPopup(document: Document = globalThis.document): Prom
     })
     function renderGrants(): void {
       chrome.permissions.getAll((grants) => {
+        document.querySelector<HTMLElement>('#emptyRevokeAccess')!.hidden = !grants.origins?.length
         document.querySelector('#grantedSites')!.textContent = grants.origins?.length
           ? `Granted to ChHeader: ${[...new Set(grants.origins.map((origin) => origin.replace(/^https?:\/\//, '').replace(/\/\*$/, '')))].join(', ')}`
           : 'No website access granted.'
@@ -308,23 +309,25 @@ export async function mountPopup(document: Document = globalThis.document): Prom
           select(state.current.id)
         }
       })
-    document.querySelector('#revokeAccess')!.addEventListener('click', () => {
-      ++enableAttempt
-      void chrome.runtime
-        .sendMessage({ type: 'revokeSiteAccess' })
-        .then((result) => {
-          if (!result?.ok) {
-            notify('Could not revoke access. Try again.')
-            return
-          }
-          state.profiles.forEach((p) => {
-            p.enabled = false
+    document.querySelectorAll('[data-revoke-access]').forEach((button) => {
+      button.addEventListener('click', () => {
+        ++enableAttempt
+        void chrome.runtime
+          .sendMessage({ type: 'revokeSiteAccess' })
+          .then((result) => {
+            if (!result?.ok) {
+              notify('Could not revoke access. Try again.')
+              return
+            }
+            state.profiles.forEach((p) => {
+              p.enabled = false
+            })
+            select(state.current?.id ?? null)
+            renderList()
+            notify('Website access revoked. All profiles are off.')
           })
-          select(state.current?.id ?? null)
-          renderList()
-          notify('Website access revoked. All profiles are off.')
-        })
-        .catch(() => notify('Could not revoke access. Try again.'))
+          .catch(() => notify('Could not revoke access. Try again.'))
+      })
     })
     chrome.storage.onChanged.addListener((changes, area) => {
       if (area !== 'local' || !changes[K.PROFILES]) return
