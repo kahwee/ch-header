@@ -290,6 +290,6 @@ profiles remained off. The new local fixture process was stopped afterward.
 Captured actual popup and network-result screenshots were edited into a 67-second
 1920 × 1080 H.264/AAC captioned walkthrough. Frames were visually inspected and the
 finished MP4 decoded without errors. Personal introduction and closing cards identify
-KahWee Teng and invite viewers to build or audit their tools. The video has no narration. Video, captions,
-and upload copy remain local under `.local/qa/video/` pending YouTube's upload-term
-confirmation; no placeholder YouTube URL was added to README.
+KahWee Teng and invite viewers to build or audit their tools. The video has no narration. The demo is published on
+[YouTube](https://www.youtube.com/watch?v=QAnz_kIL6IQ). Source captures and upload copy
+remain local under `.local/qa/video/`.
