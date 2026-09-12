@@ -28,6 +28,14 @@ ChHeader has no developer-operated backend, analytics, advertising, or tracking
 service. It does not transmit your profiles, browsing history, or page contents to
 the developer. It does not sell user data or use it for advertising.
 
+## Website permission scope
+
+Version 0.4.1 requests broad host access so profiles can target websites and local
+servers chosen by the user. An enabled profile’s URL rules limit header changes,
+but do not reduce the extension’s granted website access. Turning a profile off
+removes its header rules; it does not revoke host permissions. See the
+[permission rationale and narrower design proposal](docs/permissions.md).
+
 ## Imports, exports, and support
 
 Importing JSON saves the selected profiles locally. Copying or exporting profiles

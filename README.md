@@ -47,6 +47,13 @@ You can also limit each rule by request type. **No URL rules means no requests
 are changed.** Invalid drafts show an inline error and leave the saved rule intact.
 Start with Site mode; most profiles do not need a regular expression.
 
+## Website access
+
+Version 0.4.1 requests broad website access because profiles can target user-chosen
+API hosts and local servers. URL rules limit header changes, but do not narrow the
+permission itself. This is a convenience tradeoff; per-site permission requests
+are a better future direction. See [the rationale and alternatives](docs/permissions.md).
+
 ## Keep and share profiles
 
 Profiles are stored on this device in Chrome’s local extension storage. Right-click
