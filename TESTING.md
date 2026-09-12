@@ -323,3 +323,11 @@ release link now resolves to 0.4.1. This packaging review did not repeat header
 behavior tests; the actual Chrome checks above cover the unchanged rule code.
 Chrome Store accepted the updated draft package, but it has not been submitted
 or approved. The live blog header was checked at desktop and 390px mobile widths.
+
+## Chrome Store submission — September 12, 2026
+
+With user confirmation, the obsolete Store icon, two screenshots and promo tile
+were replaced by the approved gecko assets. The current screenshot and demo URL
+were retained. Google confirmed submission of 0.4.1 for compliance review, with
+automatic publication after approval selected. Google warned that broad host
+permissions may require additional review. Submission is not approval.
