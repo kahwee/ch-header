@@ -15,3 +15,8 @@ src/ui/icons-generated.ts
 *.key
 *.p12
 private-key.xml
+
+# Local QA evidence and generated review reports (not source deliverables)
+/.local/qa/
+/docs/qa/
+/docs/screenshots/*/

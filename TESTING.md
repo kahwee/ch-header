@@ -110,7 +110,9 @@ source-token calculations, not full accessibility certification. Saved palette
 colors retain their existing values. `pnpm check` passed all 415 tests in 23 files,
 types, formatting, coverage, extension packaging and Storybook after the CSS change.
 
-See the [light-mode screenshot review](docs/qa/light-mode.md) for evidence and limits.
+Generated screenshots and review reports are local-only evidence. Store future
+captures under ignored `.local/qa/`; keep concise results in this file. Curated
+README images are maintained separately in `docs/screenshots/`.
 
 ## Release checklist
 
