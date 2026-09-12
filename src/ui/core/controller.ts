@@ -201,7 +201,7 @@ export class PopupController {
   onProfileNameChange(value: string): void {
     this.withCurrentProfile((p) => {
       p.name = value
-      this.callbacks.syncAndRender()
+      this.callbacks.syncAndRender({ listOnly: true })
     })
   }
 
@@ -211,7 +211,7 @@ export class PopupController {
   onProfileColorChange(value: string): void {
     this.withCurrentProfile((p) => {
       p.color = value
-      this.callbacks.syncAndRender()
+      this.callbacks.syncAndRender({ listOnly: true })
     })
   }
 
@@ -221,7 +221,7 @@ export class PopupController {
   onProfileNotesChange(value: string): void {
     this.withCurrentProfile((p) => {
       p.notes = value
-      this.callbacks.syncAndRender()
+      this.callbacks.syncAndRender({ listOnly: true })
     })
   }
 

@@ -50,7 +50,7 @@ pnpm test:headers   # real header fixture at http://127.0.0.1:3002
 ```
 
 Load `dist/` unpacked in Chrome. `pnpm dev:extension` rebuilds on edits; reload
-ChHeader after rebuilding. `pnpm test:workflows` runs focused sharing/action tests.
+ChHeader after rebuilding. `pnpm test:fast` runs the focused popup and rule-update tests.
 See [testing](TESTING.md) and [contributor guidance](AGENTS.md).
 
 ## Roadmap and releases

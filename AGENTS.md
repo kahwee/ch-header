@@ -3,7 +3,7 @@
 ChHeader is a local-profile HTTP header editor for Chrome Manifest V3.
 
 - Use the pinned Node/pnpm versions. Install with `pnpm install --frozen-lockfile`.
-- Run `pnpm check` before pushing. `pnpm test:workflows` is the focused behavior suite.
+- Run `pnpm check` before pushing. `pnpm test:fast` is the focused behavior suite.
 - Share actual popup markup with Storybook (`popup-template.ts`). Use plain CSS,
   semantic classes and the existing surface/accent tokens; add no styling framework.
 - Keep every control usable at 744 × 440. Preserve keyboard focus and accessible labels.

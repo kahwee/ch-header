@@ -7,6 +7,8 @@ pnpm test:headers
 ```
 
 `check` runs the same types, formatting, coverage and build checks as CI.
+`pnpm test:fast` runs the focused popup-to-storage-to-rules loop alongside JSON
+and action tests. `pnpm test:fast:watch` keeps it running while editing.
 `pnpm test:workflows` focuses on JSON round trips, validation, context actions,
 Undo and status updates using the real popup template. `pnpm test` watches;
 `pnpm test:run` exits. Tests use jsdom and mocked Chrome APIs, so also test Chrome.
@@ -45,7 +47,7 @@ Stop the fixture with Ctrl+C afterward.
 
 ## Latest verification — September 12, 2026
 
-Local `pnpm check` passed: 412 tests across 22 files, TypeScript, formatting,
+Local `pnpm check` passed: 415 tests across 23 files, TypeScript, formatting,
 coverage, ZIP packaging and Storybook. A frozen-lockfile install also passed.
 
 Actual macOS Chrome toolbar popup, using Computer Use:

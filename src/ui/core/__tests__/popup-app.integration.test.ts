@@ -47,7 +47,7 @@ describe('real popup through storage to background rules', () => {
     await h.chrome.settle()
     expect(h.chrome.snapshot()).toEqual(before)
     expect(h.query('#reqHeaders').querySelectorAll('tr')).toHaveLength(2)
-    expect(h.query('#matchers').querySelectorAll('tr')).toHaveLength(2)
+    expect(h.query('#matchers').querySelectorAll('[data-component]')).toHaveLength(2)
   })
 
   it('preserves header input focus while changing profile metadata', async () => {
@@ -56,5 +56,7 @@ describe('real popup through storage to background rules', () => {
     header.focus()
     h.input('#profileName', 'Updated')
     expect(h.query('#reqHeaders input[type="text"]')).toBe(header)
+    expect(h.root.activeElement).toBe(header)
+    await h.chrome.settle()
   })
 })
