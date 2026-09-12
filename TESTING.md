@@ -37,7 +37,35 @@ regex errors were retained; no additional entries appeared during the apply chec
 The harness does not validate Chrome's rule schema, measure layout at 744 × 440,
 or simulate real network requests. Keep the Chrome matrix below for those checks.
 
-## Real Chrome check
+## Real Chrome check — public HTTPS domains
+
+Build and reload `dist/` in Chrome. Import
+[https-profile.json](docs/examples/https-profile.json) through the actual toolbar
+popup. It starts off and allows only `headers.kahwee.com` and
+`headers-peer.kahwee.com`; URL rules target exactly `/headers/match` on each.
+
+Open [the tester](https://headers.kahwee.com) and
+[the second site](https://headers-peer.kahwee.com). Run these cases on both:
+
+| Case | Expected |
+| --- | --- |
+| Off or denied access | Test header absent; response `original`. |
+| On, both test hosts approved | `/headers/match`: `hello-gecko` / `modified`. |
+| Excluded path and redirect | `/headers/other` and `/redirect`: absent / `original`. |
+| Check second site | Same path boundaries on the other domain. |
+| Allow only `headers.kahwee.com` | Primary matching path changes; peer remains unchanged. |
+| Restore both domains, edit header name to `Bad Header` on main | Rejected replacement turns profile off; previous headers stop. |
+| Restore valid header and enable | Matching path changes again. |
+| Revoke all website access | Both sites return to baseline; all profiles off. |
+
+Chrome may close the permission prompt: reopen, select this profile, then enable
+it again. Reload both pages after changing access. Failed requests are inconclusive,
+not proof that headers were removed. Approve the exact test hosts, never `kahwee.com` or a broad suffix.
+`pnpm test:echo:live` checks the deployed Worker responses, privacy headers and
+CORS on both domains. It does **not** exercise Chrome or the extension. Unit tests
+remain offline; historical results below retain the URLs actually tested.
+
+## Offline Chrome check
 
 Build and reload `dist/` in `chrome://extensions/`. Open the toolbar popup,
 click **Import**, and choose [local-profile.json](docs/examples/local-profile.json).
@@ -442,3 +470,38 @@ URLs remain available. README links now use the custom domains.
 the custom domain over HTTPS and returned HTTP 200 for all three same-origin and
 cross-origin checks. These checks ran with extension profiles off; the earlier
 active-profile checks above used workers.dev. No extra extension grants were added.
+
+### Custom-domain fixture and repeated checks — September 12, 2026
+
+The default public Worker tests, reviewer instructions and Chrome matrix now use
+`headers.kahwee.com` / `headers-peer.kahwee.com`. Added an importable HTTPS fixture
+and `pnpm test:echo:live`; offline localhost tests remain independent of the network.
+Historical records retain their actual URLs. Reviewer text in the repository is
+updated; the existing Store submission was not edited.
+
+Pinned install, `pnpm test:fast` (30), and `pnpm check` passed: 445 extension tests,
+five Worker tests, package and Storybook. Six live endpoint tests passed twice,
+including after deployment. They test both custom domains, exact CORS peers,
+main-domain/lookalike rejection, credential omission, security headers, redirects
+and peer configuration. The fixture test verifies fresh off-state imports and
+explicit domain/path conditions through the real parser and rule builder.
+
+Actual Chrome imported the source-controlled fixture off, requested only the two
+test subdomains, and applied `hello-gecko` / `modified` only to `/headers/match`.
+Same-origin tests passed on both domains. Cross-origin tests passed in both
+directions after refreshing the pages. Excluded paths and redirects were unchanged.
+
+Repeated browser runs also hit intermittent `ERR_BLOCKED_BY_CLIENT` and HTTP 403
+responses with Cloudflare ray headers but no CORS headers. Refreshing sometimes
+resolved them, but they recurred, including after revocation. The narrow-to-one-site
+case changed the primary matching path correctly; the excluded peer was blocked,
+so its network result is **inconclusive**, not evidence of successful exclusion.
+A focused Cloudflare firewall-events query returned no matching event; no firewall
+settings were changed and the cause remains unresolved. Direct live endpoint tests
+continued passing. Do not count blocked requests as a security pass.
+
+The deployed page now labels request failures “Header behavior is inconclusive”
+and recommends reloading both test pages after access changes. Verified that failure
+message in Chrome. Revocation showed no grants and all profiles off; the reachable
+peer returned absent/original on all paths. Main-domain browser checks were blocked
+at that point. Restored the saved fixture's two-domain list, off, with demo values.

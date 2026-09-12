@@ -37,7 +37,8 @@
     "test:workflows": "vitest run src/ui/core/__tests__/profile-workflows.integration.test.ts src/lib/__tests__/profile-transfer.test.ts",
     "test:fast": "vitest run src/ui/core/__tests__/popup-app.integration.test.ts src/ui/core/__tests__/profile-workflows.integration.test.ts src/lib/__tests__/profile-transfer.test.ts src/lib/__tests__/background.test.ts --silent=passed-only",
     "test:fast:watch": "vitest src/ui/core/__tests__/popup-app.integration.test.ts src/ui/core/__tests__/profile-workflows.integration.test.ts src/lib/__tests__/profile-transfer.test.ts src/lib/__tests__/background.test.ts --silent=passed-only",
-    "test:echo": "node --test tools/header-echo/worker.test.mjs"
+    "test:echo": "node --test tools/header-echo/worker.test.mjs",
+    "test:echo:live": "node --test tools/header-echo/live.test.mjs"
   },
   "devDependencies": {
     "@biomejs/biome": "2.5.13",

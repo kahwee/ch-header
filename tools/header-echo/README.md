@@ -23,7 +23,8 @@ Responses use `no-store` and a restrictive CSP. The page renders values as text.
 With Wrangler 4.131.1 installed and logged into the kahwee.com Cloudflare account:
 
 ```sh
-node --test tools/header-echo/worker.test.mjs
+pnpm test:echo       # offline security tests
+pnpm test:echo:live  # deployed kahwee.com endpoints
 wrangler dev --config tools/header-echo/wrangler.jsonc --env ''
 wrangler deploy --config tools/header-echo/wrangler.jsonc --env '' --dry-run
 wrangler deploy --config tools/header-echo/wrangler.jsonc --env ''
@@ -38,3 +39,6 @@ workers.dev alone. No secrets are required.
 Requests from unrelated origins cannot read the echo through CORS. Cookies and
 authorization are never reflected. POST bodies are rejected without being read.
 Tests exercise these boundaries; real HTTPS browser checks are in [TESTING.md](../../TESTING.md).
+
+Import [https-profile.json](../../docs/examples/https-profile.json) for the Chrome
+test. The full manual matrix is in [TESTING.md](../../TESTING.md).

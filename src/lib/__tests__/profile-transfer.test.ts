@@ -1,3 +1,5 @@
+import httpsFixture from '../../../docs/examples/https-profile.json'
+import { buildRulesFromProfile } from '../dnr-rules'
 import { describe, expect, it } from 'vitest'
 import { exportProfileJSON, parseProfileJSON } from '../profile-transfer'
 
@@ -45,4 +47,22 @@ describe('portable profiles', () => {
   it('rejects an entire batch when a later profile is invalid', () => {
     expect(() => parseProfileJSON(JSON.stringify([source, { name: '' }]))).toThrow('Profile 2')
   })
+})
+
+it('imports the public HTTPS fixture off with explicit demo domains and exact paths', () => {
+  const [profile] = parseProfileJSON(JSON.stringify(httpsFixture))
+  expect(profile.enabled).toBe(false)
+  expect(profile.accessSites).toEqual(['headers.kahwee.com', 'headers-peer.kahwee.com'])
+  const rules = buildRulesFromProfile(profile)
+  expect(rules).toHaveLength(2)
+  expect(rules.map((rule) => rule.condition.urlFilter)).toEqual([
+    '|https://headers.kahwee.com/headers/match|',
+    '|https://headers-peer.kahwee.com/headers/match|',
+  ])
+  for (const rule of rules) {
+    expect(rule.condition.requestDomains).toEqual(profile.accessSites)
+    expect(rule.action.requestHeaders).toEqual([
+      { header: 'X-ChHeader-Test', operation: 'set', value: 'hello-gecko' },
+    ])
+  }
 })

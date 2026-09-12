@@ -16,7 +16,7 @@
     <li>In ChHeader, allow <strong id="host">this hostname</strong>.</li>
     <li>Add request header <code>X-ChHeader-Test: hello-gecko</code> and response header <code>X-ChHeader-Response: modified</code>.</li>
     <li>Choose <strong>URL pattern</strong> and enter <code id="pattern">/headers/match</code>. Turn the profile on and approve access. Reopen ChHeader, select that profile and enable it again if needed.</li>
-    <li>Run the checks. The matching path should change; the other path and redirect should stay unchanged.</li>
+    <li>Reload both test pages after changing access, then run the checks. The matching path should change; the other path and redirect should stay unchanged.</li>
   </ol>
   <p>For cross-site checks, approve this page and the second test site. Add a matching URL rule for the second site too. <a id="peer" href="/" hidden>Open second test site</a></p>
   <div class="actions"><button type="button" id="run">Run checks</button><button type="button" id="cross" disabled>Check second site</button></div>

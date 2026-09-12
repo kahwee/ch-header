@@ -1,0 +1,26 @@
+{
+  "name": "KahWee HTTPS checks",
+  "accessSites": ["headers.kahwee.com", "headers-peer.kahwee.com"],
+  "color": "blue",
+  "notes": "Demo values only. Both domains approved; only /headers/match should change. Revoke access after testing.",
+  "matchers": [
+    {
+      "urlFilter": "|https://headers.kahwee.com/headers/match|"
+    },
+    {
+      "urlFilter": "|https://headers-peer.kahwee.com/headers/match|"
+    }
+  ],
+  "requestHeaders": [
+    {
+      "header": "X-ChHeader-Test",
+      "value": "hello-gecko"
+    }
+  ],
+  "responseHeaders": [
+    {
+      "header": "X-ChHeader-Response",
+      "value": "modified"
+    }
+  ]
+}

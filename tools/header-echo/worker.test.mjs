@@ -1,8 +1,8 @@
 import assert from 'node:assert/strict'
 import { test } from 'node:test'
 import worker from './worker.js'
-const origin = 'https://chheader-check.example.workers.dev'
-const peer = 'https://chheader-check-peer.example.workers.dev'
+const origin = 'https://headers.kahwee.com'
+const peer = 'https://headers-peer.kahwee.com'
 const env = { ASSETS: { fetch: async () => new Response('static') } }
 const request = (path, options) => worker.fetch(new Request(origin + path, options), env)
 

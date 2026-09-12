@@ -29,6 +29,7 @@ async function check(origin) {
   for (const path of ['/headers/match', '/headers/other', '/redirect']) {
     try {
       const response = await fetch(`${origin}${path}`, { credentials: 'omit', cache: 'no-store' })
+      if (!response.ok) throw new Error(`HTTP ${response.status}`)
       const data = await response.json()
       results.push({
         requested: `${origin}${path}`,
@@ -40,12 +41,16 @@ async function check(origin) {
     } catch {
       results.push({
         requested: `${origin}${path}`,
-        error: 'Request failed. Check connectivity and CORS.',
+        error:
+          'Request blocked or unavailable. Reload both test pages and retry. Header behavior is inconclusive.',
       })
     }
   }
   output.textContent = JSON.stringify(results, null, 2)
-  status.textContent = 'Checks complete. Compare matching, excluded and redirected paths.'
+  const failures = results.filter((result) => result.error).length
+  status.textContent = failures
+    ? `${failures} of ${results.length} requests failed. Header behavior is inconclusive.`
+    : 'All requests returned. Compare matching, excluded and redirected paths.'
   run.disabled = false
   cross.disabled = !peer
 }

@@ -23,14 +23,15 @@ The video shows 0.4.1, before optional website permissions.
 
 ## Try it
 
-Open the [HTTPS header tester](https://headers.kahwee.com).
+Open the [HTTPS header tester](https://headers.kahwee.com). Import the
+[ready-made test profile](docs/examples/https-profile.json), or set up one site:
 
 1. Create a profile. Set **Allowed sites** to `headers.kahwee.com`.
 2. Choose **URL pattern** and enter `|https://headers.kahwee.com/headers/match|`.
 3. Add request header `X-ChHeader-Test: hello-gecko` and response header `X-ChHeader-Response: modified`.
 4. Turn the profile **on** and approve access. If Chrome closes the popup, reopen it,
    select that profile and enable it again.
-5. Click **Run checks** on the tester. Only the matching path should change.
+5. Reload the test pages, then click **Run checks**. Only the matching path should change.
    Turn the profile off and run again to compare.
 
 Use demo values on the public tester. For secrets, run `pnpm test:headers` locally
