@@ -270,3 +270,9 @@ Chrome rule acceptance. The small promotional tile is 440 × 280, opaque PNG.
 Actual toolbar/network behavior was not repeated in this store-preparation pass;
 prior Chrome verification is recorded above. No live profile or system setting was
 changed. Source captures and preview scaffolding remain under ignored `.local/qa/store/`.
+
+The first CI run found a missing accessible title in the new promotional SVG.
+Added the title; the raster upload is unchanged. The public policy URL was then
+verified reachable and saved in the dashboard, which enabled Submit for review.
+Reviewer instructions were also saved. The new screenshot is first in the gallery;
+removal of the older image requires confirmation because Google marks it irreversible.
