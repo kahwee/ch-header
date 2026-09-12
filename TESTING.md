@@ -303,6 +303,12 @@ package and Storybook builds. Computer Use reloaded the installed extension as
 rendered and profiles remained off. No header behavior or permissions changed.
 The refreshed store screenshot uses the production template with isolated demo
 profiles; it is a presentation check, not another network test. The blog image
-uses that same current popup. YouTube's thumbnail was replaced; its published
-footage remains the original 0.4.0 demonstration. Historical captures retain
-what was visible when recorded.
+uses that same current popup. Historical captures retain what was visible when recorded.
+
+The replacement 55-second demo uses fresh actual Chrome 0.4.1 captures, with the
+gecko in the popup and title cards. The existing localhost-only test profile
+confirmed the document request and all three fetches received `enabled`, with
+responses changed to `modified`. Switching it off restored absent request headers
+and `original` responses. The profile was left off and the fixture stopped.
+Frames were visually reviewed; the H.264/AAC MP4 decoded without errors.
+The revised demo is [on YouTube](https://www.youtube.com/watch?v=vmv77KYgOAo).

@@ -10,7 +10,7 @@ I wanted a header editor without ads, with local profiles and code I could inspe
 Use it, fork it, or build your own. Reviews of the [permissions](src/manifest.json)
 and [header rules](src/lib/dnr-rules.ts) are welcome.
 [Why I built it](https://kahwee.com/2026/why-i-built-chheader/) ·
-[Watch the demo](https://www.youtube.com/watch?v=QAnz_kIL6IQ).
+[Watch the demo](https://www.youtube.com/watch?v=vmv77KYgOAo).
 
 ## Install
 
