@@ -1,10 +1,10 @@
-import { describe, it, expect } from 'vitest'
+import { describe, expect, it } from 'vitest'
 import {
   detectFormat,
-  validatePattern,
   generateExamples,
-  getFormatName,
   getFormatHelp,
+  getFormatName,
+  validatePattern,
 } from '../matcher'
 
 describe('matcher utility', () => {

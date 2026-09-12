@@ -1,5 +1,5 @@
-import { describe, it, expect } from 'vitest'
-import { hashToInt, buildRulesFromProfile } from '../dnr-rules'
+import { describe, expect, it } from 'vitest'
+import { buildRulesFromProfile, hashToInt } from '../dnr-rules'
 import type { Profile } from '../types'
 
 describe('DNR Rules', () => {
@@ -75,9 +75,9 @@ describe('DNR Rules', () => {
       )
       expect(rules[0].action.type).toBe('modifyHeaders')
       expect(rules[0].action.requestHeaders).toHaveLength(1)
-      expect(rules[0].action.requestHeaders![0].header).toBe('X-Custom')
-      expect(rules[0].action.requestHeaders![0].operation).toBe('set')
-      expect(rules[0].action.requestHeaders![0].value).toBe('test-value')
+      expect(rules[0].action.requestHeaders?.[0].header).toBe('X-Custom')
+      expect(rules[0].action.requestHeaders?.[0].operation).toBe('set')
+      expect(rules[0].action.requestHeaders?.[0].value).toBe('test-value')
     })
 
     it('should build rules from response headers', () => {
@@ -95,9 +95,9 @@ describe('DNR Rules', () => {
 
       expect(rules).toHaveLength(1)
       expect(rules[0].action.responseHeaders).toHaveLength(1)
-      expect(rules[0].action.responseHeaders![0].header).toBe('X-Response')
-      expect(rules[0].action.responseHeaders![0].operation).toBe('set')
-      expect(rules[0].action.responseHeaders![0].value).toBe('custom-value')
+      expect(rules[0].action.responseHeaders?.[0].header).toBe('X-Response')
+      expect(rules[0].action.responseHeaders?.[0].operation).toBe('set')
+      expect(rules[0].action.responseHeaders?.[0].value).toBe('custom-value')
     })
 
     it('should use set operation for all headers (upsert pattern)', () => {
@@ -114,8 +114,8 @@ describe('DNR Rules', () => {
       const rules = buildRulesFromProfile(profile)
 
       expect(rules).toHaveLength(1)
-      expect(rules[0].action.requestHeaders![0].operation).toBe('set')
-      expect(rules[0].action.requestHeaders![0].value).toBe('test-value')
+      expect(rules[0].action.requestHeaders?.[0].operation).toBe('set')
+      expect(rules[0].action.requestHeaders?.[0].value).toBe('test-value')
     })
 
     it('should skip rules with no header operations', () => {

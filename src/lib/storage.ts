@@ -30,7 +30,7 @@ export async function setActiveProfile(id: string): Promise<void> {
   const profiles = await getProfiles()
   const updated = profiles.map((p) => ({
     ...p,
-    enabled: p.id === id ? true : false,
+    enabled: p.id === id,
   }))
   await Promise.all([
     saveProfiles(updated),

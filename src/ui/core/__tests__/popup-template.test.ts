@@ -1,8 +1,8 @@
-import { describe, it, expect } from 'vitest'
+import { describe, expect, it } from 'vitest'
 import {
   COLOR_PALETTE,
-  getSidebarTemplate,
   getPopupTemplate,
+  getSidebarTemplate,
   profileListItem,
 } from '../popup-template'
 

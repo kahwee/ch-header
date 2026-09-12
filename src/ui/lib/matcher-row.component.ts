@@ -3,9 +3,9 @@
  * Extends the base Component class for lifecycle management
  */
 
-import { Component } from './component'
-import { Matcher } from '../../lib/types'
+import type { Matcher } from '../../lib/types'
 import { matcherRow } from '../components/matchers/matcher-row'
+import { Component } from './component'
 
 export interface MatcherRowCallbacks {
   onChange: (id: string, field: 'urlFilter' | 'types', value: string) => void

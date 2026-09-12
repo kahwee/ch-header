@@ -1,4 +1,4 @@
-import type { Preview, Decorator } from '@storybook/html'
+import type { Decorator, Preview } from '@storybook/html'
 import '../src/ui/core/styles.css'
 import '../src/ui/components/common/checkbox-element'
 import { setupDropdowns } from '../src/ui/core/dropdowns'

@@ -1,15 +1,14 @@
-import { defineConfig } from 'vite'
-import { resolve } from 'path'
 import {
-  copyFileSync,
-  mkdirSync,
+  cpSync,
   existsSync,
+  mkdirSync,
+  readFileSync,
   renameSync,
   rmSync,
-  cpSync,
-  readFileSync,
   writeFileSync,
-} from 'fs'
+} from 'node:fs'
+import { resolve } from 'node:path'
+import { defineConfig } from 'vite'
 
 const projectDir = import.meta.dirname
 const srcDir = resolve(projectDir, 'src')
@@ -33,7 +32,7 @@ const copyPlugin = {
       const manifest = JSON.parse(readFileSync(manifestPath, 'utf-8'))
       manifest.version = version
 
-      writeFileSync(resolve(distDir, 'manifest.json'), JSON.stringify(manifest, null, 2) + '\n')
+      writeFileSync(resolve(distDir, 'manifest.json'), `${JSON.stringify(manifest, null, 2)}\n`)
 
       // Copy icons from public folder
       const publicIconsDir = resolve(publicDir, 'icons')
@@ -60,7 +59,7 @@ const copyPlugin = {
         const srcPath = resolve(projectDir, 'dist/src')
         try {
           rmSync(srcPath, { recursive: true, force: true })
-        } catch (e) {
+        } catch (_e) {
           // Ignore cleanup errors
         }
       }

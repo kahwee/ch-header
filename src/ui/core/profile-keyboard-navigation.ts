@@ -17,11 +17,15 @@ export function setupProfileKeyboardNavigation({
 
   const reset = () => {
     selectedIndex = -1
-    getItems().forEach((item) => item.classList.remove('keyboard-focus'))
+    getItems().forEach((item) => {
+      item.classList.remove('keyboard-focus')
+    })
   }
 
   const highlight = (items: HTMLElement[]) => {
-    items.forEach((item, index) => item.classList.toggle('keyboard-focus', index === selectedIndex))
+    items.forEach((item, index) => {
+      item.classList.toggle('keyboard-focus', index === selectedIndex)
+    })
     const selected = items[selectedIndex]
     if (!selected) return
 

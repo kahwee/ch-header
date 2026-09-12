@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/html'
-import { getPopupTemplate, profileListItem } from '../popup-template'
 import { headerRow } from '../../components/headers/header-row'
 import { matcherRow } from '../../components/matchers/matcher-row'
+import { getPopupTemplate, profileListItem } from '../popup-template'
 import '../../components/common/checkbox-element'
 
 /**

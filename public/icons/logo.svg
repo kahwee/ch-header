@@ -1,4 +1,5 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="128" height="128" viewBox="0 0 128 128">
+  <title>ChHeader</title>
   <rect x="4" y="4" width="120" height="120" rx="30" fill="#a8c7fa"/>
   <g fill="none" stroke="#202124" stroke-width="10" stroke-linecap="round">
     <path d="M34 40h60M34 64h60M34 88h60"/>

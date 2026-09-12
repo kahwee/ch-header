@@ -3,7 +3,7 @@
  * Extracts messy event handlers from popup.ts into a testable controller
  */
 
-import { STORAGE_KEYS, Profile, State } from '../../lib/types'
+import { type Profile, STORAGE_KEYS, type State } from '../../lib/types'
 
 const K = STORAGE_KEYS
 
@@ -26,7 +26,7 @@ export class PopupController {
    * Guard utility: ensures current profile exists before executing callback
    * Returns silently if no current profile
    */
-  private withCurrentProfile<T>(cb: (p: Profile) => T): T | void {
+  private withCurrentProfile<T>(cb: (p: Profile) => T): T | undefined {
     const p = this.state.current
     if (!p) return
     return cb(p)

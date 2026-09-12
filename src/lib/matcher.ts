@@ -122,4 +122,4 @@ function getFormatHelp(format: MatcherFormat): string {
 }
 
 // Export for testing
-export { generateExamples, getFormatName, getFormatHelp }
+export { generateExamples, getFormatHelp, getFormatName }

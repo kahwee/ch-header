@@ -4,9 +4,9 @@
  * Includes tests for both request and response header variants
  */
 
-import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest'
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
+import type { HeaderOp } from '../../../lib/types'
 import { HeaderTableComponent } from '../header-table.component'
-import { HeaderOp } from '../../../lib/types'
 import '../../components/common/checkbox-element'
 import type { CheckboxElement } from '../../components/common/checkbox-element'
 

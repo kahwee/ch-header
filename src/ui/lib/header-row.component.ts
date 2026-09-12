@@ -3,9 +3,9 @@
  * Extends the base Component class for lifecycle management
  */
 
-import { Component } from './component'
-import { HeaderOp } from '../../lib/types'
+import type { HeaderOp } from '../../lib/types'
 import { buildHeaderRowHTML } from '../components/headers/header-row.render'
+import { Component } from './component'
 
 export interface HeaderRowCallbacks {
   onChange: (id: string, field: 'header' | 'value' | 'enabled', value: string | boolean) => void

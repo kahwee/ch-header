@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/html'
-import { sectionHeader } from '../section-header'
 import type { SectionHeaderOptions } from '../section-header'
+import { sectionHeader } from '../section-header'
 
 const meta: Meta<SectionHeaderOptions> = {
   title: 'ChHeader/Components/Section Header',

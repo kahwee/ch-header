@@ -18,7 +18,9 @@ export function localProfile(overrides: Partial<Profile> = {}): Profile {
 
 const cleanups: (() => void)[] = []
 afterEach(() => {
-  cleanups.splice(0).forEach((cleanup) => cleanup())
+  cleanups.splice(0).forEach((cleanup) => {
+    cleanup()
+  })
 })
 
 /** Uses production markup, event wiring, controller, storage and rule generation. */
@@ -34,7 +36,9 @@ export async function createPopupHarness(profiles = [localProfile()]) {
     registered.push(() => root.removeEventListener(type, listener, options))
   })
   cleanups.push(() => {
-    registered.forEach((remove) => remove())
+    registered.forEach((remove) => {
+      remove()
+    })
     spy.mockRestore()
     root.body.replaceChildren()
     delete root.documentElement.dataset.dropdownsReady

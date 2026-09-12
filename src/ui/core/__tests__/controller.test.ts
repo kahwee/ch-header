@@ -3,9 +3,9 @@
  * Tests guard utilities, deep cloning, and validation consolidation
  */
 
-import { describe, it, expect, beforeEach, vi } from 'vitest'
+import { beforeEach, describe, expect, it, vi } from 'vitest'
+import type { Profile, State } from '../../../lib/types'
 import { PopupController } from '../controller'
-import { Profile, State } from '../../../lib/types'
 
 describe('PopupController - Refactored Methods', () => {
   let state: State
@@ -91,8 +91,8 @@ describe('PopupController - Refactored Methods', () => {
 
       controller.onAddHeader(true)
 
-      expect(state.current!.requestHeaders.length).toBe(initialLength + 1)
-      expect(state.current!.requestHeaders[initialLength].header).toBe('')
+      expect(state.current?.requestHeaders.length).toBe(initialLength + 1)
+      expect(state.current?.requestHeaders[initialLength].header).toBe('')
     })
   })
 
@@ -181,7 +181,7 @@ describe('PopupController - Refactored Methods', () => {
       controller.onImportHeaders(data)
 
       expect(callbacks.syncAndRender).toHaveBeenCalled()
-      expect(state.current!.requestHeaders.length).toBe(4) // 2 original + 2 new
+      expect(state.current?.requestHeaders.length).toBe(4) // 2 original + 2 new
 
       const imported = state.current!.requestHeaders.slice(2)
 
@@ -296,7 +296,7 @@ describe('PopupController - Refactored Methods', () => {
       controller.onMatcherChange(matcherId, 'urlFilter', 'localhost:8000')
 
       const matcher = state.current.matchers.find((m) => m.id === matcherId)
-      expect(matcher!.urlFilter).toBe('localhost:8000')
+      expect(matcher?.urlFilter).toBe('localhost:8000')
     })
 
     it('should use wildcard as default for empty URL filter', () => {
@@ -306,7 +306,7 @@ describe('PopupController - Refactored Methods', () => {
       controller.onMatcherChange(matcherId, 'urlFilter', '')
 
       const matcher = state.current.matchers.find((m) => m.id === matcherId)
-      expect(matcher!.urlFilter).toBe('*')
+      expect(matcher?.urlFilter).toBe('*')
     })
 
     it('should change matcher resource types', () => {
@@ -316,7 +316,7 @@ describe('PopupController - Refactored Methods', () => {
       controller.onMatcherChange(matcherId, 'types', 'script')
 
       const matcher = state.current.matchers.find((m) => m.id === matcherId)
-      expect(matcher!.resourceTypes).toEqual(['script'])
+      expect(matcher?.resourceTypes).toEqual(['script'])
     })
   })
 
@@ -363,7 +363,7 @@ describe('PopupController - Refactored Methods', () => {
 
   describe('Profile Deletion', () => {
     it('should delete current profile', () => {
-      const profileId = state.current!.id
+      const profileId = state.current?.id
       const initialCount = state.profiles.length
 
       controller.onDeleteProfile()
@@ -396,7 +396,7 @@ describe('PopupController - Refactored Methods', () => {
     it('should change profile name', () => {
       controller.onProfileNameChange('New Name')
 
-      expect(state.current!.name).toBe('New Name')
+      expect(state.current?.name).toBe('New Name')
       expect(callbacks.syncAndRender).toHaveBeenCalled()
     })
 
@@ -410,19 +410,19 @@ describe('PopupController - Refactored Methods', () => {
     it('should change profile notes', () => {
       controller.onProfileNotesChange('Updated notes')
 
-      expect(state.current!.notes).toBe('Updated notes')
+      expect(state.current?.notes).toBe('Updated notes')
       expect(callbacks.syncAndRender).toHaveBeenCalled()
     })
 
     it('should toggle profile enabled state', () => {
-      const initialState = state.current!.enabled
+      const initialState = state.current?.enabled
 
       controller.onProfileEnabledChange(!initialState)
 
-      expect(state.current!.enabled).toBe(!initialState)
+      expect(state.current?.enabled).toBe(!initialState)
       // onProfileEnabledChange calls setActiveProfile, not syncAndRender
       // Verify the profile is set as active
-      expect(state.activeId).toBe(state.current!.id)
+      expect(state.activeId).toBe(state.current?.id)
     })
   })
 
@@ -436,8 +436,8 @@ describe('PopupController - Refactored Methods', () => {
 
       controller.onHeaderChange(headerId, true, 'header', 'X-New-Header')
 
-      const header = state.current!.requestHeaders.find((h) => h.id === headerId)
-      expect(header!.header).toBe('X-New-Header')
+      const header = state.current?.requestHeaders.find((h) => h.id === headerId)
+      expect(header?.header).toBe('X-New-Header')
     })
 
     it('should change header value', () => {
@@ -445,19 +445,19 @@ describe('PopupController - Refactored Methods', () => {
 
       controller.onHeaderChange(headerId, true, 'value', 'new-value')
 
-      const header = state.current!.requestHeaders.find((h) => h.id === headerId)
-      expect(header!.value).toBe('new-value')
+      const header = state.current?.requestHeaders.find((h) => h.id === headerId)
+      expect(header?.value).toBe('new-value')
     })
 
     it('should toggle header enabled state', () => {
       const headerId = state.current!.requestHeaders[0].id
-      const header = state.current!.requestHeaders.find((h) => h.id === headerId)
+      const header = state.current?.requestHeaders.find((h) => h.id === headerId)
       const initialEnabled = header?.enabled ?? true
 
       controller.onHeaderChange(headerId, true, 'enabled', !initialEnabled)
 
-      const updated = state.current!.requestHeaders.find((h) => h.id === headerId)
-      expect(updated!.enabled).toBe(!initialEnabled)
+      const updated = state.current?.requestHeaders.find((h) => h.id === headerId)
+      expect(updated?.enabled).toBe(!initialEnabled)
     })
 
     it('should remove header', () => {
@@ -466,8 +466,8 @@ describe('PopupController - Refactored Methods', () => {
 
       controller.onRemoveHeader(headerId, true)
 
-      expect(state.current!.requestHeaders.length).toBe(initialCount - 1)
-      expect(state.current!.requestHeaders.some((h) => h.id === headerId)).toBe(false)
+      expect(state.current?.requestHeaders.length).toBe(initialCount - 1)
+      expect(state.current?.requestHeaders.some((h) => h.id === headerId)).toBe(false)
     })
 
     it('should handle response header changes', () => {
@@ -475,8 +475,8 @@ describe('PopupController - Refactored Methods', () => {
 
       controller.onHeaderChange('res-1', false, 'value', 'updated')
 
-      const header = state.current!.responseHeaders.find((h) => h.id === 'res-1')
-      expect(header!.value).toBe('updated')
+      const header = state.current?.responseHeaders.find((h) => h.id === 'res-1')
+      expect(header?.value).toBe('updated')
     })
   })
 
@@ -546,17 +546,17 @@ describe('PopupController - Refactored Methods', () => {
 
       controller.onImportHeaders(importData)
 
-      expect(state.current!.requestHeaders.length).toBeGreaterThan(initialCount)
-      const imported = state.current!.requestHeaders.find((h) => h.header === 'X-Imported')
+      expect(state.current?.requestHeaders.length).toBeGreaterThan(initialCount)
+      const imported = state.current?.requestHeaders.find((h) => h.header === 'X-Imported')
       expect(imported?.value).toBe('imported-value')
     })
 
     it('should handle import with invalid data', () => {
-      const initialCount = state.current!.requestHeaders.length
+      const initialCount = state.current?.requestHeaders.length
 
       controller.onImportHeaders({ invalid: 'data' })
 
-      expect(state.current!.requestHeaders.length).toBe(initialCount)
+      expect(state.current?.requestHeaders.length).toBe(initialCount)
     })
 
     it('should import full profile from JSON', () => {

@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/html'
-import { solidButton } from '../solid-button'
-import type { SolidButtonOptions } from '../solid-button'
 import plusIcon from '../../../icons/plus.svg?raw'
+import type { SolidButtonOptions } from '../solid-button'
+import { solidButton } from '../solid-button'
 
 /**
  * Solid Button Component

@@ -4,8 +4,8 @@
  * Responsible for managing DNR rules based on active profile.
  */
 
+import { applyDNRRules, buildRulesFromProfile } from './lib/dnr-rules'
 import { getActiveProfile, initializeStorage } from './lib/storage'
-import { buildRulesFromProfile, applyDNRRules } from './lib/dnr-rules'
 import { STORAGE_KEYS } from './lib/types'
 
 /**

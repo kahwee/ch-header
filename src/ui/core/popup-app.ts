@@ -1,7 +1,7 @@
 import { setupProfileContextMenu, type ProfileAction } from './profile-context-menu'
 import { setupProfileSharing } from './profile-sharing'
 import { profileColorInk } from './profile-colors'
-import { STORAGE_KEYS, type ExtensionStorage, Profile, State } from '../../lib/types'
+import { STORAGE_KEYS, type ExtensionStorage, type Profile, type State } from '../../lib/types'
 import { PopupController } from './controller'
 import { getPopupTemplate } from './popup-template'
 import { MatcherTableComponent } from '../lib/matcher-table.component'

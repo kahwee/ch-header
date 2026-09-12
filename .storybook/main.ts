@@ -7,5 +7,12 @@ const config: StorybookConfig = {
     options: {},
   },
   staticDirs: ['../public'],
+  viteFinal: async (config) => ({
+    ...config,
+    build: {
+      ...config.build,
+      chunkSizeWarningLimit: 1000,
+    },
+  }),
 }
 export default config

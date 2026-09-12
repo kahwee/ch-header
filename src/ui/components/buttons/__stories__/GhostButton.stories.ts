@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/html'
-import { ghostButton } from '../ghost-button'
-import type { GhostButtonOptions } from '../ghost-button'
 import trashIcon from '../../../icons/trash.svg?raw'
+import type { GhostButtonOptions } from '../ghost-button'
+import { ghostButton } from '../ghost-button'
 
 /**
  * Ghost Button Component

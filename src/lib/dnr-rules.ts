@@ -2,7 +2,7 @@
  * DNR (Declarative Net Request) rule building for ChHeader extension
  */
 
-import type { Profile, HeaderOp } from './types'
+import type { HeaderOp, Profile } from './types'
 
 /**
  * Generate deterministic numeric IDs for DNR rules from profile/matcher/header ids

@@ -1,6 +1,6 @@
-import { describe, it, expect } from 'vitest'
+import { describe, expect, it } from 'vitest'
+import type { HeaderOp, Matcher, Profile } from '../types'
 import { STORAGE_KEYS } from '../types'
-import type { Profile, Matcher, HeaderOp } from '../types'
 
 describe('Types', () => {
   describe('STORAGE_KEYS', () => {

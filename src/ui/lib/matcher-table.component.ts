@@ -3,8 +3,8 @@
  * Inherits from generic TableListComponent base class
  */
 
-import { Matcher } from '../../lib/types'
-import { MatcherRowComponent, MatcherRowCallbacks } from './matcher-row.component'
+import type { Matcher } from '../../lib/types'
+import { type MatcherRowCallbacks, MatcherRowComponent } from './matcher-row.component'
 import { TableListComponent } from './table-list.component'
 
 export class MatcherTableComponent extends TableListComponent<Matcher, MatcherRowComponent> {

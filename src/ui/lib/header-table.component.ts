@@ -4,8 +4,8 @@
  * Supports both request and response headers
  */
 
-import { HeaderOp } from '../../lib/types'
-import { HeaderRowComponent, HeaderRowCallbacks } from './header-row.component'
+import type { HeaderOp } from '../../lib/types'
+import { type HeaderRowCallbacks, HeaderRowComponent } from './header-row.component'
 import { TableListComponent } from './table-list.component'
 
 export class HeaderTableComponent extends TableListComponent<HeaderOp, HeaderRowComponent> {

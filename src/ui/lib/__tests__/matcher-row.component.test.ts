@@ -3,9 +3,9 @@
  * Covers rendering, event handling, and matcher updates
  */
 
-import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest'
-import { MatcherRowComponent, MatcherRowCallbacks } from '../matcher-row.component'
-import { Matcher } from '../../../lib/types'
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
+import type { Matcher } from '../../../lib/types'
+import { type MatcherRowCallbacks, MatcherRowComponent } from '../matcher-row.component'
 
 function createTestMatcher(overrides: Partial<Matcher> = {}): Matcher {
   return {
@@ -273,7 +273,7 @@ describe('MatcherRowComponent', () => {
 
   describe('edge cases', () => {
     it('should handle very long URLs', () => {
-      const longUrl = 'localhost:3000/' + 'a'.repeat(500)
+      const longUrl = `localhost:3000/${'a'.repeat(500)}`
       matcher.urlFilter = longUrl
       component = new MatcherRowComponent(matcher, callbacks)
       component.mount(container)

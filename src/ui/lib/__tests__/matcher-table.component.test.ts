@@ -3,9 +3,9 @@
  * Covers rendering, component management, and lifecycle
  */
 
-import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest'
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
+import type { Matcher } from '../../../lib/types'
 import { MatcherTableComponent } from '../matcher-table.component'
-import { Matcher } from '../../../lib/types'
 
 function createTestMatcher(overrides: Partial<Matcher> = {}): Matcher {
   return {

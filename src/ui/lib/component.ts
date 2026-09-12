@@ -106,7 +106,7 @@ export abstract class Component {
 
     // Copy attributes from new element (preserve data attributes, classes)
     Array.from(newEl.attributes).forEach((attr) => {
-      this.el!.setAttribute(attr.name, attr.value)
+      this.el?.setAttribute(attr.name, attr.value)
     })
 
     // Update only innerHTML to preserve element reference
@@ -137,7 +137,7 @@ export abstract class Component {
    * Check if component is mounted
    */
   isMounted(): boolean {
-    return this.el !== null && this.el.isConnected
+    return this.el?.isConnected ?? false
   }
 
   /**

@@ -4,15 +4,15 @@ import { profileActionsTemplate } from './profile-actions-template'
  * Used by both popup.html (rendered) and Storybook stories (with mocks)
  */
 import { solidButton } from '../components/buttons/solid-button'
-import { sectionHeader } from '../components/sections/section-header'
 import { renderAvatar } from '../components/common/avatar'
 import { menuItem } from '../components/menus/menu-item'
-import { escapeHtml } from './utils'
+import { sectionHeader } from '../components/sections/section-header'
+import folderPlusIcon from '../icons/folder-plus.svg?raw'
 import plusIcon from '../icons/plus.svg?raw'
 import logo from '../../../public/icons/logo.svg?raw'
 import searchIcon from '../icons/search.svg?raw'
-import folderPlusIcon from '../icons/folder-plus.svg?raw'
-import { PROFILE_COLORS, getProfileColor } from './profile-colors'
+import { getProfileColor, PROFILE_COLORS } from './profile-colors'
+import { escapeHtml } from './utils'
 
 export { PROFILE_COLORS as COLOR_PALETTE } from './profile-colors'
 

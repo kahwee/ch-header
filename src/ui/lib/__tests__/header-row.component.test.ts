@@ -3,9 +3,9 @@
  * Covers rendering, event handling, and header updates
  */
 
-import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest'
-import { HeaderRowComponent, HeaderRowCallbacks } from '../header-row.component'
-import { HeaderOp } from '../../../lib/types'
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
+import type { HeaderOp } from '../../../lib/types'
+import { type HeaderRowCallbacks, HeaderRowComponent } from '../header-row.component'
 import '../../components/common/checkbox-element'
 import type { CheckboxElement } from '../../components/common/checkbox-element'
 
@@ -322,7 +322,7 @@ describe('HeaderRowComponent', () => {
 
   describe('edge cases', () => {
     it('should handle very long header names', () => {
-      const longName = 'X-' + 'A'.repeat(500)
+      const longName = `X-${'A'.repeat(500)}`
       header.header = longName
       component = new HeaderRowComponent(header, callbacks, true)
       component.mount(container)
@@ -332,7 +332,7 @@ describe('HeaderRowComponent', () => {
     })
 
     it('should handle very long header values', () => {
-      const longValue = 'Bearer ' + 'a'.repeat(500)
+      const longValue = `Bearer ${'a'.repeat(500)}`
       header.value = longValue
       component = new HeaderRowComponent(header, callbacks, true)
       component.mount(container)
