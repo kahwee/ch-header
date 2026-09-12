@@ -1,6 +1,6 @@
 ChHeader helps developers test APIs and websites by changing HTTP request and response headers directly in Chrome.
 
-I’m KahWee Teng. I built ChHeader because I wanted a cleaner header editor with local profiles, explicit site rules, and source code I could inspect. If it fits your workflow, use it, fork it, and audit my work—or build your own.
+I’m KahWee Teng. I built ChHeader for my own work. It has no ads or analytics, and the source is available for review.
 
 Organize your headers into named profiles for local development, staging, and debugging. Choose the sites, URL patterns, or request types each profile applies to, then switch it on when you need it.
 
