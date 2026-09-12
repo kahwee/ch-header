@@ -231,6 +231,18 @@ the native toolbar; actual fresh-install toolbar and dark appearance checks were
 unavailable in this pass. Existing extension profiles were not changed. The preview
 does not establish Chrome storage or DNR acceptance.
 
+## Branding and README review (2026-09-12)
+
+Replaced the slider logo with a vector H/request-response arrow mark and rendered
+matching 16/32/48/128 PNG icons with rsvg-convert. Rewrote README installation,
+first-profile, URL-mode and sharing guidance to match current source; removed stale
+matcher and roadmap claims. Package and manifest descriptions now explain the task.
+
+Pinned frozen install and `pnpm check` passed (432 tests). Inspected the rendered
+logo, then reloaded the unpacked extension through Computer Use and verified the
+new mark in the actual light Chrome toolbar popup at 744 × 440. Existing profiles
+remained off. Dark appearance was not repeated. No release or store listing changed.
+
 ## Release checklist
 
 1. Align `package.json` and `src/manifest.json`; update release notes and screenshots.

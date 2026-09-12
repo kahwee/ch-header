@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "ChHeader",
-  "description": "Profile-based HTTP header editor with Manifest V3",
+  "description": "Edit request and response headers for the sites you choose. Organize changes into local profiles.",
   "version": "0.3.0",
   "action": {
     "default_popup": "ui/popup.html",

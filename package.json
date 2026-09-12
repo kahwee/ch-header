@@ -1,6 +1,6 @@
 {
   "name": "ch-header",
-  "description": "ChHeader - Profile-based header editor with Manifest V3",
+  "description": "Edit request and response headers for the sites you choose. Organize changes into local profiles.",
   "version": "0.3.0",
   "type": "module",
   "devEngines": {

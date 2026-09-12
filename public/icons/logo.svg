@@ -1,12 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="128" height="128" viewBox="0 0 128 128">
   <title>ChHeader</title>
-  <rect x="4" y="4" width="120" height="120" rx="30" fill="#a8c7fa"/>
-  <g fill="none" stroke="#202124" stroke-width="10" stroke-linecap="round">
-    <path d="M34 40h60M34 64h60M34 88h60"/>
-  </g>
-  <g fill="#202124" stroke="#a8c7fa" stroke-width="5">
-    <circle cx="52" cy="40" r="11"/>
-    <circle cx="78" cy="64" r="11"/>
-    <circle cx="52" cy="88" r="11"/>
-  </g>
+  <rect x="4" y="4" width="120" height="120" rx="28" fill="#2855b6"/>
+  <path d="M36 34v60M92 34v60" fill="none" stroke="#fff" stroke-width="12" stroke-linecap="round"/>
+  <path d="M38 52h43l-9-9M90 76H47l9 9" fill="none" stroke="#fff" stroke-width="10" stroke-linecap="round" stroke-linejoin="round"/>
 </svg>

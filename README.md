@@ -1,67 +1,69 @@
-<p align="center"><img src="public/icons/logo.svg" width="56" height="56" alt="ChHeader logo"></p>
+<p align="center"><img src="public/icons/logo.svg" width="72" height="72" alt="ChHeader — opposing arrows form an H"></p>
 <h1 align="center">ChHeader</h1>
-<p align="center">HTTP headers, organized into profiles.</p>
-<p align="center"><a href="https://github.com/kahwee/ch-header/actions/workflows/ci.yml"><img src="https://github.com/kahwee/ch-header/actions/workflows/ci.yml/badge.svg" alt="CI status"></a> · <a href="https://github.com/kahwee/ch-header/releases/latest">Download</a></p>
+<p align="center"><strong>Your headers. The right sites.</strong><br>Request and response headers, organized into local Chrome profiles.</p>
+<p align="center"><a href="https://github.com/kahwee/ch-header/releases/latest">Download for Chrome</a> · <a href="TESTING.md">Testing</a> · <a href="RELEASE_NOTES.md">Release notes</a></p>
 
-A small Chrome extension for testing APIs and websites. Set request and response
-headers, match URLs and request types, and switch between profiles stored locally.
-
-![Chrome-style editor with explicit On and Off profile badges](docs/screenshots/popup.jpg)
+Test an API, add a staging header, or change a response header without changing
+application code. Choose where your rules apply, keep related changes in a profile,
+and turn them on when you need them.
 
 ## Install
 
-Download and extract the ZIP from [Releases](https://github.com/kahwee/ch-header/releases/latest).
-In `chrome://extensions/`, enable **Developer mode**, click **Load unpacked**, and
-select the extracted folder. Pin ChHeader from Chrome's Extensions menu.
-To update, replace the files and click **Reload**. Distribution is through GitHub;
-Chrome Web Store installation is not available yet.
+1. Download and extract the ZIP from [GitHub Releases](https://github.com/kahwee/ch-header/releases/latest).
+2. Open `chrome://extensions/` and enable **Developer mode**.
+3. Choose **Load unpacked**, select the extracted folder, then pin ChHeader from
+   Chrome’s Extensions menu.
 
-## Use and share
+To update, replace the extracted files and click **Reload** on the extension card.
+ChHeader is distributed through GitHub; it is not yet on the Chrome Web Store.
+This README describes main. See the release notes for what is in each download.
 
-- **New:** name a profile, add headers and a URL matcher, then turn it on. Only one
-  profile is on at a time. Edits save automatically; **Apply** reapplies the rules.
-- **On / Off:** sidebar badges show whether a profile is enabled. Selecting a
-  profile only opens its editor.
-- **Right-click a profile:** turn it on/off, rename, duplicate, copy JSON, export
-  or delete. **Undo** restores the last deleted profile, off, while the popup is open.
-  Options also contains duplicate, delete and sharing actions.
-- **Import:** paste JSON or choose a file. Imports become new profiles and start off.
-  **Export all** shares a collection; **Options → Export JSON** shares one profile.
-  Export blanks common credential headers by default; review the JSON before sharing.
+## Your first profile
 
-Try the [localhost example](docs/examples/local-profile.json). Matchers accept hosts
-(`127.0.0.1:3002`), wildcard paths (`127.0.0.1:3002/match/*`) and
-`regex:` patterns. Empty matchers cover all URLs. Disable profiles while editing
-incomplete regex patterns; inline validation is planned.
+1. Click **Create profile** and give it a name, such as “Local API”.
+2. Under **URL rules**, choose **Site** and enter `127.0.0.1:3002`.
+3. Add a request header: `X-Env` with the value `staging`.
+4. Turn the profile **on**, then reload the page or retry the request.
 
-![Copy or download a portable JSON profile](docs/screenshots/sharing.jpg)
+New profiles start **off**. Only one profile can be on at a time; selecting a
+profile opens its editor without enabling it. Changes save on edit; URL rules save
+when you leave the field. **Apply** reapplies the enabled profile’s saved rules.
 
-The screenshots show the current source. Features added after the latest tag
-will be included in the next release.
+## Choose where headers apply
 
-## Develop and test
+| Mode | Use it for |
+| --- | --- |
+| **Site** | A hostname and optional port, such as `127.0.0.1:3002`. Covers HTTP/HTTPS and subdomains. |
+| **URL pattern** | Chrome URL-filter syntax when you need to narrow matching further. |
+| **Regex** | Advanced matching, checked for support by Chrome before saving. |
+| **All sites** | An explicit choice to affect every supported URL. |
 
-Use Node and pnpm versions declared in the repository.
+You can also limit each rule by request type. **No URL rules means no requests
+are changed.** Invalid drafts show an inline error and leave the saved rule intact.
+Start with Site mode; most profiles do not need a regular expression.
+
+## Keep and share profiles
+
+Profiles are stored on this device in Chrome’s local extension storage. Right-click
+a profile or open **Options** to duplicate, export or delete it. **Undo** restores
+the last deleted profile, off, while the popup remains open.
+
+**Import** accepts pasted JSON or a file. Imported profiles get new IDs and start
+off. **Export all** shares a collection; **Options → Export JSON** shares one profile.
+Exports blank common credential headers by default; review custom headers and
+values before sharing. A [localhost example](docs/examples/local-profile.json)
+is included.
+
+## Develop
+
+Use the Node and pnpm versions declared in the repository.
 
 ```sh
 pnpm install --frozen-lockfile
-pnpm check          # types, formatting, coverage, extension ZIP and Storybook
-pnpm test:headers   # real header fixture at http://127.0.0.1:3002
+pnpm check          # types, format, lint, tests, extension ZIP and Storybook
+pnpm dev:extension  # rebuild on edits; load dist/ unpacked and reload in Chrome
 ```
 
-Load `dist/` unpacked in Chrome. `pnpm dev:extension` rebuilds on edits; reload
-ChHeader after rebuilding. `pnpm test:fast` runs the focused popup and rule-update tests.
-See [testing](TESTING.md) and [contributor guidance](AGENTS.md).
-
-## Roadmap and releases
-
-| Stage      | Focus                                                                 | Timing                  |
-| ---------- | --------------------------------------------------------------------- | ----------------------- |
-| 0.3.0      | Chrome-style UI, matching fixes, automated releases                   | Released September 2026 |
-| Next minor | Profile sharing, right-click actions, visible status, cleanup         | After verification      |
-| Next       | Inline rule errors, light/system theme, broader accessibility testing | As ready                |
-| Later      | Wider platform testing and Chrome Web Store distribution              | To be evaluated         |
-
-CI checks pull requests and main pushes. An annotated `vX.Y.Z` tag validates the
-version and publishes a ZIP and SHA-256 checksum. Release dates are tentative;
-there are no scheduled CI jobs. [Release notes](RELEASE_NOTES.md).
+`pnpm test:fast` runs focused workflow tests. `pnpm test:headers` starts the local
+header fixture at `http://127.0.0.1:3002`. See [TESTING.md](TESTING.md) for actual
+Chrome checks and [AGENTS.md](AGENTS.md) for contributor guidance.
