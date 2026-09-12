@@ -1,71 +1,94 @@
-# Website access in ChHeader
+# Why ChHeader asks for website access
 
-## Version 0.4.2: approve sites as needed
+A header editor needs permission to change requests to the sites you choose.
+Those sites are not known when the extension is installed. ChHeader 0.4.2 asks
+for them when you enable a profile, using Chrome's [optional permissions API](https://developer.chrome.com/docs/extensions/reference/api/permissions).
 
-ChHeader has no required host permissions. It declares optional HTTP and HTTPS
-hosts so users can approve specific destinations when turning a profile on.
-The header API permission is `declarativeNetRequestWithHostAccess`, alongside
-`storage`. No content scripts, analytics or developer backend are included.
+## What each permission does
 
-Enter explicit hostnames under **Allowed sites**, separated by commas. A domain
-grant includes its subdomains, HTTP/HTTPS and all ports. Localhost and IPv4
-addresses are supported; IPv6 literals are not currently supported. Paths and
-ports belong in URL rules, not the permission list. Wildcards and an all-website
-grant are not accepted. Site-mode URL rules can suggest a hostname; arbitrary
-URL filters and regex never determine permission scope automatically.
+| Manifest entry | Why it is there |
+| --- | --- |
+| `storage` | Saves profiles and settings in Chrome's local extension storage. No account or sync service. |
+| `declarativeNetRequestWithHostAccess` | Lets Chrome apply header rules where website access has been granted. ChHeader does not inject page scripts to edit headers. |
+| Optional `http://*/*` and `https://*/*` | Lets ChHeader ask for user-chosen development servers and APIs. This declaration is permission to **ask**, not an installation-time grant to every website. |
 
-Chrome requests consent for those sites when you turn the profile on. Its prompt
-may close the popup; reopen ChHeader, select the profile you approved, and turn
-it on. The popup initially returns to the previously active profile.
-Denied requests leave the profile off. Approved permissions persist across tabs
-and browser sessions. A site-list change turns the profile off and requires you
-to enable it again. Imports and duplicates also start off.
+There are no required host permissions. The extension does not request browsing
+history, cookies, scripting or debugger API permissions. Website access is still
+powerful: approve only hosts you need, even though ChHeader currently uses it for
+header rules. Inspect the [manifest](../src/manifest.json) and [request code](../src/lib/site-access.ts).
 
-All rules, including regex and **All allowed sites**, are constrained by that
-profile’s destination domains. Grants left over from another profile do not
-expand those rules. Chrome enforces the host permissions; ChHeader checks grants
-before applying rules and removes active rules when required access is revoked.
-No URL rules or no allowed sites means no changes.
+## Granted access and active rules are different
 
-The popup lists granted sites. **Revoke all website access** removes all website
-grants and turns profiles off; Chrome’s extension settings can manage individual
-grants. Turning a profile off alone does not revoke permissions. Updates clear
-website grants and live rules while preserving profiles, so users explicitly
-approve destinations again. This also resets broad access from older versions.
+Chrome grants website access to the **extension**, not separately to each profile.
+Grants can accumulate and persist across tabs and browser sessions. ChHeader adds
+a second boundary: every generated rule includes the active profile's allowed
+destination domains. A grant left over from another profile does not expand them.
+URL patterns, regex and request types narrow the rules further.
 
-## Why 0.4.1 requested broad access
+The current UI requests both HTTP and HTTPS, including subdomains and all ports,
+for each domain you enter. That breadth is ChHeader's current choice; Chrome also
+supports narrower scheme/host patterns. Paths cannot restrict a host permission:
+Chrome ignores the path when granting access. Put path and port restrictions in
+URL rules. See Chrome's [match-pattern documentation](https://developer.chrome.com/docs/extensions/develop/concepts/match-patterns).
 
-Version 0.4.1 declared `host_permissions: ["<all_urls>"]` because users choose their
-own local servers, internal services and public APIs. Those hosts were not known
-in advance. This avoided per-site prompts but granted much more access at install
-time. URL rules limited modifications, not the permission itself. Google flagged
-that scope for possible additional review. It was a convenience tradeoff, not an
-inherent requirement for a header editor.
+Turning a profile off stops its rules but **does not revoke its grants**. Removing
+a site from a profile also leaves the old Chrome grant in place. Use **Revoke all
+website access** to remove grants and turn every profile off, then approve only
+the sites you still need. Chrome's extension settings can also manage site access.
+ChHeader updates reset grants and rules while preserving saved profiles.
 
-## Remaining tradeoffs
+## A narrower setup for an API
 
-Permissions cover hostnames and their subdomains, not a single endpoint. Choose
-the narrowest domain (for example `api.example.com` instead of `example.com`) and
-keep path/port rules precise. The optional manifest declaration permits asking
-for any HTTP/HTTPS host, but the application requests only the entered hosts.
-This reduces granted access; it does not guarantee a shorter Store review.
+Suppose `app.example.com` calls `api.example.com/v1/`:
 
-`activeTab` is temporary and scoped to the current main-frame origin. It is not a
-replacement for profiles that must keep working across tabs and API hosts.
-Cross-site API calls need host access for both the destination and the page making
-the request. For example, put `app.example.com` and `api.example.com` in Allowed
-sites, then use a **Site** URL rule for `api.example.com` so headers only go to the
-API. A profile can be on while requests from an unapproved initiating page remain
-unchanged. ChHeader does not silently grant that extra access. This behavior was
-verified with separate localhost origins; see [test results](../TESTING.md).
+1. Enter `app.example.com, api.example.com` under **Allowed sites**, not `example.com`.
+2. Choose **URL pattern** and enter `|https://api.example.com/v1/`. The leading `|`
+   anchors the rule to that HTTPS URL prefix. Use `|https://api.example.com/v1/status|`
+   to match one exact URL instead; a query string will not match that exact rule.
+3. Choose **XHR/Fetch** if that is all you need. Avoid **All allowed sites** for
+   credentials: it would also target the approved app host.
+4. Enable and approve access. If Chrome closes the popup, reopen it, select this
+   profile and enable again. Reload the test pages after access changes.
+5. Test a matching request and an excluded request. Revoke access when finished.
 
-Sources checked September 12, 2026:
-[declarativeNetRequest](https://developer.chrome.com/docs/extensions/reference/api/declarativeNetRequest),
-[optional permissions](https://developer.chrome.com/docs/extensions/reference/api/permissions),
-[activeTab](https://developer.chrome.com/docs/extensions/develop/concepts/activeTab),
-[match patterns](https://developer.chrome.com/docs/extensions/develop/concepts/match-patterns).
+For cross-origin subresource requests, Chrome needs host permission for the page
+initiating the request as well as the destination. Approving only the API can
+leave a profile on without changing its requests. This is documented in the
+[declarativeNetRequest permission rules](https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/API/declarativeNetRequest#permissions)
+and was checked in Chrome. The URL rule above keeps header changes on the API.
 
-On main (after 0.4.2), a failed rule build or Chrome rule replacement clears the
-previous dynamic rules and turns profiles off. Chrome's atomic rejection can
-otherwise leave old headers running after an edit or profile switch. If Chrome
-also refuses the cleanup operation, disable ChHeader in `chrome://extensions/`.
+Enter hostnames only in Allowed sites. Wildcards, schemes, paths and ports are
+rejected. Localhost and IPv4 are supported; IPv6 literals are not currently supported.
+
+## Why this changed, and what could improve
+
+Version 0.4.1 requested `<all_urls>` at installation so arbitrary user-chosen
+servers worked without more prompts. URL rules limited changes, but did not
+reduce that permission. It was convenient and unnecessarily broad. Version 0.4.2
+replaced it with per-site consent; this is not a promise of faster Store approval.
+
+Further improvements could make HTTPS and exact hosts the default, with explicit
+choices for HTTP and subdomains, and add per-site revocation in the popup. Those
+controls are **not implemented yet**. `activeTab` could suit a temporary current-tab
+mode, but is not a drop-in replacement for persistent profiles across API hosts
+and tabs. See Chrome's [activeTab description](https://developer.chrome.com/docs/extensions/develop/concepts/activeTab).
+
+On main, after 0.4.2, rejected rule replacements clear previous rules and turn
+profiles off. Chrome's atomic rejection could otherwise leave old headers running.
+Invalid drafts rejected by the editor still leave the last saved URL rule intact.
+If Chrome refuses rule cleanup too, disable the extension in `chrome://extensions/`.
+
+## Check it yourself
+
+Use [headers.kahwee.com](https://headers.kahwee.com) and the
+[HTTPS demo profile](examples/https-profile.json). It approves only the two test
+subdomains and changes exactly `/headers/match`. Use demo values: Cloudflare receives
+these requests. The Worker displays a small header allowlist, omits credentials
+and cookies, and has no application logging or storage. Use the local fixture for
+secrets; saved extension profiles have no additional encryption either.
+
+The [test record](../TESTING.md) separates automated tests, actual Chrome results
+and unresolved failures. Intermittent browser 403/client blocks made some repeat
+runs inconclusive. A failed request does not prove that a rule excluded it.
+
+Documentation and source checked September 12, 2026.

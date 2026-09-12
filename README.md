@@ -37,25 +37,31 @@ Open the [HTTPS header tester](https://headers.kahwee.com). Import the
 Use demo values on the public tester. For secrets, run `pnpm test:headers` locally
 at `http://127.0.0.1:3002`. The [tester source](tools/header-echo) is included.
 
-## Access and security
+## Why the permissions exist
 
-- **You choose the sites.** No website access is granted at installation. Approving
-  a hostname includes its subdomains, HTTP/HTTPS and all ports. URL rules narrow
-  where headers change; even regex rules stay within the profile’s allowed sites.
-- **Cross-site APIs need both hosts:** the page making the request and the API.
-  Use a Site or URL rule to keep header changes on the API.
-- **Off means off.** New, imported and duplicated profiles start off. Only one can
-  be on. No URL rules means no changes. On main, rejected rule updates clear old
-  rules and turn profiles off.
-- **Revoke all website access** clears grants and turns profiles off. Updates also
-  reset grants. Editing allowed sites turns the profile off until you enable it again.
-- **Profiles can contain secrets.** They stay in Chrome’s local extension storage,
-  without additional encryption. Exports blank common credential headers by
-  default; review custom values and notes before sharing.
+`storage` keeps your profiles locally. `declarativeNetRequestWithHostAccess` lets
+Chrome apply header rules to approved sites. Optional HTTP/HTTPS host patterns
+let ChHeader **ask** for hosts you choose; installation grants no website access.
 
-No ads, analytics or remote code. Header values are sent to the sites your rules
-match. Read the [permission details](docs/permissions.md), [privacy policy](PRIVACY.md)
-and [actual test results](TESTING.md).
+For a page at `app.example.com` calling `api.example.com`, approve both hostnames.
+Choose **URL pattern** `|https://api.example.com/v1/` and **XHR/Fetch** to change
+only those HTTPS API requests. Avoid approving the parent `example.com`.
+
+- **Allowed sites bound the destinations.** Current grants include subdomains,
+  HTTP/HTTPS and all ports; URL rules narrow actual changes. Regex cannot escape
+  the profile's site list. No URL rules means no changes.
+- **Off is not revoked.** Disabling a profile stops its rules. Chrome retains
+  grants, including sites removed from a profile. Use **Revoke all website access**,
+  then approve only what you still need. Updates also reset grants.
+- **Secrets stay your responsibility.** Local profiles have no extra encryption.
+  Exports blank common credential headers; review custom values and notes.
+
+New and imported profiles start off. On main, rejected rule updates also clear old
+rules and turn profiles off; that fix is not in 0.4.2. No ads, analytics or remote code.
+
+Read [permission tradeoffs and narrower setups](docs/permissions.md),
+[privacy](PRIVACY.md), and [test results](TESTING.md). Browser 403/client blocks made
+some repeat tests inconclusive; failed requests are not proof of correct filtering.
 
 ## Everyday use
 
