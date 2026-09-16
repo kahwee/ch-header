@@ -554,3 +554,24 @@ the off-state status all remained intact. The profile was deliberately left off,
 so no host permission was granted and no real request was modified. Automated
 popup-to-storage-to-background coverage remains the rule-application evidence for
 this refactor. Local visual evidence is ignored under `.local/qa/`.
+
+### Website-access flow — September 15, 2026
+
+Replaced the mixed allowed-sites paragraph with a structured Website access panel:
+explicit scope saving, per-profile Approval needed/Approved state, a dedicated
+Approve sites action, and a global revoke action shown only when grants exist. The
+Enable switch remains unavailable until Chrome has the profile's exact host grants.
+Enter now saves the access field instead of accidentally submitting Apply. Hostname
+validation and the existing exact-host/subdomain rules are unchanged.
+
+Automated: `pnpm check` passed 436 tests across 26 files, TypeScript, formatting,
+lint, coverage, Worker tests, extension packaging and Storybook. New integration
+coverage exercises grant-state transitions, the separate approval action, switch
+availability, Save and Enter behavior.
+
+Actual Chrome toolbar popup, dark appearance, 744 × 440: `localhost` initially
+showed Approval needed and a disabled profile switch. Approve sites changed the
+panel to Approved; enabling the profile then sent `X-ChHeader-QA: popup-refactor`
+to a real local HTTP request. The profile was switched off, all website access was
+revoked, and the local server was stopped. Browser audit captures remain ignored
+under `.local/qa/allowed-sites-audit/`.

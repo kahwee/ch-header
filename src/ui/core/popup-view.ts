@@ -26,6 +26,7 @@ export class PopupView {
   private matcherList?: MatcherTableComponent
   private requestHeaders?: HeaderTableComponent
   private responseHeaders?: HeaderTableComponent
+  private selectionChange = () => {}
 
   constructor(
     private document: Document,
@@ -60,6 +61,10 @@ export class PopupView {
 
   setKeyboardNavigation(navigation: ProfileKeyboardNavigation): void {
     this.keyboardNavigation = navigation
+  }
+
+  setSelectionChangeHandler(handler: () => void): void {
+    this.selectionChange = handler
   }
 
   renderList(): void {
@@ -103,6 +108,7 @@ export class PopupView {
       this.elements.detailPane?.classList.add('hidden')
       this.elements.detailEmpty?.classList.remove('hidden')
       this.document.querySelector<HTMLButtonElement>('#newProfileEmpty')?.focus()
+      this.selectionChange()
       return
     }
 
@@ -133,6 +139,7 @@ export class PopupView {
     updateColorSelection(this.document, color)
     this.renderMatchers()
     this.renderHeaders()
+    this.selectionChange()
   }
 
   renderMatchers(): void {

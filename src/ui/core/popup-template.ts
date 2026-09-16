@@ -1,4 +1,4 @@
-import { profileActionsTemplate } from './profile-actions-template'
+import logo from '../../../public/icons/logo.png?url'
 /**
  * Shared popup HTML template
  * Used by both popup.html (rendered) and Storybook stories (with mocks)
@@ -9,8 +9,8 @@ import { menuItem } from '../components/menus/menu-item'
 import { sectionHeader } from '../components/sections/section-header'
 import folderPlusIcon from '../icons/folder-plus.svg?raw'
 import plusIcon from '../icons/plus.svg?raw'
-import logo from '../../../public/icons/logo.png?url'
 import searchIcon from '../icons/search.svg?raw'
+import { profileActionsTemplate } from './profile-actions-template'
 import { getProfileColor, PROFILE_COLORS } from './profile-colors'
 import { escapeHtml } from './utils'
 
@@ -195,12 +195,26 @@ export function getPopupTemplate(options?: { containerClass?: string }): string 
             <textarea id="profileNotes" name="profileNotes" rows="1" aria-label="Profile notes" class="field field--notes" placeholder="Describe what this profile changes…"></textarea>
           </div>
 
-          <section class="editor-section">
-            <label for="accessSites">Allowed sites</label>
-            <input id="accessSites" class="field field--access-sites" type="text" placeholder="api.example.com, localhost" aria-describedby="accessHelp" />
-            <p id="accessHelp" class="editor-section__hint">HTTP/HTTPS, including subdomains and all ports. URL rules narrow this further. Approve access when prompted, then reopen this popup and turn the profile on.</p>
-            <p id="grantedSites" class="editor-section__hint" aria-live="polite"></p>
-            <button id="revokeAccess" data-revoke-access type="button" class="button button--secondary button--md">Revoke all website access</button>
+          <section class="editor-section access-panel" aria-labelledby="accessTitle">
+            <div class="access-panel__heading">
+              <div>
+                <h2 id="accessTitle">Website access</h2>
+                <p id="accessHelp" class="editor-section__hint">Domains include subdomains; localhost and IPs stay exact. Covers HTTP/HTTPS and all ports.</p>
+              </div>
+            </div>
+            <label for="accessSites">Sites this profile can access</label>
+            <div class="access-panel__input-row">
+              <input id="accessSites" class="field field--access-sites" type="text" placeholder="api.example.com, localhost" aria-describedby="accessHelp accessStatusDetail" />
+              <button id="saveAccessSites" type="button" class="button button--secondary button--md">Save</button>
+            </div>
+            <div id="accessStatus" class="access-status" data-state="empty" role="status" aria-live="polite">
+              <span id="accessStatusBadge" class="access-status__badge">No sites</span>
+              <span id="accessStatusDetail">Add a hostname to continue.</span>
+            </div>
+            <div class="access-panel__actions">
+              <button id="grantAccess" type="button" class="button button--primary button--md" hidden>Approve sites</button>
+              <button id="revokeAccess" data-revoke-access type="button" class="button button--secondary button--md" hidden>Revoke all access</button>
+            </div>
           </section>
 
           ${headersSection('req', 'Request headers', '')}

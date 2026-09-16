@@ -13,9 +13,9 @@ import '../../components/common/checkbox-element'
  */
 const meta = {
   title: 'ChHeader/Layouts/Full Layout',
+  globals: { viewport: 'popup' },
   parameters: {
     layout: 'fullscreen',
-    globals: { viewport: 'popup' },
     docs: {
       description: {
         component:
@@ -327,6 +327,15 @@ export const WithProfile: Story = {
     if (colorInput) colorInput.value = sampleProfile.color
     if (notesInput) notesInput.value = sampleProfile.notes || ''
     if (enabledInput) enabledInput.checked = sampleProfile.enabled
+
+    const accessInput = app.querySelector<HTMLInputElement>('#accessSites')
+    const accessStatus = app.querySelector<HTMLElement>('#accessStatus')
+    if (accessInput) accessInput.value = 'api.example.com'
+    if (accessStatus) accessStatus.dataset.state = 'approved'
+    app.querySelector<HTMLElement>('#accessStatusBadge')!.textContent = 'Approved'
+    app.querySelector<HTMLElement>('#accessStatusDetail')!.textContent =
+      'Chrome access is ready for api.example.com.'
+    app.querySelector<HTMLButtonElement>('#revokeAccess')!.hidden = false
 
     // Populate request headers
     const reqHeaders = app.querySelector('#reqHeaders')

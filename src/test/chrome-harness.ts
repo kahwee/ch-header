@@ -24,10 +24,11 @@ export function createChromeHarness(initial: Partial<ExtensionStorage> = {}) {
     'https://localhost/*',
   ]
   const onRemoved = event<[chrome.permissions.Permissions]>()
+  const onAdded = event<[chrome.permissions.Permissions]>()
   const api = {
     permissions: {
       onRemoved,
-      onAdded: event<[chrome.permissions.Permissions]>(),
+      onAdded,
       contains: vi.fn(
         (requested: chrome.permissions.Permissions, callback: (granted: boolean) => void) =>
           callback((requested.origins ?? []).every((origin) => origins.includes(origin)))
@@ -35,6 +36,7 @@ export function createChromeHarness(initial: Partial<ExtensionStorage> = {}) {
       request: vi.fn(
         (requested: chrome.permissions.Permissions, callback: (granted: boolean) => void) => {
           origins = [...new Set([...origins, ...(requested.origins ?? [])])]
+          onAdded.emit(requested)
           callback(true)
         }
       ),

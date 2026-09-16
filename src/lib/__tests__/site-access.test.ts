@@ -1,7 +1,7 @@
 import { describe, expect, it, vi } from 'vitest'
-import { parseAccessSites, siteOrigins, suggestedAccessSites } from '../site-access'
-import { buildRulesFromProfile } from '../dnr-rules'
 import { createPopupHarness, localProfile } from '../../test/popup-harness'
+import { buildRulesFromProfile } from '../dnr-rules'
+import { parseAccessSites, siteOrigins, suggestedAccessSites } from '../site-access'
 
 describe('optional site access', () => {
   it('rejects wildcard, path, credentials and scheme input without widening scope', () => {
@@ -144,6 +144,53 @@ describe('optional site access', () => {
     expect(h.chrome.snapshot().profiles).toEqual([
       expect.objectContaining({ enabled: false, accessSites: ['localhost'] }),
     ])
+  })
+
+  it('shows approval for the selected profile and offers a separate approval action', async () => {
+    const h = await createPopupHarness()
+    expect(h.query('#accessStatusBadge').textContent).toBe('Approved')
+    expect(h.query<HTMLButtonElement>('#grantAccess').hidden).toBe(true)
+
+    h.chrome.api.permissions.remove(
+      { origins: ['http://127.0.0.1/*', 'https://127.0.0.1/*'] },
+      () => {}
+    )
+    await vi.waitFor(() =>
+      expect(h.query('#accessStatusBadge').textContent).toBe('Approval needed')
+    )
+    expect(h.query<HTMLButtonElement>('#grantAccess').hidden).toBe(false)
+    expect(h.query<HTMLInputElement>('#enabled').disabled).toBe(true)
+
+    h.click('#grantAccess')
+    await vi.waitFor(() => expect(h.query('#accessStatusBadge').textContent).toBe('Approved'))
+    expect(h.query<HTMLInputElement>('#enabled').disabled).toBe(false)
+    expect(h.chrome.api.permissions.request).toHaveBeenCalledWith(
+      { origins: ['http://127.0.0.1/*', 'https://127.0.0.1/*'] },
+      expect.any(Function)
+    )
+    expect(h.chrome.snapshot().profiles).toEqual([expect.objectContaining({ enabled: false })])
+  })
+
+  it('saves website scope with the explicit button or Enter without submitting Apply', async () => {
+    const h = await createPopupHarness()
+    h.input('#accessSites', 'localhost')
+    h.click('#saveAccessSites')
+    await vi.waitFor(() =>
+      expect(h.chrome.snapshot().profiles).toEqual([
+        expect.objectContaining({ accessSites: ['localhost'], enabled: false }),
+      ])
+    )
+
+    const input = h.query<HTMLInputElement>('#accessSites')
+    input.value = '127.0.0.1'
+    const enter = new KeyboardEvent('keydown', { key: 'Enter', bubbles: true, cancelable: true })
+    expect(input.dispatchEvent(enter)).toBe(false)
+    await vi.waitFor(() =>
+      expect(h.chrome.snapshot().profiles).toEqual([
+        expect.objectContaining({ accessSites: ['127.0.0.1'], enabled: false }),
+      ])
+    )
+    expect(h.chrome.api.runtime.sendMessage).not.toHaveBeenCalledWith({ type: 'applyNow' })
   })
 
   it('clears old live rules and website grants on extension upgrade', async () => {

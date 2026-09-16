@@ -1,4 +1,9 @@
-import { parseAccessSites, requestSiteAccess, suggestedAccessSites } from '../../lib/site-access'
+import {
+  parseAccessSites,
+  requestSiteAccess,
+  siteOrigins,
+  suggestedAccessSites,
+} from '../../lib/site-access'
 import { type Profile, STORAGE_KEYS, type State } from '../../lib/types'
 import type { PopupController } from './controller'
 import type { PopupView } from './popup-view'
@@ -15,6 +20,13 @@ interface ProfileAccessOptions {
 export function setupProfileAccess(options: ProfileAccessOptions) {
   const { controller, document, notify, state, view } = options
   let enableAttempt = 0
+  const accessInput = document.querySelector<HTMLInputElement>('#accessSites')!
+  const accessStatus = document.querySelector<HTMLElement>('#accessStatus')!
+  const accessStatusBadge = document.querySelector<HTMLElement>('#accessStatusBadge')!
+  const accessStatusDetail = document.querySelector<HTMLElement>('#accessStatusDetail')!
+  const grantAccess = document.querySelector<HTMLButtonElement>('#grantAccess')!
+  const revokeAccess = document.querySelector<HTMLButtonElement>('#revokeAccess')!
+  const profileEnabled = document.querySelector<HTMLInputElement>('#enabled')!
 
   function setProfileEnabled(id: string, enabled: boolean): void {
     const attempt = ++enableAttempt
@@ -54,36 +66,96 @@ export function setupProfileAccess(options: ProfileAccessOptions) {
     }
   }
 
-  function renderGrants(): void {
+  function refresh(): void {
     chrome.permissions.getAll((grants) => {
-      document.querySelector<HTMLElement>('#emptyRevokeAccess')!.hidden = !grants.origins?.length
-      document.querySelector('#grantedSites')!.textContent = grants.origins?.length
-        ? `Granted to ChHeader: ${[
-            ...new Set(
-              grants.origins.map((origin) =>
-                origin.replace(/^https?:\/\//, '').replace(/\/\*$/, '')
-              )
-            ),
-          ].join(', ')}`
-        : 'No website access granted.'
+      const origins = grants.origins ?? []
+      document.querySelector<HTMLElement>('#emptyRevokeAccess')!.hidden = !origins.length
+      if (!accessStatus.isConnected) return
+      revokeAccess.hidden = !origins.length
+
+      let sites: string[] = []
+      try {
+        if (state.current) sites = suggestedAccessSites(state.current)
+      } catch {
+        // The input's validation message handles malformed saved values.
+      }
+      const requiredOrigins = sites.length ? siteOrigins(sites) : []
+      const approved =
+        requiredOrigins.length > 0 && requiredOrigins.every((origin) => origins.includes(origin))
+      accessStatus.dataset.state = approved ? 'approved' : sites.length ? 'needed' : 'empty'
+      accessStatusBadge.textContent = approved
+        ? 'Approved'
+        : sites.length
+          ? 'Approval needed'
+          : 'No sites'
+      accessStatusDetail.textContent = approved
+        ? `Chrome access is ready for ${sites.join(', ')}.`
+        : sites.length
+          ? `Approve ${sites.join(', ')} before enabling this profile.`
+          : 'Add at least one hostname to continue.'
+      grantAccess.hidden = approved || !sites.length
+      profileEnabled.disabled = !approved
+      profileEnabled.title = approved
+        ? 'Enable this profile'
+        : 'Approve this profile’s website access first'
     })
   }
 
-  renderGrants()
-  chrome.permissions.onAdded.addListener(renderGrants)
-  chrome.permissions.onRemoved.addListener(renderGrants)
+  refresh()
+  chrome.permissions.onAdded.addListener(refresh)
+  chrome.permissions.onRemoved.addListener(refresh)
 
-  document.querySelector<HTMLInputElement>('#accessSites')!.addEventListener('change', (event) => {
-    if (!state.current) return
+  function saveAllowedSites(): boolean {
+    if (!state.current) return false
     try {
-      state.current.accessSites = parseAccessSites((event.target as HTMLInputElement).value)
+      state.current.accessSites = parseAccessSites(accessInput.value)
       ++enableAttempt
       controller.onSetProfileEnabled(state.current.id, false)
-      notify('Allowed sites saved. Turn the profile on to approve access.')
+      refresh()
+      notify('Website access scope saved.')
+      return true
     } catch (error) {
       notify(error instanceof Error ? error.message : 'Check allowed sites.')
       view.select(state.current.id)
+      return false
     }
+  }
+
+  accessInput.addEventListener('change', saveAllowedSites)
+  accessInput.addEventListener('keydown', (event) => {
+    if (event.key !== 'Enter') return
+    event.preventDefault()
+    saveAllowedSites()
+  })
+  document.querySelector('#saveAccessSites')!.addEventListener('click', saveAllowedSites)
+  grantAccess.addEventListener('click', () => {
+    const profile = state.current
+    if (!profile) return
+    let sites: string[]
+    try {
+      sites = parseAccessSites(accessInput.value)
+      if (!sites.length) throw new Error('Add at least one hostname before requesting access.')
+      profile.accessSites = sites
+      ++enableAttempt
+      controller.onSetProfileEnabled(profile.id, false)
+    } catch (error) {
+      notify(error instanceof Error ? error.message : 'Check allowed sites.')
+      return
+    }
+    void requestSiteAccess(sites)
+      .then((granted) => {
+        refresh()
+        notify(
+          granted
+            ? 'Website access approved. Turn this profile on when you are ready.'
+            : 'Website access was not granted.'
+        )
+      })
+      .catch((error) =>
+        notify(
+          `Could not request website access. ${error instanceof Error ? error.message : 'Try reopening the popup.'}`
+        )
+      )
   })
 
   for (const button of document.querySelectorAll('[data-revoke-access]')) {
@@ -118,5 +190,5 @@ export function setupProfileAccess(options: ProfileAccessOptions) {
     }
   })
 
-  return { setProfileEnabled }
+  return { refresh, setProfileEnabled }
 }

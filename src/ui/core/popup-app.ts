@@ -97,6 +97,8 @@ export async function mountPopup(document: Document = globalThis.document): Prom
     state,
     view,
   })
+  view.setSelectionChangeHandler(profileAccess.refresh)
+  profileAccess.refresh()
   setProfileEnabled = profileAccess.setProfileEnabled
   setupProfileContextMenu(
     document,
