@@ -1,8 +1,11 @@
-# ChHeader 0.4.3
+# ChHeader 0.4.4
 
-Hardens rule maintenance: every URL matcher now receives a stable DNR rule ID,
-and duplicate IDs fail clearly instead of silently omitting a rule. Saved legacy
-resource types remain compatible.
+Tightens the Website access panel by keeping its approval status and action on one
+compact row. Approve and revoke controls now match the surrounding interface while
+remaining clearly labeled and keyboard accessible.
 
-The build now requires Node 26.7.0 or newer and uses pnpm 12.4.2. No extension
+The README now uses a refreshed set of actual-Chrome screenshots, and maintainers
+can rebuild the captioned 1080p product walkthrough with `pnpm media:video`.
+
+The build requires Node 26.7.0 or newer and uses pnpm 12.4.2. No extension
 permissions, data collection, or profile behavior changed.

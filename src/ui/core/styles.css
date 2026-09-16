@@ -1099,12 +1099,18 @@ svg {
   gap: 6px;
   margin-top: 5px;
 }
-.access-status {
+.access-panel__footer {
   display: flex;
   min-width: 0;
   gap: 7px;
   align-items: center;
   margin-top: 8px;
+}
+.access-status {
+  display: flex;
+  min-width: 0;
+  gap: 7px;
+  align-items: center;
   color: var(--muted);
   font-size: 11px;
 }
@@ -1128,6 +1134,7 @@ svg {
 }
 .access-panel__actions {
   display: flex;
+  flex-shrink: 0;
   gap: 6px;
-  margin-top: 8px;
+  margin-left: auto;
 }

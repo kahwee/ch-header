@@ -575,3 +575,19 @@ panel to Approved; enabling the profile then sent `X-ChHeader-QA: popup-refactor
 to a real local HTTP request. The profile was switched off, all website access was
 revoked, and the local server was stopped. Browser audit captures remain ignored
 under `.local/qa/allowed-sites-audit/`.
+
+### Updated product media — September 15, 2026
+
+Captured the actual Chrome toolbar popup for the complete website-access journey:
+approval needed, approved, enabled, live localhost verification, and revoked/off.
+Only synthetic `X-ChHeader-Demo: hello-gecko` data was used. Curated captures are
+in `docs/screenshots/`; raw full-screen captures remain ignored in `.local/qa/`.
+The temporary localhost server was stopped, the demo profile was left off and all
+temporary website access was revoked.
+
+After visual review, the Approve and Revoke actions were reduced to the 28px button
+size and moved onto the status row. A second actual-Chrome capture pass confirmed
+the compact layout in both access states without changing keyboard or status text.
+
+`pnpm media:video` builds a captioned 1080p walkthrough, subtitle file, upload copy
+and contact sheet from those curated images under ignored `.local/qa/video-latest/`.

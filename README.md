@@ -2,7 +2,7 @@
 <h1 align="center">ChHeader</h1>
 <p align="center">By <a href="https://kahwee.com">KahWee Teng</a> · No ads. Local profiles. Open source.</p>
 <p align="center">Edit HTTP request and response headers in Chrome.</p>
-<p align="center"><a href="https://github.com/kahwee/ch-header/releases/latest">Download for Chrome</a> · <a href="https://www.youtube.com/watch?v=vmv77KYgOAo">Watch the 55-second demo</a> · <a href="https://kahwee.com/2026/why-i-built-chheader/">Why I built it</a></p>
+<p align="center"><a href="https://github.com/kahwee/ch-header/releases/latest">Download for Chrome</a> · <a href="https://www.youtube.com/watch?v=vmv77KYgOAo">Watch the demo</a> · <a href="https://kahwee.com/2026/why-i-built-chheader/">Why I built it</a></p>
 
 I’m [KahWee Teng](https://kahwee.com). I built ChHeader because ModHeader’s
 [ad injection](https://news.ycombinator.com/item?id=37772829) put me off.
@@ -19,18 +19,32 @@ select the extracted folder, then pin ChHeader. To update, replace those files a
 click **Reload**. Version 0.4.3 is awaiting Chrome Web Store review.
 
 This README describes main; check release notes for your installed version.
-The video shows 0.4.1, before optional website permissions.
+
+## See it in Chrome
+
+<p align="center"><img src="docs/screenshots/popup.jpg" width="758" alt="ChHeader profile enabled after Chrome website access was approved"></p>
+
+<p align="center">
+  <img src="docs/screenshots/access-needed.jpg" width="49%" alt="Website access panel showing that approval is needed">
+  <img src="docs/screenshots/header-check.jpg" width="49%" alt="Local server confirming that Chrome sent the configured hello-gecko request header">
+</p>
+
+Website access is explicit: save a narrow hostname, approve it in Chrome, then turn
+the profile on. The local test above received `X-ChHeader-Demo: hello-gecko` from a
+real Chrome request. The [capture guide](docs/screenshots/README.md) keeps README,
+Store and video media reproducible.
 
 ## Try it
 
 Open the [HTTPS header tester](https://headers.kahwee.com). Import the
 [ready-made test profile](docs/examples/https-profile.json), or set up one site:
 
-1. Create a profile. Set **Allowed sites** to `headers.kahwee.com`.
+1. Create a profile. Under **Website access**, set the site to `headers.kahwee.com`,
+   choose **Save**, then **Approve sites**.
 2. Choose **URL pattern** and enter `|https://headers.kahwee.com/headers/match|`.
 3. Add request header `X-ChHeader-Test: hello-gecko` and response header `X-ChHeader-Response: modified`.
-4. Turn the profile **on** and approve access. If Chrome closes the popup, reopen it,
-   select that profile and enable it again.
+4. Turn the profile **on**. If Chrome closes the popup while showing its native
+   permission prompt, reopen ChHeader and select the profile.
 5. Reload the test pages, then click **Run checks**. Only the matching path should change.
    Turn the profile off and run again to compare.
 

@@ -207,13 +207,15 @@ export function getPopupTemplate(options?: { containerClass?: string }): string 
               <input id="accessSites" class="field field--access-sites" type="text" placeholder="api.example.com, localhost" aria-describedby="accessHelp accessStatusDetail" />
               <button id="saveAccessSites" type="button" class="button button--secondary button--md">Save</button>
             </div>
-            <div id="accessStatus" class="access-status" data-state="empty" role="status" aria-live="polite">
-              <span id="accessStatusBadge" class="access-status__badge">No sites</span>
-              <span id="accessStatusDetail">Add a hostname to continue.</span>
-            </div>
-            <div class="access-panel__actions">
-              <button id="grantAccess" type="button" class="button button--primary button--md" hidden>Approve sites</button>
-              <button id="revokeAccess" data-revoke-access type="button" class="button button--secondary button--md" hidden>Revoke all access</button>
+            <div class="access-panel__footer">
+              <div id="accessStatus" class="access-status" data-state="empty" role="status" aria-live="polite">
+                <span id="accessStatusBadge" class="access-status__badge">No sites</span>
+                <span id="accessStatusDetail">Add a hostname to continue.</span>
+              </div>
+              <div class="access-panel__actions">
+                <button id="grantAccess" type="button" class="button button--primary button--sm" hidden>Approve sites</button>
+                <button id="revokeAccess" data-revoke-access type="button" class="button button--secondary button--sm" hidden>Revoke all access</button>
+              </div>
             </div>
           </section>
 

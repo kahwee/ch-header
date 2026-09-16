@@ -3,7 +3,7 @@
   "license": "MIT",
   "author": "KahWee Teng",
   "description": "Edit request and response headers, organize profiles, and target specific sites to test APIs and websites.",
-  "version": "0.4.3",
+  "version": "0.4.4",
   "type": "module",
   "devEngines": {
     "packageManager": {
@@ -29,6 +29,7 @@
     "format": "biome format --write .",
     "format:check": "biome format .",
     "lint": "biome lint .",
+    "media:video": "node scripts/build-demo-video.mjs",
     "storybook": "storybook dev -p 6006",
     "storybook:build": "storybook build",
     "dev:extension": "vite build --watch",
