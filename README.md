@@ -16,7 +16,7 @@ and [header rules](src/lib/dnr-rules.ts) are welcome.
 Download and extract the ZIP from [GitHub Releases](https://github.com/kahwee/ch-header/releases/latest).
 In `chrome://extensions/`, enable **Developer mode**, choose **Load unpacked**,
 select the extracted folder, then pin ChHeader. To update, replace those files and
-click **Reload**. Version 0.4.2 is awaiting Chrome Web Store review.
+click **Reload**. Version 0.4.3 is awaiting Chrome Web Store review.
 
 This README describes main; check release notes for your installed version.
 The video shows 0.4.1, before optional website permissions.

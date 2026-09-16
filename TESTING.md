@@ -527,3 +527,11 @@ Updated the repository pin and lockfile-managed pnpm dependency from 11.25.0 to
 `pnpm install --frozen-lockfile` passed its supply-chain policy verification;
 `pnpm test:fast` passed 30 tests and `pnpm typecheck` passed. No runtime extension
 behavior changed, so no Chrome toolbar check was needed.
+
+### Release 0.4.3 — September 15, 2026
+
+Aligned the package and manifest version at 0.4.3. `pnpm check` passed with pnpm
+12.4.2: formatting, lint, typecheck, 432 Vitest tests with coverage, five Worker
+tests, packaged extension, and Storybook build. Chrome's unpacked ChHeader
+extension was reloaded successfully at version 0.4.3 and remains enabled. It was
+not turned on for any sites, and no permissions or profile data changed.
