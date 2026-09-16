@@ -1,9 +1,9 @@
 import { afterEach, describe, expect, it, vi } from 'vitest'
+import type { Profile, State } from '../../../lib/types'
+import { PopupController } from '../controller'
 import { getPopupTemplate, profileListItem } from '../popup-template'
 import { setupProfileContextMenu } from '../profile-context-menu'
 import { setupProfileSharing } from '../profile-sharing'
-import { PopupController } from '../controller'
-import type { Profile, State } from '../../../lib/types'
 
 afterEach(() => vi.unstubAllGlobals())
 
@@ -30,12 +30,9 @@ function fixture() {
     state.current = state.profiles.find((p) => p.id === id) ?? null
   }
   const controller = new PopupController(state, {
+    commit: renderList,
     renderList,
     select,
-    renderHeaders: vi.fn(),
-    renderMatchers: vi.fn(),
-    saveProfiles: vi.fn(),
-    syncAndRender: renderList,
   })
   renderList()
   return { root, state, controller }

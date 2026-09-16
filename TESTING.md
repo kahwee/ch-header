@@ -535,3 +535,22 @@ Aligned the package and manifest version at 0.4.3. `pnpm check` passed with pnpm
 tests, packaged extension, and Storybook build. Chrome's unpacked ChHeader
 extension was reloaded successfully at version 0.4.3 and remains enabled. It was
 not turned on for any sites, and no permissions or profile data changed.
+
+### Popup modularization — September 15, 2026
+
+Split the popup composition root into dedicated view, event, permission and
+serialized-storage modules. Header-only imports now use the same strict parser as
+profile imports, and component updates remove obsolete root attributes. Focused
+popup tests passed first; the complete `pnpm check` then passed 434 tests across
+26 files, TypeScript, formatting, lint, coverage, Worker tests, extension ZIP and
+Storybook. Biome has no project-owned findings.
+
+Browser checks used the production Storybook markup at 744 × 440 and the actual
+Chrome toolbar popup after reloading the unpacked 0.4.3 build. In Chrome, a new
+`QA Refactor 2026-09-15` profile was created, renamed, scoped to `localhost`, given
+an enabled request header, and changed from the safe default Site rule to a
+validated `localhost` rule. Search filtering, autosave, Apply, row rendering and
+the off-state status all remained intact. The profile was deliberately left off,
+so no host permission was granted and no real request was modified. Automated
+popup-to-storage-to-background coverage remains the rule-application evidence for
+this refactor. Local visual evidence is ignored under `.local/qa/`.

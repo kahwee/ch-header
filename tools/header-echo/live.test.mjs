@@ -32,7 +32,7 @@ for (const origin of origins) {
   })
   test(`${origin}: CORS only allows its peer, not the main site or lookalikes`, async () => {
     for (const caller of [peer, 'https://kahwee.com', 'https://headers.kahwee.com.evil.example']) {
-      const response = await get(origin + '/headers/match', { headers: { Origin: caller } })
+      const response = await get(`${origin}/headers/match`, { headers: { Origin: caller } })
       assert.equal(response.status, 200)
       assert.equal(
         response.headers.get('Access-Control-Allow-Origin'),
@@ -42,10 +42,10 @@ for (const origin of origins) {
     }
   })
   test(`${origin}: fixed redirect and peer configuration`, async () => {
-    const redirect = await get(origin + '/redirect?next=https://example.com')
+    const redirect = await get(`${origin}/redirect?next=https://example.com`)
     assert.equal(redirect.status, 302)
     assert.equal(redirect.headers.get('Location'), '/headers/other')
-    const config = await get(origin + '/config')
+    const config = await get(`${origin}/config`)
     assert.equal(config.status, 200)
     assert.deepEqual(await config.json(), { peer })
   })

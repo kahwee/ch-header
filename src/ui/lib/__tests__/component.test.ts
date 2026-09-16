@@ -243,6 +243,15 @@ describe('Component Base Class', () => {
       expect(el?.getAttribute('data-new-attr')).toBe('value')
       expect(el?.querySelector('h1')?.textContent).toBe('Mixed Content')
     })
+
+    it('should remove root attributes that are absent from the new render', () => {
+      component['updateContent']('<div class="test-component" aria-busy="true"></div>')
+      component['updateContent']('<div class="test-component"></div>')
+
+      const el = component.getElement()
+      expect(el?.hasAttribute('aria-busy')).toBe(false)
+      expect(el?.getAttribute('data-component')).toBe('test-1')
+    })
   })
 
   describe('unmounting and cleanup', () => {

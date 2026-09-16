@@ -1,51 +1,36 @@
-/**
- * PopupController - Centralized event handling and business logic
- * Extracts messy event handlers from popup.ts into a testable controller
- */
+/** Mutates popup state through small, UI-independent commands. */
 
-import {
-  isResourceType,
-  type Profile,
-  type ResourceType,
-  STORAGE_KEYS,
-  type State,
-} from '../../lib/types'
+import { type HeaderOp, isResourceType, type Profile, type State } from '../../lib/types'
 
-const K = STORAGE_KEYS
+export interface CommitOptions {
+  activeProfileId?: string | null
+  listOnly?: boolean
+}
+
+export interface PopupControllerCallbacks {
+  commit: (options?: CommitOptions) => void
+  renderList: () => void
+  select: (id: string | null) => void
+}
 
 export class PopupController {
   private deleted: { profile: Profile; index: number } | null = null
 
   constructor(
     private state: State,
-    private callbacks: {
-      renderList: () => void
-      renderHeaders: () => void
-      renderMatchers: () => void
-      select: (id: string | null) => void
-      saveProfiles: () => void
-      syncAndRender: (opts?: { listOnly?: boolean }) => void
-    }
+    private callbacks: PopupControllerCallbacks
   ) {}
 
-  /**
-   * Guard utility: ensures current profile exists before executing callback
-   * Returns silently if no current profile
-   */
   private withCurrentProfile<T>(cb: (p: Profile) => T): T | undefined {
     const p = this.state.current
     if (!p) return
     return cb(p)
   }
 
-  /**
-   * Get the appropriate header array (request or response)
-   */
   private getHeaderArray(isRequest: boolean): Profile['requestHeaders'] {
     const p = this.state.current!
     return isRequest ? p.requestHeaders : p.responseHeaders
   }
-
   /**
    * Handle profile list item click
    */
@@ -68,7 +53,7 @@ export class PopupController {
       responseHeaders: [],
     }
     this.state.profiles.unshift(newProfile)
-    this.callbacks.syncAndRender()
+    this.callbacks.commit()
     this.callbacks.select(newProfile.id)
   }
 
@@ -79,7 +64,7 @@ export class PopupController {
     this.withCurrentProfile(() => {
       const arr = this.getHeaderArray(isRequest)
       arr.push({ id: crypto.randomUUID(), header: '', value: '' })
-      this.callbacks.syncAndRender()
+      this.callbacks.commit()
     })
   }
 
@@ -90,7 +75,7 @@ export class PopupController {
     this.withCurrentProfile(() => {
       const arr = this.getHeaderArray(isRequest)
       arr.sort((a, b) => a.header.localeCompare(b.header))
-      this.callbacks.syncAndRender()
+      this.callbacks.commit()
     })
   }
 
@@ -101,7 +86,7 @@ export class PopupController {
     this.withCurrentProfile((p) => {
       const key = isRequest ? 'requestHeaders' : 'responseHeaders'
       p[key] = []
-      this.callbacks.syncAndRender()
+      this.callbacks.commit()
     })
   }
 
@@ -114,7 +99,7 @@ export class PopupController {
       const idx = arr.findIndex((x) => x.id === headerId)
       if (idx !== -1) {
         arr.splice(idx, 1)
-        this.callbacks.syncAndRender()
+        this.callbacks.commit()
       }
     })
   }
@@ -129,7 +114,7 @@ export class PopupController {
         urlFilter: '||example.invalid^',
         resourceTypes: [],
       })
-      this.callbacks.syncAndRender()
+      this.callbacks.commit()
     })
   }
 
@@ -141,8 +126,22 @@ export class PopupController {
       const idx = p.matchers.findIndex((x) => x.id === matcherId)
       if (idx !== -1) {
         p.matchers.splice(idx, 1)
-        this.callbacks.syncAndRender()
+        this.callbacks.commit()
       }
+    })
+  }
+
+  onSortMatchers(): void {
+    this.withCurrentProfile((profile) => {
+      profile.matchers.sort((a, b) => a.urlFilter.localeCompare(b.urlFilter))
+      this.callbacks.commit()
+    })
+  }
+
+  onClearMatchers(): void {
+    this.withCurrentProfile((profile) => {
+      profile.matchers = []
+      this.callbacks.commit()
     })
   }
 
@@ -155,7 +154,7 @@ export class PopupController {
     const copy = this.deepCloneProfile(src)
     copy.name = `${src.name} (copy)`
     this.state.profiles.unshift(copy)
-    this.callbacks.syncAndRender()
+    this.callbacks.commit()
     this.callbacks.select(copy.id)
   }
 
@@ -166,11 +165,10 @@ export class PopupController {
     this.state.profiles.splice(index, 1)
     if (this.state.activeId === id) {
       this.state.activeId = null
-      chrome.storage.local.set({ [K.ACTIVE_PROFILE_ID]: null })
     }
     if (this.state.current?.id === id)
       this.state.current = this.state.profiles[index] ?? this.state.profiles[index - 1] ?? null
-    this.callbacks.syncAndRender()
+    this.callbacks.commit({ ...(this.state.activeId === null ? { activeProfileId: null } : {}) })
     return true
   }
 
@@ -180,13 +178,13 @@ export class PopupController {
     profile.enabled = false
     this.state.profiles.splice(index, 0, profile)
     this.deleted = null
-    this.callbacks.syncAndRender()
+    this.callbacks.commit()
     this.callbacks.select(profile.id)
   }
 
   onImportProfiles(profiles: Profile[]): void {
     this.state.profiles.unshift(...profiles.map((p) => ({ ...p, enabled: false })))
-    this.callbacks.syncAndRender()
+    this.callbacks.commit()
     this.callbacks.select(profiles[0]?.id ?? null)
   }
 
@@ -215,7 +213,7 @@ export class PopupController {
   onProfileNameChange(value: string): void {
     this.withCurrentProfile((p) => {
       p.name = value
-      this.callbacks.syncAndRender({ listOnly: true })
+      this.callbacks.commit({ listOnly: true })
     })
   }
 
@@ -225,7 +223,7 @@ export class PopupController {
   onProfileColorChange(value: string): void {
     this.withCurrentProfile((p) => {
       p.color = value
-      this.callbacks.syncAndRender({ listOnly: true })
+      this.callbacks.commit({ listOnly: true })
     })
   }
 
@@ -235,17 +233,7 @@ export class PopupController {
   onProfileNotesChange(value: string): void {
     this.withCurrentProfile((p) => {
       p.notes = value
-      this.callbacks.syncAndRender({ listOnly: true })
-    })
-  }
-
-  /**
-   * Handle profile enabled checkbox change
-   */
-  onProfileEnabledChange(checked: boolean): void {
-    this.withCurrentProfile((p) => {
-      p.enabled = checked
-      this.setActiveProfile(p.id, checked)
+      this.callbacks.commit({ listOnly: true })
     })
   }
 
@@ -269,7 +257,7 @@ export class PopupController {
         }
       }
 
-      this.callbacks.syncAndRender({ listOnly: true })
+      this.callbacks.commit({ listOnly: true })
     })
   }
 
@@ -295,7 +283,7 @@ export class PopupController {
         h.enabled = value as boolean
       }
 
-      this.callbacks.syncAndRender({ listOnly: true })
+      this.callbacks.commit({ listOnly: true })
     })
   }
 
@@ -314,68 +302,11 @@ export class PopupController {
   /**
    * Import headers from JSON
    */
-  onImportHeaders(data: unknown): void {
+  onImportHeaders(headers: HeaderOp[]): void {
     this.withCurrentProfile((p) => {
-      try {
-        const headers = Array.isArray(data) ? data : [data]
-        const importedHeaders = headers.filter(
-          (header): header is Record<string, unknown> =>
-            !!header && typeof header === 'object' && 'header' in header && 'value' in header
-        )
-
-        if (importedHeaders.length === 0) {
-          alert('No valid headers found in the imported file.')
-          return
-        }
-
-        // Add imported headers to request headers
-        p.requestHeaders.push(
-          ...importedHeaders.map((h) => ({
-            id: crypto.randomUUID(),
-            header: typeof h.header === 'string' ? h.header : '',
-            value: typeof h.value === 'string' ? h.value : '',
-            enabled: h.enabled !== false,
-          }))
-        )
-
-        this.callbacks.syncAndRender()
-        alert(`Imported ${importedHeaders.length} header(s).`)
-      } catch (err) {
-        console.error('Failed to import headers:', err)
-        alert('Failed to import headers. Make sure the JSON is valid.')
-      }
+      p.requestHeaders.push(...headers)
+      this.callbacks.commit()
     })
-  }
-
-  /**
-   * Import entire profile from JSON
-   */
-  onImportProfile(data: unknown): void {
-    try {
-      if (!data || typeof data !== 'object') {
-        throw new Error('Invalid profile data')
-      }
-
-      const profileData = data as Record<string, unknown>
-      const newProfile: Profile = {
-        id: crypto.randomUUID(),
-        name: typeof profileData.name === 'string' ? profileData.name : 'Imported profile',
-        color: typeof profileData.color === 'string' ? profileData.color : 'blue',
-        enabled: false,
-        notes: typeof profileData.notes === 'string' ? profileData.notes : '',
-        matchers: this.validateMatchers(profileData.matchers),
-        requestHeaders: this.validateHeaders(profileData.requestHeaders),
-        responseHeaders: this.validateHeaders(profileData.responseHeaders),
-      }
-
-      this.state.profiles.unshift(newProfile)
-      this.callbacks.syncAndRender()
-      this.callbacks.select(newProfile.id)
-      alert('Profile imported successfully!')
-    } catch (err) {
-      console.error('Failed to import profile:', err)
-      alert('Failed to import profile. Make sure the JSON is valid and contains required fields.')
-    }
   }
 
   /**
@@ -397,47 +328,6 @@ export class PopupController {
   }
 
   /**
-   * Generic validation for arrays of items with ID generation
-   */
-  private validateItems<T extends { id?: unknown }>(
-    data: unknown,
-    requiredField: string,
-    transform: (item: Record<string, unknown>) => Omit<T, 'id'>
-  ): Array<T & { id: string }> {
-    if (!Array.isArray(data)) return []
-
-    return data
-      .filter(
-        (item): item is Record<string, unknown> =>
-          !!item && typeof item === 'object' && requiredField in item
-      )
-      .map((item) => ({ id: crypto.randomUUID(), ...transform(item) }) as T & { id: string })
-  }
-
-  private validateMatchers(
-    data: unknown
-  ): Array<{ id: string; urlFilter: string; resourceTypes?: ResourceType[] }> {
-    return this.validateItems(data, 'urlFilter', (matcher) => ({
-      urlFilter: typeof matcher.urlFilter === 'string' ? matcher.urlFilter : '*',
-      resourceTypes: Array.isArray(matcher.resourceTypes)
-        ? matcher.resourceTypes.filter(
-            (type): type is ResourceType => typeof type === 'string' && isResourceType(type)
-          )
-        : [],
-    }))
-  }
-
-  private validateHeaders(
-    data: unknown
-  ): Array<{ id: string; header: string; value: string; enabled?: boolean }> {
-    return this.validateItems(data, 'header', (header) => ({
-      header: typeof header.header === 'string' ? header.header : '',
-      value: typeof header.value === 'string' ? header.value : '',
-      enabled: header.enabled !== false,
-    }))
-  }
-
-  /**
    * Set active profile (helper)
    */
   private setActiveProfile(id: string, enabled: boolean): void {
@@ -448,18 +338,6 @@ export class PopupController {
     }))
 
     this.state.current = this.state.profiles.find((p) => p.id === this.state.current?.id) ?? null
-    this.callbacks.renderList()
-    this.callbacks.select(this.state.current?.id ?? null)
-    chrome.storage.local.set(
-      {
-        [K.ACTIVE_PROFILE_ID]: id,
-        [K.PROFILES]: this.state.profiles,
-      },
-      () => {
-        if (chrome.runtime.lastError) {
-          console.error('Failed to save active profile:', chrome.runtime.lastError.message)
-        }
-      }
-    )
+    this.callbacks.commit({ activeProfileId: id })
   }
 }

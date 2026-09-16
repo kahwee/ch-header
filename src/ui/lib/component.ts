@@ -104,7 +104,11 @@ export abstract class Component {
     })
     this.listeners = []
 
-    // Copy attributes from new element (preserve data attributes, classes)
+    // Synchronize root attributes without dropping the mount identity.
+    for (const attribute of Array.from(this.el.attributes)) {
+      if (attribute.name !== 'data-component' && !newEl.hasAttribute(attribute.name))
+        this.el.removeAttribute(attribute.name)
+    }
     Array.from(newEl.attributes).forEach((attr) => {
       this.el?.setAttribute(attr.name, attr.value)
     })

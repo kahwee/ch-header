@@ -34,6 +34,20 @@ function headers(value: unknown, label: string): HeaderOp[] {
   })
 }
 
+/** Parse a header-only JSON file through the same validation used by profile imports. */
+export function parseHeadersJSON(text: string): HeaderOp[] {
+  if (text.length > 1_000_000) throw new Error('Choose a JSON file smaller than 1 MB.')
+  let data: unknown
+  try {
+    data = JSON.parse(text)
+  } catch {
+    throw new Error('Invalid JSON. Check commas, quotes and brackets.')
+  }
+  const parsed = headers(Array.isArray(data) ? data : [data], 'Request headers')
+  if (!parsed.length) throw new Error('Add at least one header.')
+  return parsed
+}
+
 function matchers(value: unknown): Matcher[] {
   return array(value, 'Matchers').map((item, index) => {
     if (!object(item) || typeof item.urlFilter !== 'string')

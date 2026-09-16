@@ -1,28 +1,20 @@
-/**
- * Tests for PopupController refactoring
- * Tests guard utilities, deep cloning, and validation consolidation
- */
-
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import type { Profile, State } from '../../../lib/types'
 import { PopupController } from '../controller'
 
-describe('PopupController - Refactored Methods', () => {
+describe('PopupController', () => {
   let state: State
   let controller: PopupController
   let callbacks: ReturnType<typeof createMockCallbacks>
 
   function createMockCallbacks() {
     return {
+      commit: vi.fn(),
       renderList: vi.fn(),
-      renderHeaders: vi.fn(),
-      renderMatchers: vi.fn(),
       select: vi.fn((id: string | null) => {
         // Mock the select callback to actually update state.current
         state.current = id ? state.profiles.find((p) => p.id === id) || null : null
       }),
-      saveProfiles: vi.fn(),
-      syncAndRender: vi.fn(),
     }
   }
 
@@ -74,7 +66,7 @@ describe('PopupController - Refactored Methods', () => {
       controller.onAddHeader(true)
 
       // Callbacks should not be called
-      expect(callbacks.syncAndRender).not.toHaveBeenCalled()
+      expect(callbacks.commit).not.toHaveBeenCalled()
     })
 
     it('should call callback if current profile exists', () => {
@@ -82,7 +74,7 @@ describe('PopupController - Refactored Methods', () => {
 
       controller.onAddHeader(true)
 
-      expect(callbacks.syncAndRender).toHaveBeenCalledOnce()
+      expect(callbacks.commit).toHaveBeenCalledOnce()
     })
 
     it('should preserve state changes in callback', () => {
@@ -131,91 +123,6 @@ describe('PopupController - Refactored Methods', () => {
         expect(h.header).toBe(original.requestHeaders[i].header)
         expect(h.value).toBe(original.requestHeaders[i].value)
       })
-    })
-  })
-
-  describe('Validation Consolidation', () => {
-    it('should validate matchers correctly', () => {
-      const data = [
-        { urlFilter: 'example.com', resourceTypes: ['script'] },
-        { urlFilter: 'api.example.com' }, // Missing resourceTypes
-        null, // Invalid
-        'string', // Invalid
-      ]
-
-      controller.onImportProfile({
-        name: 'Test Import',
-        matchers: data,
-        requestHeaders: [],
-        responseHeaders: [],
-      })
-
-      expect(state.profiles.length).toBe(2)
-      const imported = state.profiles[0]
-
-      // Should have 2 valid matchers (null and string filtered)
-      expect(imported.matchers.length).toBe(2)
-
-      // First matcher should have its values
-      expect(imported.matchers[0].urlFilter).toBe('example.com')
-      expect(imported.matchers[0].resourceTypes).toEqual(['script'])
-
-      // Second matcher should have defaults
-      expect(imported.matchers[1].urlFilter).toBe('api.example.com')
-      expect(imported.matchers[1].resourceTypes).toEqual([])
-
-      // All should have IDs
-      imported.matchers.forEach((m) => {
-        expect(m.id).toBeDefined()
-        expect(m.id).toMatch(/^[0-9a-f-]+$/)
-      })
-    })
-
-    it('should validate headers correctly', () => {
-      const data = [
-        { header: 'X-Custom', value: 'test', enabled: true },
-        { header: 'X-Another', value: 'value' }, // Missing enabled
-        null, // Invalid
-      ]
-
-      controller.onImportHeaders(data)
-
-      expect(callbacks.syncAndRender).toHaveBeenCalled()
-      expect(state.current?.requestHeaders.length).toBe(4) // 2 original + 2 new
-
-      const imported = state.current!.requestHeaders.slice(2)
-
-      // First header should have its values
-      expect(imported[0].header).toBe('X-Custom')
-      expect(imported[0].value).toBe('test')
-      expect(imported[0].enabled).toBe(true)
-
-      // Second header should use defaults
-      expect(imported[1].header).toBe('X-Another')
-      expect(imported[1].value).toBe('value')
-      expect(imported[1].enabled).toBe(true) // Default
-
-      // All should have IDs
-      imported.forEach((h) => {
-        expect(h.id).toBeDefined()
-        expect(h.id).toMatch(/^[0-9a-f-]+$/)
-      })
-    })
-
-    it('should handle empty arrays gracefully', () => {
-      controller.onImportProfile({
-        name: 'Empty Import',
-        matchers: undefined, // Undefined should become []
-        requestHeaders: null, // Null should become []
-        responseHeaders: [],
-      })
-
-      expect(state.profiles.length).toBe(2)
-      const imported = state.profiles[0]
-
-      expect(imported.matchers).toEqual([])
-      expect(imported.requestHeaders).toEqual([])
-      expect(imported.responseHeaders).toEqual([])
     })
   })
 
@@ -318,6 +225,25 @@ describe('PopupController - Refactored Methods', () => {
       const matcher = state.current.matchers.find((m) => m.id === matcherId)
       expect(matcher?.resourceTypes).toEqual(['script'])
     })
+
+    it('should sort and clear matchers', () => {
+      state.current = createTestProfile()
+      state.current.matchers.push({
+        id: 'matcher-2',
+        urlFilter: 'alpha.example',
+        resourceTypes: [],
+      })
+
+      controller.onSortMatchers()
+      expect(state.current.matchers.map((matcher) => matcher.urlFilter)).toEqual([
+        'alpha.example',
+        'localhost:3000',
+      ])
+
+      controller.onClearMatchers()
+      expect(state.current.matchers).toEqual([])
+      expect(callbacks.commit).toHaveBeenCalledTimes(2)
+    })
   })
 
   describe('Profile Selection', () => {
@@ -397,32 +323,21 @@ describe('PopupController - Refactored Methods', () => {
       controller.onProfileNameChange('New Name')
 
       expect(state.current?.name).toBe('New Name')
-      expect(callbacks.syncAndRender).toHaveBeenCalled()
+      expect(callbacks.commit).toHaveBeenCalled()
     })
 
     it('should change profile color', () => {
       controller.onProfileColorChange('red')
 
       expect(state.current!.color).toBe('red')
-      expect(callbacks.syncAndRender).toHaveBeenCalled()
+      expect(callbacks.commit).toHaveBeenCalled()
     })
 
     it('should change profile notes', () => {
       controller.onProfileNotesChange('Updated notes')
 
       expect(state.current?.notes).toBe('Updated notes')
-      expect(callbacks.syncAndRender).toHaveBeenCalled()
-    })
-
-    it('should toggle profile enabled state', () => {
-      const initialState = state.current?.enabled
-
-      controller.onProfileEnabledChange(!initialState)
-
-      expect(state.current?.enabled).toBe(!initialState)
-      // onProfileEnabledChange calls setActiveProfile, not syncAndRender
-      // Verify the profile is set as active
-      expect(state.activeId).toBe(state.current?.id)
+      expect(callbacks.commit).toHaveBeenCalled()
     })
   })
 
@@ -478,6 +393,17 @@ describe('PopupController - Refactored Methods', () => {
       const header = state.current?.responseHeaders.find((h) => h.id === 'res-1')
       expect(header?.value).toBe('updated')
     })
+
+    it('should append prevalidated imported headers', () => {
+      const imported = { id: 'imported', header: 'X-Imported', value: 'yes', enabled: true }
+
+      controller.onImportHeaders([imported])
+
+      expect(state.current?.requestHeaders[state.current.requestHeaders.length - 1]).toEqual(
+        imported
+      )
+      expect(callbacks.commit).toHaveBeenCalledOnce()
+    })
   })
 
   describe('Search and Filter', () => {
@@ -532,61 +458,6 @@ describe('PopupController - Refactored Methods', () => {
       controller.onSearchChange('dev')
 
       expect(callbacks.renderList).toHaveBeenCalled()
-    })
-  })
-
-  describe('Import Operations', () => {
-    beforeEach(() => {
-      state.current = createTestProfile()
-    })
-
-    it('should import headers from JSON', () => {
-      const initialCount = state.current!.requestHeaders.length
-      const importData = [{ header: 'X-Imported', value: 'imported-value' }]
-
-      controller.onImportHeaders(importData)
-
-      expect(state.current?.requestHeaders.length).toBeGreaterThan(initialCount)
-      const imported = state.current?.requestHeaders.find((h) => h.header === 'X-Imported')
-      expect(imported?.value).toBe('imported-value')
-    })
-
-    it('should handle import with invalid data', () => {
-      const initialCount = state.current?.requestHeaders.length
-
-      controller.onImportHeaders({ invalid: 'data' })
-
-      expect(state.current?.requestHeaders.length).toBe(initialCount)
-    })
-
-    it('should import full profile from JSON', () => {
-      const importData = {
-        name: 'Imported Profile',
-        color: 'green',
-        matchers: [{ urlFilter: 'example.com' }],
-        requestHeaders: [{ header: 'X-Test', value: 'test' }],
-      }
-
-      controller.onImportProfile(importData)
-
-      expect(state.current!.name).toBe('Imported Profile')
-      expect(state.current!.color).toBe('green')
-      expect(state.current!.matchers.length).toBeGreaterThan(0)
-      expect(state.current!.requestHeaders.length).toBeGreaterThan(0)
-    })
-
-    it('should handle import with invalid profile data', () => {
-      const initialProfileCount = state.profiles.length
-
-      controller.onImportProfile({ invalid: 'profile' })
-
-      // Invalid data still creates a new profile with default name and empty arrays
-      expect(state.profiles.length).toBe(initialProfileCount + 1)
-      const importedProfile = state.profiles[0]
-      expect(importedProfile.name).toBe('Imported profile') // Default name for invalid data
-      expect(importedProfile.matchers).toEqual([])
-      expect(importedProfile.requestHeaders).toEqual([])
-      expect(importedProfile.responseHeaders).toEqual([])
     })
   })
 })

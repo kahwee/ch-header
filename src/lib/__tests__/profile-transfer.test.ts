@@ -1,7 +1,7 @@
+import { describe, expect, it } from 'vitest'
 import httpsFixture from '../../../docs/examples/https-profile.json'
 import { buildRulesFromProfile } from '../dnr-rules'
-import { describe, expect, it } from 'vitest'
-import { exportProfileJSON, parseProfileJSON } from '../profile-transfer'
+import { exportProfileJSON, parseHeadersJSON, parseProfileJSON } from '../profile-transfer'
 
 const source = {
   name: 'Local API',
@@ -47,6 +47,23 @@ describe('portable profiles', () => {
   it('rejects an entire batch when a later profile is invalid', () => {
     expect(() => parseProfileJSON(JSON.stringify([source, { name: '' }]))).toThrow('Profile 2')
   })
+})
+
+describe('header-only imports', () => {
+  it('uses the same strict header validation and fresh IDs as profile imports', () => {
+    const [header] = parseHeadersJSON('{"header":"X-Demo","value":"on"}')
+    expect(header).toEqual({
+      id: expect.any(String),
+      header: 'X-Demo',
+      value: 'on',
+      enabled: true,
+    })
+  })
+
+  it.each(['[]', '{', '{"header":"Bad name","value":"x"}', '{"header":"X-Test","value":"a\\nb"}'])(
+    'rejects invalid header data: %s',
+    (json) => expect(() => parseHeadersJSON(json)).toThrow()
+  )
 })
 
 it('imports the public HTTPS fixture off with explicit demo domains and exact paths', () => {
