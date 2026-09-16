@@ -3,8 +3,8 @@
  */
 
 import { parseAccessSites } from './site-access'
+import type { HeaderOp, Profile, ResourceType } from './types'
 import { validateRegexFilter } from './url-rule'
-import type { HeaderOp, Profile } from './types'
 
 /**
  * Generate deterministic numeric IDs for DNR rules from profile/matcher/header ids
@@ -17,7 +17,7 @@ export function hashToInt(s: string): number {
   for (let i = 0; i < s.length; i++) {
     const char = s.charCodeAt(i)
     hash = hash ^ char // XOR the byte
-    hash = (hash * 0x01000193) >>> 0 // Multiply by FNV prime and keep 32-bit
+    hash = Math.imul(hash, 0x01000193) >>> 0 // Multiply by FNV prime and keep 32-bit
   }
 
   // DNR rule IDs must be in range [1, 2147483647]
@@ -46,6 +46,19 @@ const DEFAULT_RESOURCE_TYPES = [
   'ping',
   'other',
 ] as const
+
+const MAX_DYNAMIC_RULE_ID = 2_147_483_647
+
+/**
+ * Preserve deterministic IDs while ensuring each matcher gets a rule. A hash
+ * collision must not silently drop a user's header rule.
+ */
+function nextAvailableRuleId(key: string, usedIds: Set<number>): number {
+  let id = hashToInt(key)
+  while (usedIds.has(id)) id = id === MAX_DYNAMIC_RULE_ID ? 1 : id + 1
+  usedIds.add(id)
+  return id
+}
 
 /**
  * Convert headers to DNR ModifyHeaderInfo
@@ -91,6 +104,7 @@ export function buildRulesFromProfile(
   if (!requestDomains.length) return []
 
   const rules: chrome.declarativeNetRequest.Rule[] = []
+  const usedRuleIds = new Set<number>()
   // No URL rules means no destinations. Removing the last rule must not widen scope.
   const matchers = profile.matchers || []
 
@@ -122,7 +136,7 @@ export function buildRulesFromProfile(
       resourceTypes: (m.resourceTypes?.length
         ? m.resourceTypes
         : Array.from(DEFAULT_RESOURCE_TYPES)
-      ).map((type) =>
+      ).map((type: ResourceType) =>
         type === 'document' ? 'main_frame' : type
       ) as chrome.declarativeNetRequest.ResourceType[],
     }
@@ -130,7 +144,7 @@ export function buildRulesFromProfile(
     const action = buildModifyHeadersAction(requestHeaders, responseHeaders)
 
     const rule: chrome.declarativeNetRequest.Rule = {
-      id: hashToInt(`${profile.id}:${m.id}:reqres`),
+      id: nextAvailableRuleId(`${profile.id}:${m.id}:reqres`, usedRuleIds),
       priority: 1,
       action,
       condition,
@@ -146,19 +160,8 @@ export function buildRulesFromProfile(
  * Validates rules and clears old rules before applying new ones
  */
 export async function applyDNRRules(rules: chrome.declarativeNetRequest.Rule[]): Promise<void> {
-  // Deduplicate rules by ID (keep first occurrence)
-  const seenIds = new Set<number>()
-  const uniqueRules = rules.filter((rule) => {
-    if (seenIds.has(rule.id)) {
-      console.warn(`ChHeader: skipping duplicate rule ID ${rule.id}`)
-      return false
-    }
-    seenIds.add(rule.id)
-    return true
-  })
-
-  // Validate for duplicate rule IDs (should not happen after dedup)
-  const ruleIds = uniqueRules.map((r) => r.id)
+  // Reject duplicate IDs rather than silently dropping one of the user's rules.
+  const ruleIds = rules.map((r) => r.id)
   const uniqueIds = new Set(ruleIds)
 
   if (uniqueIds.size !== ruleIds.length) {
@@ -167,7 +170,7 @@ export async function applyDNRRules(rules: chrome.declarativeNetRequest.Rule[]):
   }
 
   // Validate before touching live rules, including profiles arriving via imports/storage.
-  for (const rule of uniqueRules) {
+  for (const rule of rules) {
     if (rule.condition.regexFilter !== undefined) {
       await validateRegexFilter(`regex:${rule.condition.regexFilter}`)
     }
@@ -180,11 +183,11 @@ export async function applyDNRRules(rules: chrome.declarativeNetRequest.Rule[]):
   try {
     await chrome.declarativeNetRequest.updateDynamicRules({
       removeRuleIds,
-      addRules: uniqueRules,
+      addRules: rules,
     })
 
     console.log(
-      `ChHeader: applied ${uniqueRules.length} DNR rule(s), removed ${removeRuleIds.length} old rule(s)`
+      `ChHeader: applied ${rules.length} DNR rule(s), removed ${removeRuleIds.length} old rule(s)`
     )
   } catch (error) {
     console.error('ChHeader: failed to apply DNR rules:', error)

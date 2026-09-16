@@ -1,20 +1,20 @@
 import { parseAccessSites, requestSiteAccess, suggestedAccessSites } from '../../lib/site-access'
-import { setupProfileContextMenu, type ProfileAction } from './profile-context-menu'
-import { setupProfileSharing } from './profile-sharing'
-import { profileColorInk } from './profile-colors'
-import { STORAGE_KEYS, type ExtensionStorage, type Profile, type State } from '../../lib/types'
+import { type ExtensionStorage, type Profile, STORAGE_KEYS, type State } from '../../lib/types'
+import { HeaderTableComponent } from '../lib/header-table.component'
+import { MatcherTableComponent } from '../lib/matcher-table.component'
 import { PopupController } from './controller'
 import { getPopupTemplate } from './popup-template'
-import { MatcherTableComponent } from '../lib/matcher-table.component'
-import { HeaderTableComponent } from '../lib/header-table.component'
+import { profileColorInk } from './profile-colors'
+import { type ProfileAction, setupProfileContextMenu } from './profile-context-menu'
+import { setupProfileSharing } from './profile-sharing'
 import '../components/common/checkbox-element'
 import { setupDropdowns } from './dropdowns'
-import { queryPopupElements, type PopupElements } from './popup-elements'
+import { type PopupElements, queryPopupElements } from './popup-elements'
 import { renderProfileAppearance, updateColorSelection } from './profile-appearance'
 import { getProfileColor } from './profile-colors'
 import {
-  setupProfileKeyboardNavigation,
   type ProfileKeyboardNavigation,
+  setupProfileKeyboardNavigation,
 } from './profile-keyboard-navigation'
 import { renderProfileList } from './profile-list-view'
 
@@ -124,7 +124,7 @@ export async function mountPopup(document: Document = globalThis.document): Prom
       ...profile,
       color: getProfileColor(profile.color).token,
     }))
-    const activeProfileId: string | undefined = data[K.ACTIVE_PROFILE_ID]
+    const activeProfileId: string | null | undefined = data[K.ACTIVE_PROFILE_ID]
 
     state.profiles = profiles
     state.activeId = activeProfileId ?? profiles[0]?.id ?? null

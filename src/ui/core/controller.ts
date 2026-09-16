@@ -3,7 +3,13 @@
  * Extracts messy event handlers from popup.ts into a testable controller
  */
 
-import { type Profile, STORAGE_KEYS, type State } from '../../lib/types'
+import {
+  isResourceType,
+  type Profile,
+  type ResourceType,
+  STORAGE_KEYS,
+  type State,
+} from '../../lib/types'
 
 const K = STORAGE_KEYS
 
@@ -259,7 +265,7 @@ export class PopupController {
         if (!value) {
           m.resourceTypes = []
         } else {
-          m.resourceTypes = [value]
+          if (isResourceType(value)) m.resourceTypes = [value]
         }
       }
 
@@ -410,11 +416,13 @@ export class PopupController {
 
   private validateMatchers(
     data: unknown
-  ): Array<{ id: string; urlFilter: string; resourceTypes?: string[] }> {
+  ): Array<{ id: string; urlFilter: string; resourceTypes?: ResourceType[] }> {
     return this.validateItems(data, 'urlFilter', (matcher) => ({
       urlFilter: typeof matcher.urlFilter === 'string' ? matcher.urlFilter : '*',
       resourceTypes: Array.isArray(matcher.resourceTypes)
-        ? matcher.resourceTypes.filter((type): type is string => typeof type === 'string')
+        ? matcher.resourceTypes.filter(
+            (type): type is ResourceType => typeof type === 'string' && isResourceType(type)
+          )
         : [],
     }))
   }

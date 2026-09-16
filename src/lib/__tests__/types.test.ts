@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import type { HeaderOp, Matcher, Profile } from '../types'
-import { STORAGE_KEYS } from '../types'
+import { isResourceType, STORAGE_KEYS } from '../types'
 
 describe('Types', () => {
   describe('STORAGE_KEYS', () => {
@@ -11,6 +11,12 @@ describe('Types', () => {
   })
 
   describe('Type definitions', () => {
+    it('recognizes supported resource types and the legacy document alias', () => {
+      expect(isResourceType('xmlhttprequest')).toBe(true)
+      expect(isResourceType('document')).toBe(true)
+      expect(isResourceType('invalid')).toBe(false)
+    })
+
     it('should allow creating a valid Profile', () => {
       const profile: Profile = {
         id: 'test-id',

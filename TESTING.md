@@ -505,3 +505,25 @@ and recommends reloading both test pages after access changes. Verified that fai
 message in Chrome. Revocation showed no grants and all profiles off; the reachable
 peer returned absent/original on all paths. Main-domain browser checks were blocked
 at that point. Restored the saved fixture's two-domain list, off, with demo values.
+
+### Rule-builder maintenance — September 15, 2026
+
+Removed an unused pre-RE2 matcher module and unused storage mutation helpers.
+Resource types now share one runtime/type contract, while the saved `document`
+alias remains normalized to `main_frame`. DNR IDs now use correct 32-bit FNV-1a
+arithmetic, collision probing keeps every generated matcher rule, and duplicate
+IDs passed to the low-level updater fail instead of silently dropping a rule.
+
+Automated: the local Vitest suite passed (25 files, 432 tests), TypeScript passed,
+and Biome formatting passed. The host only has pnpm 12.4.1 rather than the pinned
+11.25.0, so the pnpm scripts could not be invoked directly. No Chrome toolbar
+verification was run for this maintenance-only change; the last real Chrome matrix
+above remains the relevant DNR acceptance evidence.
+
+### Package-manager pin — September 15, 2026
+
+Updated the repository pin and lockfile-managed pnpm dependency from 11.25.0 to
+12.4.2, the current npm latest release at the time of the update. With pnpm 12.4.2,
+`pnpm install --frozen-lockfile` passed its supply-chain policy verification;
+`pnpm test:fast` passed 30 tests and `pnpm typecheck` passed. No runtime extension
+behavior changed, so no Chrome toolbar check was needed.

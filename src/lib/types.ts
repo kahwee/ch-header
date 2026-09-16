@@ -2,10 +2,36 @@
  * Shared TypeScript types for ChHeader extension
  */
 
+/** Chrome resource types supported by this extension. `document` is retained to read old profiles. */
+export const RESOURCE_TYPES = [
+  'main_frame',
+  'sub_frame',
+  'stylesheet',
+  'script',
+  'image',
+  'font',
+  'object',
+  'xmlhttprequest',
+  'ping',
+  'csp_report',
+  'media',
+  'websocket',
+  'webtransport',
+  'webbundle',
+  'other',
+  'document',
+] as const
+
+export type ResourceType = (typeof RESOURCE_TYPES)[number]
+
+export function isResourceType(value: string): value is ResourceType {
+  return (RESOURCE_TYPES as readonly string[]).includes(value)
+}
+
 export interface Matcher {
   id: string
   urlFilter: string
-  resourceTypes?: string[]
+  resourceTypes?: ResourceType[]
 }
 
 export interface HeaderOp {
@@ -36,7 +62,7 @@ export const STORAGE_KEYS = {
 
 export interface ExtensionStorage {
   profiles: Profile[]
-  activeProfileId: string
+  activeProfileId: string | null
 }
 
 export interface State {

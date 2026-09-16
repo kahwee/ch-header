@@ -16,6 +16,10 @@ describe('DNR Rules', () => {
       expect(id1).toBe(id2)
     })
 
+    it('uses 32-bit multiplication for FNV-1a', () => {
+      expect(hashToInt('test-profile')).toBe(471184510)
+    })
+
     it('should generate different IDs for different inputs', () => {
       const id1 = hashToInt('input-one')
       const id2 = hashToInt('input-two')

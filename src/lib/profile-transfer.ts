@@ -1,23 +1,12 @@
 import { parseAccessSites } from './site-access'
-import type { HeaderOp, Matcher, Profile } from './types'
+import {
+  type HeaderOp,
+  isResourceType,
+  type Matcher,
+  type Profile,
+  type ResourceType,
+} from './types'
 
-const RESOURCE_TYPES = new Set([
-  'main_frame',
-  'sub_frame',
-  'stylesheet',
-  'script',
-  'image',
-  'font',
-  'object',
-  'xmlhttprequest',
-  'ping',
-  'csp_report',
-  'media',
-  'websocket',
-  'webtransport',
-  'webbundle',
-  'other',
-])
 const sensitiveHeader = /authorization|cookie|token|secret|api[-_]?key/i
 const object = (value: unknown): value is Record<string, unknown> =>
   !!value && typeof value === 'object' && !Array.isArray(value)
@@ -52,12 +41,12 @@ function matchers(value: unknown): Matcher[] {
     const types = array(item.resourceTypes, 'Resource types').map((type) =>
       type === 'document' ? 'main_frame' : type
     )
-    if (types.some((type) => typeof type !== 'string' || !RESOURCE_TYPES.has(type)))
+    if (types.some((type) => typeof type !== 'string' || !isResourceType(type)))
       throw new Error(`Matcher ${index + 1}: unknown request type.`)
     return {
       id: crypto.randomUUID(),
       urlFilter: item.urlFilter || '*',
-      resourceTypes: [...new Set(types as string[])],
+      resourceTypes: [...new Set(types as ResourceType[])],
     }
   })
 }

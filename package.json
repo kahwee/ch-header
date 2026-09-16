@@ -8,7 +8,7 @@
   "devEngines": {
     "packageManager": {
       "name": "pnpm",
-      "version": "11.25.0",
+      "version": "12.4.2",
       "onFail": "error"
     }
   },
@@ -58,5 +58,5 @@
   "optionalDependencies": {
     "@rollup/rollup-linux-x64-gnu": "^4.63.1"
   },
-  "packageManager": "pnpm@11.25.0"
+  "packageManager": "pnpm@12.4.2"
 }
