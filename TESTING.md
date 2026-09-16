@@ -591,3 +591,5 @@ the compact layout in both access states without changing keyboard or status tex
 
 `pnpm media:video` builds a captioned 1080p walkthrough, subtitle file, upload copy
 and contact sheet from those curated images under ignored `.local/qa/video-latest/`.
+The final 0.4.4 walkthrough passed YouTube's initial copyright and Community
+Guidelines checks and is [published here](https://www.youtube.com/watch?v=HNDEEoG1raU).

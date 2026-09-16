@@ -2,7 +2,7 @@
 <h1 align="center">ChHeader</h1>
 <p align="center">By <a href="https://kahwee.com">KahWee Teng</a> · No ads. Local profiles. Open source.</p>
 <p align="center">Edit HTTP request and response headers in Chrome.</p>
-<p align="center"><a href="https://github.com/kahwee/ch-header/releases/latest">Download for Chrome</a> · <a href="https://www.youtube.com/watch?v=vmv77KYgOAo">Watch the demo</a> · <a href="https://kahwee.com/2026/why-i-built-chheader/">Why I built it</a></p>
+<p align="center"><a href="https://github.com/kahwee/ch-header/releases/latest">Download for Chrome</a> · <a href="https://www.youtube.com/watch?v=HNDEEoG1raU">Watch the demo</a> · <a href="https://kahwee.com/2026/why-i-built-chheader/">Why I built it</a></p>
 
 I’m [KahWee Teng](https://kahwee.com). I built ChHeader because ModHeader’s
 [ad injection](https://news.ycombinator.com/item?id=37772829) put me off.
