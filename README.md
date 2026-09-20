@@ -98,4 +98,5 @@ pnpm check          # format, lint, types, tests, extension ZIP and Storybook
 pnpm dev:extension  # load dist/ unpacked; reload Chrome after edits
 ```
 
-[Contributor guidance](AGENTS.md) · [MIT license](LICENSE) · Copyright 2026 KahWee Teng.
+[Development and architecture](CONTRIBUTING.md) · [Agent guidance](AGENTS.md) ·
+[MIT license](LICENSE) · Copyright 2026 KahWee Teng.

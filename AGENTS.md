@@ -2,6 +2,36 @@
 
 ChHeader is a local-profile HTTP header editor for Chrome Manifest V3.
 
+## Start here
+
+- Read [CONTRIBUTING.md](CONTRIBUTING.md) for the architecture map and development
+  loop. Read the relevant cases in [TESTING.md](TESTING.md) before changing behavior.
+- `.codex/config.toml` selects GPT-6 Astra for this trusted project. These
+  instructions describe the work; model selection belongs in Codex configuration.
+- Trace the affected production flow and its existing tests before editing. For a
+  bug, identify a concrete trigger and expected result; add a regression test that
+  fails for that bug when a behavior test is appropriate.
+- Complete one coherent change at a time. Keep refactoring separate from behavior
+  changes where practical so failures have an identifiable cause.
+
+## Module boundaries
+
+- `src/lib/` owns profile contracts, parsing, URL rules and Chrome rule/access
+  helpers. It must not import popup components or DOM presentation code.
+- `src/background.ts` owns service-worker events and serialized rule application.
+  `src/ui/core/popup-app.ts` wires the popup; keep feature logic in the existing
+  controller, view, event, store, access and sharing modules.
+- Keep state commands in `controller.ts`, rendering in `popup-view.ts`, and queued
+  popup writes in `popup-store.ts`. Pass narrow callbacks across boundaries rather
+  than importing the composition root or adding global mutable state.
+- `src/ui/components/` owns reusable markup; `src/ui/lib/` owns mounted component
+  behavior and lifecycle. Reuse renderers in popup templates and Storybook.
+- Extract a module when it owns a distinct responsibility or removes real
+  duplication. Avoid arbitrary file-size targets, speculative abstractions and
+  broad directory renames. Search imports, stories, scripts and docs before removal.
+- Preserve async ordering, failure recovery, focused inputs and listener cleanup
+  during refactors. Test observable results rather than private method structure.
+
 ## Work to the requested outcome
 
 - Treat action requests as instructions to implement and verify. Resolve routine
@@ -43,6 +73,13 @@ ChHeader is a local-profile HTTP header editor for Chrome Manifest V3.
   disable them afterward and restore temporary system settings. Use demo data.
 - Record concise actual results and limits in `TESTING.md`. Say which checks were
   automated, checked in Chrome, or unavailable. Keep README short.
+- Mock Chrome at `src/test/chrome-harness.ts` for workflows; mount production UI
+  with `src/test/popup-harness.ts`. Await `chrome.settle()` instead of sleeps. Add
+  targeted unit cases for parser boundaries and failures without duplicating whole
+  workflows. `test:fast` is a smoke set, not the complete regression suite.
+- Before finishing, inspect the diff for accidental API/storage changes, stale
+  references and generated files. Report actual checks and unresolved failures;
+  never describe a mock or Storybook result as an actual Chrome check.
 
 ## Local artifacts and Git
 

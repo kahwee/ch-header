@@ -1,0 +1,2 @@
+# Repository default for trusted Codex projects; explicit session choices can override it.
+model = "gpt-6-astra"
