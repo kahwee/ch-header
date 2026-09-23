@@ -2,7 +2,7 @@
 <h1 align="center">ChHeader</h1>
 <p align="center">By <a href="https://kahwee.com">KahWee Teng</a> · No ads. Local profiles. Open source.</p>
 <p align="center">Edit HTTP request and response headers in Chrome.</p>
-<p align="center"><a href="https://github.com/kahwee/ch-header/releases/latest">Download for Chrome</a> · <a href="https://www.youtube.com/watch?v=HNDEEoG1raU">Watch the demo</a> · <a href="https://kahwee.com/2026/why-i-built-chheader/">Why I built it</a></p>
+<p align="center"><a href="https://chromewebstore.google.com/detail/chheader/okmjidkmnlobbppegojfcedhaakadgig">Install from Chrome Web Store</a> · <a href="https://www.youtube.com/watch?v=Im4QWpc7FiQ">Watch the demo</a> · <a href="https://kahwee.com/2026/why-i-built-chheader/">Why I built it</a></p>
 
 I’m [KahWee Teng](https://kahwee.com). I built ChHeader because ModHeader’s
 [ad injection](https://news.ycombinator.com/item?id=37772829) put me off.
@@ -13,10 +13,15 @@ and [header rules](src/lib/dnr-rules.ts) are welcome.
 
 ## Install
 
-Download and extract the ZIP from [GitHub Releases](https://github.com/kahwee/ch-header/releases/latest).
+Install [ChHeader from the Chrome Web Store](https://chromewebstore.google.com/detail/chheader/okmjidkmnlobbppegojfcedhaakadgig),
+then pin it to Chrome's toolbar. Store installations receive updates through Chrome.
+As checked on September 21, 2026, the public Store listing serves 0.4.2; the latest
+GitHub release is 0.4.4.
+
+For manual installation, download and extract the ZIP from [GitHub Releases](https://github.com/kahwee/ch-header/releases/latest).
 In `chrome://extensions/`, enable **Developer mode**, choose **Load unpacked**,
 select the extracted folder, then pin ChHeader. To update, replace those files and
-click **Reload**. Version 0.4.3 is awaiting Chrome Web Store review.
+click **Reload**.
 
 This README describes main; check release notes for your installed version.
 

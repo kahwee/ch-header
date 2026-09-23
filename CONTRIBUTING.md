@@ -66,11 +66,13 @@ rather than growing a catch-all utility module.
 
 ### Where to improve next
 
-When working on navigation, add focused coverage for `profile-keyboard-navigation.ts`
-using real list elements: filtered results, empty lists, arrow movement and selection.
-When working on sharing, cover clipboard rejection and file-read failures through
-the real dialog. These areas had lower coverage in the September 20 check; use
-coverage to find missing scenarios, not as a target for assertion counts.
+Keyboard navigation is covered through the production popup in
+`profile-keyboard-navigation.test.ts`, including filtering, empty results, arrow
+movement, shortcuts and selection without activation. Extend those scenarios when
+changing navigation. When working on sharing, cover clipboard rejection and
+file-read failures through the real dialog. Sharing had lower coverage in the
+September 20 check; use coverage to find missing scenarios, not as a target for
+assertion counts.
 
 If profile commands grow substantially, extract cohesive operations from
 `controller.ts` behind its existing callbacks and prove the same workflow outcomes.

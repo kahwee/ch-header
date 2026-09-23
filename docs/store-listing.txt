@@ -1,29 +1,37 @@
-ChHeader helps developers test APIs and websites by changing HTTP request and response headers directly in Chrome.
+Edit HTTP request and response headers in Chrome for API testing, local development, and debugging. ChHeader keeps reusable profiles on your device, with no ads, analytics, or account required.
 
-I’m KahWee Teng. I built ChHeader for my own work. It has no ads or analytics, and the source is available for review.
+TEST THE REQUEST YOU MEANT TO SEND
+• Add a custom request header to test a development API or trace a request.
+• Override a response header to check browser behavior on a site you control.
+• Keep separate profiles for local development, staging, and debugging.
+• Limit changes by site, URL pattern, regular expression, and request type—including documents and XHR/fetch.
 
-Organize your headers into named profiles for local development, staging, and debugging. Choose the sites, URL patterns, or request types each profile applies to, then switch it on when you need it.
+REUSABLE PROFILES, CLEAR CONTROLS
+Give profiles names, colors, and notes. Edit request and response headers together, switch individual headers on or off, and see which profile is active. Only one profile runs at a time; selecting a profile for editing does not enable it.
 
-• Edit request and response headers in one compact popup.
-• Match sites, wildcard URL patterns, or regular expressions.
-• Filter by request type, including documents and XHR/fetch.
-• Keep separate profiles with names, colors, and notes.
-• Import and export profiles as JSON. Imported profiles start off.
-• See which profile is on, independently of the profile you are editing.
-• Work in light or dark mode, following your system appearance.
+Import and export JSON to reuse a setup. Imports receive new IDs and start off. Exports hide common credential header values by default; review custom values, notes, and URLs before sharing. Light and dark appearances follow your system setting.
 
-GET STARTED
-Create a profile, add a header, choose a URL rule and allowed sites, then turn the profile on to approve access. If Chrome closes the popup, reopen it and enable the profile again. Reload the target page or make a new request to test the result. Only one profile is enabled at a time. A profile with no URL rules changes no requests.
+TRY IT WITH DEMO DATA
+1. Create a profile and save the hostname you want to test under Website access.
+2. Choose Approve sites to grant Chrome access, then reopen the popup if Chrome closes it.
+3. Add your header and a URL rule, then turn the profile on.
+4. Reload the page or send a new request. Switch the profile off to compare.
 
-LOCAL STORAGE AND SHARING
-Profiles are stored locally in your browser. No ChHeader account is required, and the extension includes no analytics or advertising. Header values are sent to destinations matched by your enabled rules, so review their scope before enabling a profile.
+A profile without URL rules changes no requests. Try the public header tester at https://headers.kahwee.com with demo values only, or use the localhost fixture in the source repository.
 
-Exports hide common credential header values by default. This is a convenience, not a guarantee that an export contains no secrets; review JSON before sharing it.
+YOUR SITES, YOUR SETTINGS
+Profiles are stored in Chrome's local extension storage, not Chrome Sync. ChHeader has no developer-operated collection service, advertising, analytics, or remotely loaded code. Request header values are sent to the destinations matched by your enabled rules. Local storage is not encrypted by ChHeader and is not a password manager.
 
-PERMISSIONS
-ChHeader uses Chrome’s declarativeNetRequest API to apply your header rules and local storage to save your profiles. Website access is optional and requested only for a profile’s allowed sites, including local development servers. Domain grants include subdomains, HTTP/HTTPS and all ports. Regex and other URL rules stay within that profile’s site list. The popup shows granted sites and can revoke all website access. Updates reset grants and turn profiles off while preserving saved profiles.
+Website access is optional. ChHeader asks for the sites you choose; it does not request all-site access when you install it. Domain grants cover subdomains, HTTP/HTTPS, and all ports. URL rules narrow which requests change. For a page calling an API on another hostname, approve both the page and API hosts, then target the API with a URL rule.
 
-Source code and documentation: https://github.com/kahwee/ch-header
+Turning a profile off stops header changes but keeps its site grants. Use Revoke all website access to remove grants and turn profiles off. Extension updates reset grants and turn profiles off while preserving your saved profiles.
+
+WHY THESE PERMISSIONS?
+• storage: save profiles and settings locally.
+• declarativeNetRequestWithHostAccess: let Chrome apply your header rules to approved sites.
+• Optional HTTP/HTTPS website access: support the development servers and APIs you choose.
+
+Built by KahWee Teng. Open source and available for inspection.
+Source and setup: https://github.com/kahwee/ch-header
+Privacy: https://github.com/kahwee/ch-header/blob/main/PRIVACY.md
 Support: https://github.com/kahwee/ch-header/issues
-
-Made by KahWee Teng: https://kahwee.com

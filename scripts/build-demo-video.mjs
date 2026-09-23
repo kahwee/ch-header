@@ -26,48 +26,49 @@ function timestamp(seconds) {
   return `00:${String(minutes).padStart(2, '0')}:${String(remaining).padStart(2, '0')},000`
 }
 
+const storeUrl =
+  'https://chromewebstore.google.com/detail/chheader/okmjidkmnlobbppegojfcedhaakadgig'
 const scenes = [
   {
-    source: join(root, 'public', 'icons', 'gecko.png'),
-    title: 'ChHeader',
-    caption: 'Scoped HTTP header editing without ads.',
-    duration: 5,
-    mascot: true,
-  },
-  {
-    source: join(screenshots, 'access-needed.jpg'),
-    title: '1 / Choose a narrow website scope',
-    caption: 'The profile cannot run until Chrome access is approved.',
-    duration: 7,
-  },
-  {
-    source: join(screenshots, 'access-approved.jpg'),
-    title: '2 / Approve access before enabling',
-    caption: 'Approval and activation are separate decisions.',
-    duration: 7,
-  },
-  {
     source: join(screenshots, 'popup.jpg'),
-    title: '3 / Turn on the profile',
-    caption: 'Only saved rules for approved destinations become active.',
-    duration: 7,
+    title: 'Your test headers. Your chosen sites.',
+    caption: 'Edit HTTP headers in Chrome. No ads, analytics, or account.',
+    duration: 5,
   },
   {
     source: join(screenshots, 'header-check.jpg'),
-    title: '4 / Verify a real Chrome request',
-    caption: 'The localhost server received X-ChHeader-Demo: hello-gecko.',
-    duration: 8,
+    title: 'See the header arrive',
+    caption: 'A real localhost request received X-ChHeader-Demo: hello-gecko.',
+    duration: 6,
+  },
+  {
+    source: join(screenshots, 'access-needed.jpg'),
+    title: '1 / Choose the site you want to test',
+    caption: 'Save a hostname, then approve Chrome website access.',
+    duration: 6,
+  },
+  {
+    source: join(screenshots, 'access-approved.jpg'),
+    title: '2 / Add headers and a matching URL rule',
+    caption: 'Approved access and an enabled profile are separate controls.',
+    duration: 6,
+  },
+  {
+    source: join(screenshots, 'popup.jpg'),
+    title: '3 / Enable, reload, and compare',
+    caption: 'Reuse named profiles for local development, staging, and debugging.',
+    duration: 6,
   },
   {
     source: join(screenshots, 'access-revoked.jpg'),
-    title: '5 / Switch off and revoke access',
-    caption: 'Cleanup leaves every profile off and removes website access.',
-    duration: 7,
+    title: 'Finish with a clean slate',
+    caption: 'Switch off to stop changes. Revoke access to remove site grants.',
+    duration: 5,
   },
   {
     source: join(root, 'public', 'icons', 'gecko.png'),
-    title: 'Use it, review it, or build your own',
-    caption: 'github.com/kahwee/ch-header',
+    title: 'ChHeader — HTTP header editor for Chrome',
+    caption: 'Install from the Chrome Web Store. Link in the description.',
     duration: 5,
     mascot: true,
   },
@@ -76,18 +77,20 @@ const scenes = [
 for (const [index, scene] of scenes.entries()) {
   const content = join(output, `content-${index}.png`)
   const frame = join(output, `frame-${index}.png`)
-  run('magick', [scene.source, '-resize', scene.mascot ? '330x330' : '1500x720>', content])
-  const geometry = scene.mascot ? '+795+270' : '+210+230'
+  run('magick', [scene.source, '-resize', scene.mascot ? '430x430' : '1500x720', content])
+  const geometry = scene.mascot ? '+0+0' : '+0+25'
   run('magick', [
     '-size',
     '1920x1080',
     'xc:#e8eef8',
     content,
     '-gravity',
-    'northwest',
+    'center',
     '-geometry',
     geometry,
     '-composite',
+    '-gravity',
+    'northwest',
     '-font',
     bold,
     '-fill',
@@ -183,9 +186,18 @@ run('magick', [
   join(output, 'contact-sheet.png'),
 ])
 
+const chapters = scenes.map((scene) => scene.title)
+let chapterStart = 0
+const chapterText = scenes
+  .map((scene, index) => {
+    const time = `${String(Math.floor(chapterStart / 60)).padStart(2, '0')}:${String(chapterStart % 60).padStart(2, '0')}`
+    chapterStart += scene.duration
+    return `${time} ${chapters[index]}`
+  })
+  .join('\n')
 writeFileSync(
   join(output, 'youtube-details.txt'),
-  `Title: ChHeader: scoped website access and HTTP headers\n\nDescription:\nChHeader edits request and response headers in Chrome using local profiles and explicit per-site access. This walkthrough shows the real unpacked extension and a real localhost request.\n\n00:00 ChHeader\n00:05 Choose a narrow website scope\n00:12 Approve Chrome website access\n00:19 Enable the profile\n00:26 Verify the real request\n00:34 Switch off and revoke access\n00:41 Source and downloads\n\nSource, documentation and downloads: https://github.com/kahwee/ch-header\nWhy I built it: https://kahwee.com/2026/why-i-built-chheader/\nPrivacy: https://github.com/kahwee/ch-header/blob/main/PRIVACY.md\nSupport: https://github.com/kahwee/ch-header/issues\n\nProfiles are stored locally. Header values are sent only to destinations matched by enabled profiles, so review website scope before using credentials. Demo values only; no credentials or external sites are used here.\n\nThis video uses on-screen captions and has no spoken narration.\nAudience: Not made for kids.\nVisibility: Public.\n`
+  `Title: Edit HTTP headers in Chrome with ChHeader | API testing, no ads\n\nDescription:\nInstall ChHeader: ${storeUrl}\n\nTest APIs and websites with reusable request and response header profiles. ChHeader is an open-source Chrome extension with local storage, optional website access, no ads, and no analytics.\n\nThis captioned walkthrough uses actual Chrome toolbar captures and a verified localhost request from ChHeader ${version}. It has no spoken narration. Demo values only.\n\n${chapterText}\n\nTry the public tester with demo values: https://headers.kahwee.com\nSource and setup: https://github.com/kahwee/ch-header\nPrivacy: https://github.com/kahwee/ch-header/blob/main/PRIVACY.md\nSupport: https://github.com/kahwee/ch-header/issues\n\nHeader values are sent to destinations matched by your enabled rules. Review website scope before using credentials. Local profiles are not encrypted by ChHeader.\n\nAudience: Not made for kids.\nVisibility: Public.\n`
 )
 
 console.log(`Created ${join(output, videoFilename)}`)

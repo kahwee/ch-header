@@ -32,17 +32,21 @@ export async function createPopupHarness(profiles = [localProfile()]) {
   vi.stubGlobal('chrome', chrome.api)
   await import('../background')
   const root = document
-  const originalAdd = root.addEventListener.bind(root)
   const registered: Array<() => void> = []
-  const spy = vi.spyOn(root, 'addEventListener').mockImplementation((type, listener, options) => {
-    originalAdd(type, listener, options)
-    registered.push(() => root.removeEventListener(type, listener, options))
+  const spies = [root, window].map((target: EventTarget) => {
+    const originalAdd = target.addEventListener.bind(target)
+    return vi.spyOn(target, 'addEventListener').mockImplementation((type, listener, options) => {
+      originalAdd(type, listener, options)
+      registered.push(() => target.removeEventListener(type, listener, options))
+    })
   })
   cleanups.push(() => {
     registered.forEach((remove) => {
       remove()
     })
-    spy.mockRestore()
+    spies.forEach((spy) => {
+      spy.mockRestore()
+    })
     root.body.replaceChildren()
     delete root.documentElement.dataset.dropdownsReady
   })
