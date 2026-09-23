@@ -25,10 +25,8 @@ jobs:
       - name: Validate release version
         run: node --input-type=module -e 'import p from "./package.json" with {type:"json"}; if (process.env.GITHUB_REF_NAME !== `v${p.version}`) throw new Error("Tag and package version differ")'
       - run: pnpm install --frozen-lockfile
-      - run: pnpm typecheck
-      - run: pnpm format:check
-      - run: pnpm test:run
-      - run: pnpm build:package
+      - name: Check types, formatting, tests and release builds
+        run: pnpm check
       - name: Publish versioned archive and checksum
         env:
           GH_TOKEN: ${{ github.token }}

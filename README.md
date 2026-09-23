@@ -15,15 +15,15 @@ and [header rules](src/lib/dnr-rules.ts) are welcome.
 
 Install [ChHeader from the Chrome Web Store](https://chromewebstore.google.com/detail/chheader/okmjidkmnlobbppegojfcedhaakadgig),
 then pin it to Chrome's toolbar. Store installations receive updates through Chrome.
-As checked on September 21, 2026, the public Store listing serves 0.4.2; the latest
-GitHub release is 0.4.4.
 
 For manual installation, download and extract the ZIP from [GitHub Releases](https://github.com/kahwee/ch-header/releases/latest).
 In `chrome://extensions/`, enable **Developer mode**, choose **Load unpacked**,
 select the extracted folder, then pin ChHeader. To update, replace those files and
 click **Reload**.
 
-This README describes main; check release notes for your installed version.
+This README describes `main`. Store and GitHub release timing can differ; check
+the [GitHub release notes](https://github.com/kahwee/ch-header/releases) for your
+installed version.
 
 ## See it in Chrome
 
@@ -49,7 +49,7 @@ Open the [HTTPS header tester](https://headers.kahwee.com). Import the
 2. Choose **URL pattern** and enter `|https://headers.kahwee.com/headers/match|`.
 3. Add request header `X-ChHeader-Test: hello-gecko` and response header `X-ChHeader-Response: modified`.
 4. Turn the profile **on**. If Chrome closes the popup while showing its native
-   permission prompt, reopen ChHeader and select the profile.
+   permission prompt, reopen ChHeader, select the profile, and turn it on again.
 5. Reload the test pages, then click **Run checks**. Only the matching path should change.
    Turn the profile off and run again to compare.
 
@@ -70,17 +70,16 @@ only those HTTPS API requests. Avoid approving the parent `example.com`.
   HTTP/HTTPS and all ports; URL rules narrow actual changes. Regex cannot escape
   the profile's site list. No URL rules means no changes.
 - **Off is not revoked.** Disabling a profile stops its rules. Chrome retains
-  grants, including sites removed from a profile. Use **Revoke all website access**,
+  grants, including sites removed from a profile. Use **Revoke all access**,
   then approve only what you still need. Updates also reset grants.
 - **Secrets stay your responsibility.** Local profiles have no extra encryption.
   Exports blank common credential headers; review custom values and notes.
 
-New and imported profiles start off. On main, rejected rule updates also clear old
-rules and turn profiles off; that fix is not in 0.4.2. No ads, analytics or remote code.
+New and imported profiles start off. Rejected rule updates clear old rules and
+turn profiles off. No ads, analytics or remote code.
 
 Read [permission tradeoffs and narrower setups](docs/permissions.md),
-[privacy](PRIVACY.md), and [test results](TESTING.md). Browser 403/client blocks made
-some repeat tests inconclusive; failed requests are not proof of correct filtering.
+[privacy](PRIVACY.md), and [verification instructions and results](TESTING.md).
 
 ## Everyday use
 
@@ -94,7 +93,8 @@ rules. Use **Options** to duplicate, export or delete; **Import** accepts JSON.
 
 ## Develop
 
-Use the pinned Node and pnpm versions in `package.json`.
+Use Node from [.node-version](.node-version) and the exact pnpm version in
+[package.json](package.json). Biome handles formatting and linting.
 
 ```sh
 pnpm install --frozen-lockfile

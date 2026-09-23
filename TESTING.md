@@ -3,7 +3,6 @@
 ```sh
 pnpm install --frozen-lockfile
 pnpm check
-pnpm test:headers
 ```
 
 `check` runs the same types, formatting, coverage and build checks as CI.
@@ -55,6 +54,9 @@ remain offline; historical results below retain the URLs actually tested.
 
 ## Offline Chrome check
 
+Run `pnpm test:headers` in a separate terminal and leave it running. It starts the
+local HTTP fixture at `http://127.0.0.1:3002`; it is not an automated test suite.
+
 Build and reload `dist/` in `chrome://extensions/`. Open the toolbar popup,
 click **Import**, and choose [local-profile.json](docs/examples/local-profile.json).
 Confirm it starts off. Open `http://127.0.0.1:3002/` and click **Run checks**.
@@ -91,6 +93,23 @@ Record new checks here with their date, scope, actual results and limits. Earlie
 results are in [the test history](docs/testing-history.md); they are historical
 evidence, not proof that the current checkout passes.
 
+### Documentation and Biome maintenance — September 23, 2026
+
+Updated Biome from 2.5.13 to 2.5.14 with matching schema and lockfile, added
+`pnpm lint:fix`, and aligned the release workflow with CI's `pnpm check`.
+Corrected website-access labels and steps against production markup, clarified
+the local fixture command, and moved September 20–22 records into the history
+without changing their contents.
+
+Automated: Node 26.7.0 / pnpm 12.4.2 frozen-lockfile install and `pnpm check`
+passed: Biome formatting/lint, TypeScript, 442 extension tests, five Worker tests,
+extension ZIP and Storybook. Checked 31 local documentation link/image paths
+and diff whitespace. Storybook retains its existing `module.register()`
+deprecation warning. Check output remains under ignored `.local/qa/`.
+
+No extension runtime changed; actual Chrome checks and release publication were
+not performed for this maintenance pass.
+
 ### Keyboard navigation coverage and harness cleanup — September 23, 2026
 
 Added six production-popup navigation cases covering Ctrl/Cmd+K, arrow boundaries,
@@ -109,67 +128,3 @@ TypeScript, extension packaging and Storybook. Storybook still emits the existin
 No production runtime or dependency changes were made. These are jsdom checks;
 actual Chrome toolbar, layout and network checks were not repeated. The check log
 is local evidence under ignored `.local/qa/`.
-
-### Store listing and media review — September 22, 2026
-
-The authenticated developer dashboard confirmed public and draft package versions
-0.4.2. Saved revised listing copy from `docs/store-listing.txt` and replaced the
-old promotional video link with the existing public 0.4.4 demo. The dashboard
-reported “Item saved”; these are draft changes, not a confirmed publication.
-
-Observed audience baseline: the Store Items page showed 3 users without an explicit
-date range. YouTube Studio showed 1 view for the current demo after 6 days and
-1 hour, 0% impression click-through rate, and 0:00 average view duration. Store
-impressions and install counts could not be retrieved reliably; unavailable
-metrics are not zero. This sample cannot establish conversion or audience growth.
-
-Rebuilt the captioned demo with larger existing Chrome captures, concrete use
-cases, and a Store install call to action. Automated: the media script ran,
-Biome passed, and FFmpeg fully decoded the 39-second 1920×1080 H.264/AAC output
-without errors. The contact sheet was visually inspected. Artifacts and the
-measurement baseline remain under ignored `.local/qa/`.
-
-Publication follow-up: the verified 0.4.4 package was uploaded and the dashboard
-confirmed draft version 0.4.4. The replacement demo is [public on YouTube](https://youtu.be/Im4QWpc7FiQ);
-YouTube reported “Video published” and completed copyright and Community Guidelines
-checks with no issues. Saved its URL in the Store listing and submitted the package
-and listing for review with automatic publication after approval enabled. Google
-confirmed “Your extension was submitted for review”. Approval remains pending.
-
-Existing actual Chrome captures were reused; no runtime or new toolbar checks
-were performed, and no extension runtime code changed.
-
-### Store distribution review — September 21, 2026
-
-The public [Chrome Web Store listing](https://chromewebstore.google.com/detail/chheader/okmjidkmnlobbppegojfcedhaakadgig)
-is available and reports version 0.4.2, updated September 13. Its privacy-policy
-link resolves to this repository's policy. GitHub's latest release is 0.4.4;
-its downloaded ZIP passed the published SHA-256 checksum. The latest main CI
-and 0.4.4 release workflow succeeded. README now links to the Store first and
-removes the unverified claim that 0.4.3 is awaiting review.
-
-Automated: Node 26.7.0 / pnpm 12.4.2 frozen-lockfile install and `pnpm check`
-passed, including formatting, lint, types, extension coverage tests, Worker tests,
-extension packaging and Storybook. The current production source matches v0.4.4.
-
-Limits: Google requires account reauthentication before the developer dashboard
-can be inspected. Pending updates, private review feedback and distribution
-settings remain unverified; no Store submission was changed. No actual Chrome
-toolbar or network checks were repeated. Prioritize delivering the post-0.4.2
-rule-failure cleanup and access-panel improvements before broader promotion.
-
-### Repository cleanup and Astra setup — September 20, 2026
-
-Added the project GPT-6 Astra default and module/test guidance. Separated dated
-verification history from the current acceptance instructions. Removed obsolete
-design/QA reports and a run screenshot from tracking, preserving local copies.
-
-Automated: Node 26.7.0 / pnpm 12.4.2 frozen-lockfile install and `pnpm check`
-passed: Biome format/lint, TypeScript, 436 extension tests across 26 files with
-coverage, five Worker tests, extension ZIP and Storybook build. Local documentation
-links, diff whitespace and ignore behavior were checked. Storybook emitted a
-dependency deprecation warning for `module.register()` but built successfully.
-
-No extension runtime code changed; actual Chrome checks were not repeated. The
-model default applies when Codex loads this trusted project's configuration;
-this cleanup does not verify a new Astra session or change an existing session.

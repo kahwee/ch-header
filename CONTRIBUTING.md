@@ -99,6 +99,28 @@ rename is not needed to make these improvements.
 Avoid assertions for incidental CSS declarations. Tests should verify semantic classes, accessible
 attributes, escaped content, and behavior.
 
+### Formatting and linting
+
+Biome is the repository's formatter and linter, configured in
+[biome.json](biome.json). Use the pinned dependency through pnpm so local checks
+match CI:
+
+| Command | Purpose |
+| --- | --- |
+| `pnpm format` | Apply formatting. |
+| `pnpm format:check` | Check formatting without changing files. |
+| `pnpm lint` | Report lint diagnostics without changing files. |
+| `pnpm lint:fix` | Apply safe lint fixes; inspect the diff afterward. |
+
+For a focused edit, pass paths directly, for example
+`pnpm exec biome format --write src/test/popup-harness.ts`. Generated output and
+local QA artifacts are excluded through Biome's configuration and Git ignores.
+Review documentation wording and links separately from automated code checks.
+
+When upgrading Biome, keep its exact version in `package.json`, the schema URL in
+`biome.json`, and `pnpm-lock.yaml` aligned. Run `pnpm check` with the new version
+before pushing.
+
 ## Verification
 
 Choose checks by the responsibility changed:
@@ -118,8 +140,8 @@ output. Avoid copied UI fixtures, arbitrary delays and assertions tied to privat
 methods or incidental CSS. The fast suite is deliberately focused; it does not
 replace the full suite.
 
-Run the complete CI-equivalent check before pushing, and after a cross-module
-refactor:
+Run the complete check before pushing and after a cross-module refactor. Both CI
+and the release workflow use this same command:
 
 ```bash
 pnpm check

@@ -29,6 +29,7 @@
     "format": "biome format --write .",
     "format:check": "biome format .",
     "lint": "biome lint .",
+    "lint:fix": "biome lint --write .",
     "media:video": "node scripts/build-demo-video.mjs",
     "storybook": "storybook dev -p 6006",
     "storybook:build": "storybook build",
@@ -42,7 +43,7 @@
     "test:echo:live": "node --test tools/header-echo/live.test.mjs"
   },
   "devDependencies": {
-    "@biomejs/biome": "2.5.13",
+    "@biomejs/biome": "2.5.14",
     "@storybook/html": "^10.6.0",
     "@storybook/html-vite": "^10.6.0",
     "@types/chrome": "0.2.9",
