@@ -1,5 +1,8 @@
 # ChHeader 0.4.5 visuals
 
+[Install ChHeader from the Chrome Web Store](https://chromewebstore.google.com/detail/chheader/okmjidkmnlobbppegojfcedhaakadgig).
+Chrome manages updates for Store installations.
+
 Version 0.4.5 makes header changes easier to understand: application feedback shows
 what Chrome accepted, inline validation keeps invalid drafts from replacing saved
 names, and empty-rule messages explain what to add. The toolbar's ON badge reflects
