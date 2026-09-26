@@ -12,6 +12,15 @@ function event<Args extends unknown[]>() {
 
 /** In-memory API boundary, not a Chrome rule validator or a network simulator. */
 export function createChromeHarness(initial: Partial<ExtensionStorage> = {}) {
+  const pending = new Set<Promise<unknown>>()
+  function track<T>(operation: Promise<T>): Promise<T> {
+    pending.add(operation)
+    void operation.then(
+      () => pending.delete(operation),
+      () => pending.delete(operation)
+    )
+    return operation
+  }
   const data: Record<string, unknown> = structuredClone(initial)
   let rules: chrome.declarativeNetRequest.Rule[] = []
   const onChanged = event<[Record<string, chrome.storage.StorageChange>, string]>()
@@ -26,6 +35,11 @@ export function createChromeHarness(initial: Partial<ExtensionStorage> = {}) {
   const onRemoved = event<[chrome.permissions.Permissions]>()
   const onAdded = event<[chrome.permissions.Permissions]>()
   const api = {
+    action: {
+      setBadgeText: vi.fn(async (_details: chrome.action.BadgeTextDetails) => {}),
+      setBadgeBackgroundColor: vi.fn(async (_details: chrome.action.BadgeColorDetails) => {}),
+      setTitle: vi.fn(async (_details: chrome.action.TitleDetails) => {}),
+    },
     permissions: {
       onRemoved,
       onAdded,
@@ -57,28 +71,33 @@ export function createChromeHarness(initial: Partial<ExtensionStorage> = {}) {
         get: vi.fn(async (keys: string | string[]) =>
           structuredClone(Object.fromEntries([keys].flat().map((key) => [key, data[key]])))
         ),
-        set: vi.fn(async (values: Record<string, unknown>, callback?: () => void) => {
-          const changes = Object.fromEntries(
-            Object.entries(values)
-              .filter(([key, value]) => JSON.stringify(data[key]) !== JSON.stringify(value))
-              .map(([key, value]) => [key, { oldValue: data[key], newValue: value }])
+        set: vi.fn((values: Record<string, unknown>, callback?: () => void) =>
+          track(
+            (async () => {
+              const changes = Object.fromEntries(
+                Object.entries(values)
+                  .filter(([key, value]) => JSON.stringify(data[key]) !== JSON.stringify(value))
+                  .map(([key, value]) => [key, { oldValue: data[key], newValue: value }])
+              )
+              Object.assign(data, structuredClone(values))
+              if (Object.keys(changes).length) onChanged.emit(structuredClone(changes), 'local')
+              callback?.()
+            })()
           )
-          Object.assign(data, structuredClone(values))
-          if (Object.keys(changes).length) onChanged.emit(structuredClone(changes), 'local')
-          callback?.()
-        }),
+        ),
       },
     },
     runtime: {
       onInstalled,
       onStartup: event<[]>(),
       onMessage,
-      sendMessage: vi.fn(
-        (message: unknown) =>
+      sendMessage: vi.fn((message: unknown) =>
+        track(
           new Promise<unknown>((resolve, reject) => {
             const results = onMessage.emit(message, {}, resolve)
             if (!results.includes(true)) reject(new Error('No asynchronous message handler'))
           })
+        )
       ),
     },
     declarativeNetRequest: {
@@ -98,7 +117,12 @@ export function createChromeHarness(initial: Partial<ExtensionStorage> = {}) {
     api,
     snapshot: () => structuredClone(data),
     rules: () => structuredClone(rules),
-    // Apply is queued after prior storage events by the real background module.
-    settle: () => api.runtime.sendMessage({ type: 'applyNow' }),
+    // The barrier joins prior background storage events. Popup save continuations
+    // can enqueue messages behind it, so drain those tracked operations as well.
+    settle: async () => {
+      const result = await api.runtime.sendMessage({ type: 'applyNow' })
+      while (pending.size) await Promise.allSettled([...pending])
+      return result
+    },
   }
 }

@@ -3,7 +3,7 @@
   "license": "MIT",
   "author": "KahWee Teng",
   "description": "Edit request and response headers, organize profiles, and target specific sites to test APIs and websites.",
-  "version": "0.4.4",
+  "version": "0.4.5",
   "type": "module",
   "devEngines": {
     "packageManager": {

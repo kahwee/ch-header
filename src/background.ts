@@ -4,27 +4,120 @@
  * Responsible for managing DNR rules based on active profile.
  */
 
-import { hasSiteAccess } from './lib/site-access'
+import {
+  APPLICATION_STATUS_KEY,
+  type ApplicationStatus,
+  isApplicationStatus,
+} from './lib/application-status'
 import { applyDNRRules, buildRulesFromProfile } from './lib/dnr-rules'
+import { hasSiteAccess } from './lib/site-access'
 import { getActiveProfile, initializeStorage } from './lib/storage'
-import { STORAGE_KEYS, type Profile } from './lib/types'
+import { type Profile, STORAGE_KEYS } from './lib/types'
 
 /**
  * Apply active profile's DNR rules
  */
-async function updateActiveProfile(): Promise<void> {
-  const active = await getActiveProfile()
+async function publishStatus(
+  result: Omit<ApplicationStatus, 'updatedAt'>
+): Promise<ApplicationStatus> {
+  const stored = await chrome.storage.local.get(APPLICATION_STATUS_KEY)
+  const previous = stored[APPLICATION_STATUS_KEY]
+  const updatedAt = Math.max(Date.now(), isApplicationStatus(previous) ? previous.updatedAt + 1 : 0)
+  const status: ApplicationStatus = { ...result, updatedAt }
+  await chrome.storage.local.set({ [APPLICATION_STATUS_KEY]: status })
+  const applied = status.state === 'applied' && (status.ruleCount ?? 0) > 0
   try {
+    await chrome.action.setBadgeText({ text: applied ? 'ON' : status.rulesMayBeActive ? '!' : '' })
+    await chrome.action.setBadgeBackgroundColor({
+      color: status.rulesMayBeActive ? '#b42318' : '#167348',
+    })
+    await chrome.action.setTitle({
+      title: applied
+        ? `ChHeader: ${status.profileName ?? 'Profile'} — ${status.ruleCount} rule${status.ruleCount === 1 ? '' : 's'} applied`
+        : (status.message ?? 'ChHeader: Off'),
+    })
+  } catch {
+    // Toolbar presentation is not evidence that Chrome rejected accepted rules.
+    console.error('ChHeader: could not update toolbar status')
+  }
+  return status
+}
+
+async function updateActiveProfile(): Promise<ApplicationStatus> {
+  let result = await updateRules()
+  if (result.state === 'off') {
+    const stored = await chrome.storage.local.get(APPLICATION_STATUS_KEY)
+    const value = stored[APPLICATION_STATUS_KEY]
+    const previous = isApplicationStatus(value) ? value : undefined
+    // Disabling profiles during recovery emits another storage event. Keep its
+    // explanation available when that event runs and when the popup reopens.
+    if (previous?.state === 'error' || previous?.state === 'missing-access') {
+      result = previous.rulesMayBeActive
+        ? {
+            ...previous,
+            ruleCount: 0,
+            rulesMayBeActive: false,
+            message:
+              'Previous rules cleared. Check URL rules and headers before turning on a profile.',
+          }
+        : previous
+    }
+  }
+  // Diagnostics storage/presentation failures must not stop accepted rules.
+  return publishStatus(result)
+}
+
+async function updateRules(): Promise<Omit<ApplicationStatus, 'updatedAt'>> {
+  let active: Profile | null = null
+  try {
+    active = await getActiveProfile()
+    const identity = { profileId: active?.id ?? null, profileName: active?.name ?? null }
     if (active && !(await hasSiteAccess(active))) {
       await stopProfiles()
-      return
+      const status: Omit<ApplicationStatus, 'updatedAt'> = {
+        ...identity,
+        state: 'missing-access',
+        ruleCount: 0,
+        message: 'Profile turned off. Approve this profile’s sites, then turn it on again.',
+      }
+      return status
     }
-    await applyDNRRules(buildRulesFromProfile(active))
-  } catch (error) {
-    // Chrome rejects rule replacements atomically, leaving the previous rules live.
-    // A failed edit or profile switch must not keep sending the previous headers.
-    await stopProfiles()
-    throw error
+    const rules = buildRulesFromProfile(active)
+    await applyDNRRules(rules)
+    const status: Omit<ApplicationStatus, 'updatedAt'> = {
+      ...identity,
+      state: !active ? 'off' : rules.length ? 'applied' : 'empty',
+      ruleCount: rules.length,
+      ...(!active
+        ? {}
+        : rules.length
+          ? {}
+          : {
+              message: active.matchers.length
+                ? 'No rules applied. Add an enabled header.'
+                : 'No rules applied. Add a URL rule.',
+            }),
+    }
+    return status
+  } catch {
+    let cleared = false
+    try {
+      await stopProfiles()
+      cleared = true
+    } catch {
+      // Never claim rules stopped if Chrome rejected the cleanup operation.
+    }
+    const status: Omit<ApplicationStatus, 'updatedAt'> = {
+      state: 'error',
+      profileId: active?.id ?? null,
+      profileName: active?.name ?? null,
+      ruleCount: cleared ? 0 : null,
+      rulesMayBeActive: !cleared,
+      message: cleared
+        ? 'Profile turned off. Check URL rules and headers, then turn it on again.'
+        : 'Rules could not be applied or cleared. Previous rules may still be active. Disable the extension to stop them.',
+    }
+    return status
   }
 }
 
@@ -41,9 +134,12 @@ async function stopProfiles(): Promise<void> {
 // Serialize the entire read/build/replace operation. Install, storage events and
 // Apply can otherwise read the same old rule IDs and race to insert duplicates.
 let pendingApply: Promise<void> = Promise.resolve()
-function applyActiveProfile(): Promise<void> {
+function applyActiveProfile(): Promise<ApplicationStatus> {
   const operation = pendingApply.then(updateActiveProfile)
-  pendingApply = operation.catch(() => {})
+  pendingApply = operation.then(
+    () => {},
+    () => {}
+  )
   return operation
 }
 
@@ -57,7 +153,21 @@ function enqueue(operation: () => Promise<void>): Promise<void> {
 }
 
 async function revokeSiteAccess(): Promise<void> {
-  await stopProfiles()
+  try {
+    await stopProfiles()
+  } catch {
+    await publishStatus({
+      state: 'error',
+      profileId: null,
+      profileName: null,
+      ruleCount: null,
+      rulesMayBeActive: true,
+      message:
+        'Rules could not be cleared. Previous rules may still be active. Disable the extension to stop them.',
+    })
+    throw new Error('Could not confirm rules were cleared')
+  }
+  await publishStatus({ state: 'off', profileId: null, profileName: null, ruleCount: 0 })
   const grants = await new Promise<chrome.permissions.Permissions>((resolve) =>
     chrome.permissions.getAll(resolve)
   )
@@ -110,8 +220,14 @@ chrome.runtime.onMessage.addListener((msg, _sender, sendResponse) => {
   }
   if (msg?.type === 'applyNow') {
     void applyActiveProfile()
-      .then(() => sendResponse({ ok: true }))
-      .catch((err) => sendResponse({ ok: false, error: String(err) }))
+      .then((status) =>
+        sendResponse(
+          status.state === 'error'
+            ? { ok: false, error: status.message, status }
+            : { ok: true, status }
+        )
+      )
+      .catch(() => sendResponse({ ok: false, error: 'Could not confirm rule application.' }))
     return true // async
   }
 })

@@ -173,6 +173,8 @@ describe('optional site access', () => {
 
   it('saves website scope with the explicit button or Enter without submitting Apply', async () => {
     const h = await createPopupHarness()
+    const submit = vi.fn()
+    h.query('#detail').addEventListener('submit', submit)
     h.input('#accessSites', 'localhost')
     h.click('#saveAccessSites')
     await vi.waitFor(() =>
@@ -190,7 +192,8 @@ describe('optional site access', () => {
         expect.objectContaining({ accessSites: ['127.0.0.1'], enabled: false }),
       ])
     )
-    expect(h.chrome.api.runtime.sendMessage).not.toHaveBeenCalledWith({ type: 'applyNow' })
+    await h.chrome.settle()
+    expect(submit).not.toHaveBeenCalled()
   })
 
   it('clears old live rules and website grants on extension upgrade', async () => {

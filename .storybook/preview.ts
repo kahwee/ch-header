@@ -15,8 +15,8 @@ const chromeExtensionDecorator: Decorator = (story, context) => {
   if (context.parameters.layout === 'fullscreen') {
     const wrapper = document.createElement('div')
     wrapper.className = 'chrome-extension-viewport'
-    wrapper.style.width = '800px'
-    wrapper.style.height = '600px'
+    wrapper.style.width = '744px'
+    wrapper.style.height = '440px'
     wrapper.style.overflow = 'hidden'
     wrapper.style.display = 'flex'
     wrapper.style.margin = '0 auto'
@@ -40,8 +40,8 @@ const preview: Preview = {
         popup: {
           name: 'ChHeader Popup',
           styles: {
-            width: '800px',
-            height: '600px',
+            width: '744px',
+            height: '440px',
           },
         },
         mobile: {

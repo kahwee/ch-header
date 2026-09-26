@@ -327,6 +327,10 @@ export const WithProfile: Story = {
     if (colorInput) colorInput.value = sampleProfile.color
     if (notesInput) notesInput.value = sampleProfile.notes || ''
     if (enabledInput) enabledInput.checked = sampleProfile.enabled
+    app.querySelector<HTMLElement>('#profileEnabledStatus')!.textContent = 'Profile is on'
+    const applicationStatus = app.querySelector<HTMLElement>('#applicationStatus')!
+    applicationStatus.dataset.state = 'applied'
+    applicationStatus.textContent = 'Applied · 1 URL rule. Reload the page to test.'
 
     const accessInput = app.querySelector<HTMLInputElement>('#accessSites')
     const accessStatus = app.querySelector<HTMLElement>('#accessStatus')

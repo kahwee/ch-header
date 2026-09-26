@@ -199,7 +199,11 @@ export class PopupController {
     try {
       const response = await chrome.runtime.sendMessage({ type: 'applyNow' })
       if (response?.ok === false)
-        return 'Could not apply rules. Last applied rules remain active. Check your URL rules and headers.'
+        return (
+          response.status?.message ?? 'Could not apply rules. Check application status and retry.'
+        )
+      if (response?.ok !== true)
+        return 'Chrome did not confirm application. Try reopening the popup.'
       return null
     } catch (err) {
       console.error('Failed to apply profile:', err)

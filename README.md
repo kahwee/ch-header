@@ -87,9 +87,13 @@ Use **Site** for a hostname and optional port, **URL pattern** for Chrome’s fi
 syntax, or **Regex** for advanced matching. **All allowed sites** covers the whole
 profile site list. Each rule can also filter request types.
 
-Selecting a profile does not enable it. Edits save automatically; URL rules save
-on blur. Invalid URL drafts keep the last saved rule. **Apply** reapplies saved
-rules. Use **Options** to duplicate, export or delete; **Import** accepts JSON.
+Selecting a profile does not enable it. Edits save automatically; header names
+and URL rules save when you leave the field. Enter also saves a header name.
+Invalid drafts keep the last saved rule or header name, with an inline explanation.
+**Apply** retries saving and reapplies saved rules. The footer reports Chrome's
+application result; the toolbar shows **ON** when rules are installed. These are
+not proof that a particular request matched—reload the page to test.
+Use **Options** to duplicate, export or delete; **Import** accepts JSON.
 
 ## Develop
 

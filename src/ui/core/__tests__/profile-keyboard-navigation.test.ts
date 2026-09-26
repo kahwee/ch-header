@@ -71,7 +71,8 @@ describe('profile keyboard navigation through the production popup', () => {
       expect(h.selectedId()).toBe(id)
     }
     await h.chrome.settle()
-    expect(h.chrome.snapshot()).toEqual(before)
+    expect(h.chrome.snapshot().profiles).toEqual(before.profiles)
+    expect(h.chrome.snapshot().activeProfileId).toEqual(before.activeProfileId)
     expect(h.chrome.rules()).toEqual(rules)
     expect(h.root.activeElement).toBe(h.search)
   })

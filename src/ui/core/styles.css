@@ -600,6 +600,7 @@ svg {
 }
 .profile-footer__status {
   display: flex;
+  min-width: 0;
   align-items: center;
   gap: 10px;
 }
@@ -614,6 +615,17 @@ svg {
 .profile-footer__status span {
   color: var(--muted);
   font-size: 11px;
+  overflow-wrap: anywhere;
+}
+#applicationStatus[data-state="error"],
+#applicationStatus[data-state="missing-access"] {
+  color: var(--danger);
+}
+.header-row__feedback {
+  margin: 4px 0 0;
+  color: var(--danger);
+  font-size: 11px;
+  overflow-wrap: anywhere;
 }
 
 .dropdown {

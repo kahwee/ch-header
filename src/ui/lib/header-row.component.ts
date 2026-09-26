@@ -3,6 +3,7 @@
  * Extends the base Component class for lifecycle management
  */
 
+import { headerNameError, headerValueError } from '../../lib/header-validation'
 import type { HeaderOp } from '../../lib/types'
 import { buildHeaderRowHTML } from '../components/headers/header-row.render'
 import { Component } from './component'
@@ -13,6 +14,7 @@ export interface HeaderRowCallbacks {
 }
 
 export class HeaderRowComponent extends Component {
+  private drafts = new Set<'header' | 'value'>()
   constructor(
     private header: HeaderOp,
     private callbacks: HeaderRowCallbacks,
@@ -38,16 +40,30 @@ export class HeaderRowComponent extends Component {
       this.callbacks.onChange(this.header.id, 'enabled', checked)
     })
 
-    // Handle header name changes
-    this.on('input', '[data-role="header"]', (e) => {
-      const value = (e.target as HTMLInputElement).value
-      this.callbacks.onChange(this.header.id, 'header', value)
-    })
+    for (const field of ['header', 'value'] as const) {
+      this.on('input', `[data-role="${field}"]`, (e) => {
+        const value = (e.target as HTMLInputElement).value
+        const error = field === 'header' ? headerNameError(value) : headerValueError(value)
+        this.showError(field, error)
+        if (field === 'header') this.drafts.add(field)
+        else if (!error) this.callbacks.onChange(this.header.id, field, value)
+      })
+      // Text inputs discard line breaks before input fires. Reject the original
+      // paste so a malformed header cannot silently become a different value.
+      this.on('paste', `[data-role="${field}"]`, (e) => {
+        const pasted = (e as ClipboardEvent).clipboardData?.getData('text/plain')
+        if (!pasted || !/[\r\n]/.test(pasted)) return
+        e.preventDefault()
+        this.showError(field, 'Paste one line only. The pasted text was not inserted.')
+      })
+    }
 
-    // Handle header value changes
-    this.on('input', '[data-role="value"]', (e) => {
-      const value = (e.target as HTMLInputElement).value
-      this.callbacks.onChange(this.header.id, 'value', value)
+    // A valid prefix ("Bad") may become an invalid completed name ("Bad Header").
+    // Keep every name draft local until the user finishes the edit.
+    this.on('change', '[data-role="header"]', () => this.commitName())
+    this.on('keydown', '[data-role="header"]', (e) => {
+      const event = e as KeyboardEvent
+      if (event.key === 'Enter' && !event.isComposing) this.commitName()
     })
 
     // Handle delete button
@@ -56,12 +72,42 @@ export class HeaderRowComponent extends Component {
     })
   }
 
+  private commitName(): void {
+    const input = this.el!.querySelector<HTMLInputElement>('[data-role="header"]')!
+    const error = headerNameError(input.value)
+    this.showError('header', error)
+    if (!error && input.value !== this.header.header)
+      this.callbacks.onChange(this.header.id, 'header', input.value)
+  }
+
+  private showError(field: 'header' | 'value', error: string | null): void {
+    const input = this.el!.querySelector<HTMLInputElement>(`[data-role="${field}"]`)!
+    const feedback = this.el!.querySelector<HTMLElement>(`[data-role="${field}Feedback"]`)!
+    if (error) this.drafts.add(field)
+    else this.drafts.delete(field)
+    input.setAttribute('aria-invalid', String(!!error))
+    feedback.hidden = !error
+    feedback.textContent = error
+      ? `${error} Last saved ${field === 'header' ? 'name' : 'value'} kept.`
+      : ''
+  }
+
   /**
-   * Update header data and re-render
+   * Refresh saved fields without replacing focused inputs or unsaved drafts.
    */
   updateHeader(header: HeaderOp): void {
     this.header = header
-    this.updateContent(this.render())
+    if (!this.el) return
+    // Update saved fields in place: replacing the row would lose focus and
+    // unsaved drafts when another header is added, sorted, or toggled.
+    for (const field of ['header', 'value'] as const) {
+      const input = this.el.querySelector<HTMLInputElement>(`[data-role="${field}"]`)!
+      if (!this.drafts.has(field) && input.value !== header[field]) input.value = header[field]
+    }
+    const toggle = this.el.querySelector<HTMLElement & { checked: boolean }>(
+      '[data-role="enabled"]'
+    )!
+    toggle.checked = header.enabled !== false
   }
 
   /**

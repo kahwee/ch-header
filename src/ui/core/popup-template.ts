@@ -219,6 +219,7 @@ export function getPopupTemplate(options?: { containerClass?: string }): string 
             </div>
           </section>
 
+          <p class="editor-section__hint">Header names save when you leave the field or press Enter. Values save as you type.</p>
           ${headersSection('req', 'Request headers', '')}
           ${headersSection('res', 'Response headers', '')}
 
@@ -237,7 +238,7 @@ export function getPopupTemplate(options?: { containerClass?: string }): string 
           <footer class="profile-footer">
             <div class="profile-footer__status">
               <ch-checkbox id="enabled" data-role="enabled" aria-label="Enable this profile" switch></ch-checkbox>
-              <div><strong id="profileEnabledStatus" aria-live="polite">Profile is off</strong><span>Changes save on edit · URL rules save on leaving the field</span></div>
+              <div><strong id="profileEnabledStatus" aria-live="polite">Profile is off</strong><span id="applicationStatus" role="status" aria-live="polite">Checking application status…</span></div>
             </div>
             <div>
               ${solidButton({ id: 'apply', text: 'Apply', type: 'submit', variant: 'primary', title: 'Reapply the enabled profile’s saved rules' })}

@@ -41,8 +41,8 @@ Open [the tester](https://headers.kahwee.com) and
 | Excluded path and redirect | `/headers/other` and `/redirect`: absent / `original`. |
 | Check second site | Same path boundaries on the other domain. |
 | Allow only `headers.kahwee.com` | Primary matching path changes; peer remains unchanged. |
-| Restore both domains, edit header name to `Bad Header` on main | Rejected replacement turns profile off; previous headers stop. |
-| Restore valid header and enable | Matching path changes again. |
+| Restore both domains, type header name `Bad Header` on main | Inline error; draft stays visible; saved name and live rules stay unchanged. |
+| Restore a valid header name and leave the field | Saved name updates; matching path uses the repaired header. |
 | Revoke all website access | Both sites return to baseline; all profiles off. |
 
 Chrome may close the permission prompt: reopen, select this profile, then enable
@@ -86,12 +86,57 @@ Stop the fixture with Ctrl+C afterward.
   and sensitive-value masking without changing the stored values.
 - Add/delete rows, scroll, search, change color, reopen and reload. Apply by button
   and Enter must not navigate or remove rows. Check Chrome's extension Errors page.
+- Type an invalid header name character by character. The saved name and live
+  rules must stay unchanged, including after leaving the field or adding a row.
+  Repair it: leaving the field or Enter saves the valid name. Multiline paste
+  reports an inline error without inserting a silently flattened value.
+- Turn a localhost profile on: footer reports installed URL-rule count and toolbar
+  shows **ON** with the profile name in its tooltip. Removing its last URL rule
+  reports why no rules applied and clears the badge. Turning it off restores baseline.
+- Reopen the popup: the last application result remains visible. Missing access
+  explains approval and re-enabling; rejection explains correction and re-enabling.
+  Applied status confirms installed rules, not whether any particular request matched.
 
 ## Verification records
 
 Record new checks here with their date, scope, actual results and limits. Earlier
 results are in [the test history](docs/testing-history.md); they are historical
 evidence, not proof that the current checkout passes.
+
+### Application feedback, header validation and toolbar badge — September 25, 2026
+
+Added persistent application outcomes, actionable failure/empty-rule messages,
+save acknowledgements, and a toolbar badge based on accepted rules. Apply now
+retries the active profile ID as well as profile data after a failed save. Header
+names validate while typing and save on leaving the field or Enter; invalid drafts
+preserve saved names. Header values reject multiline paste. Storybook's Full Layout
+viewport now matches the actual 744 × 440 popup.
+
+Automated: Node 26.7.0 / pnpm 12.4.2 frozen-lockfile install, 43 fast tests, and
+`pnpm check` passed: Biome, TypeScript, 496 extension tests with coverage, five
+Worker tests, extension ZIP and Storybook. The activation-retry regression was
+verified to fail with the old save call, then pass with the fix. A persisted global
+error regression also passed red/green verification. Coverage includes queued-save
+races, no-op saves, failed cleanup, toolbar/status-write failures, malformed status,
+character-by-character header drafts, repair and multiline paste. Storybook retains
+the existing `module.register()` deprecation warning.
+
+Actual Chrome for Testing 153: checked the real toolbar popup at 744 × 440 in dark
+and light modes, including inline error contrast, scrolling, persistent Apply,
+draft preservation when adding a row, Enter repair and reopening with saved data.
+On localhost, document and fetch requests sent `enabled` and response headers read
+`modified`; after typing an invalid name, the original document header still arrived.
+Confirmed ON badge and profile tooltip, applied-rule count, and removing the last
+URL rule producing an explanation. Disabling/revoking access
+restored absent request headers and `original` responses. The QA profile and unpacked
+extension were disabled; website grants were revoked and temporary browser appearance
+and developer-mode settings restored. Local fixture and preview servers were stopped.
+
+The Full Layout story was also visually checked in both modes at 744 × 440.
+Failure injection, status persistence after rejection, and multiline paste were
+automated harness checks, not injected failures in actual Chrome. No public-domain
+matrix, release or push was performed. Logs and Storybook captures stay in ignored
+`.local/qa/`.
 
 ### Documentation and Biome maintenance — September 23, 2026
 

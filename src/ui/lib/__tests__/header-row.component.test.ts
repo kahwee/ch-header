@@ -156,10 +156,12 @@ describe('HeaderRowComponent', () => {
       component.mount(container)
     })
 
-    it('should call onChange when header name changes', () => {
+    it('should save the header name when the edited field loses focus', () => {
       const input = container.querySelector('[data-role="header"]') as HTMLInputElement
       input.value = 'X-Custom-Header'
       input.dispatchEvent(new Event('input', { bubbles: true }))
+      expect(callbacks.onChange).not.toHaveBeenCalled()
+      input.dispatchEvent(new Event('change', { bubbles: true }))
 
       expect(callbacks.onChange).toHaveBeenCalledWith('header-1', 'header', 'X-Custom-Header')
     })
@@ -206,6 +208,7 @@ describe('HeaderRowComponent', () => {
 
       headerInput.value = 'New-Header'
       headerInput.dispatchEvent(new Event('input', { bubbles: true }))
+      headerInput.dispatchEvent(new Event('change', { bubbles: true }))
       expect(callbacks.onChange).toHaveBeenCalledTimes(1)
 
       valueInput.value = 'new-value'
@@ -273,6 +276,7 @@ describe('HeaderRowComponent', () => {
       let headerInput = container.querySelector('[data-role="header"]') as HTMLInputElement
       headerInput.value = 'First-Header'
       headerInput.dispatchEvent(new Event('input', { bubbles: true }))
+      headerInput.dispatchEvent(new Event('change', { bubbles: true }))
       expect(callbacks.onChange).toHaveBeenCalledTimes(1)
 
       // Update header
@@ -282,6 +286,7 @@ describe('HeaderRowComponent', () => {
       headerInput = container.querySelector('[data-role="header"]') as HTMLInputElement
       headerInput.value = 'Second-Header'
       headerInput.dispatchEvent(new Event('input', { bubbles: true }))
+      headerInput.dispatchEvent(new Event('change', { bubbles: true }))
       expect(callbacks.onChange).toHaveBeenCalledTimes(2)
     })
   })

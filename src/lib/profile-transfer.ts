@@ -1,3 +1,4 @@
+import { headerNameError, headerValueError } from './header-validation'
 import { parseAccessSites } from './site-access'
 import {
   type HeaderOp,
@@ -21,9 +22,9 @@ function headers(value: unknown, label: string): HeaderOp[] {
   return array(value, label).map((item, index) => {
     if (!object(item) || typeof item.header !== 'string' || typeof item.value !== 'string')
       throw new Error(`${label}, row ${index + 1}: use string header and value fields.`)
-    if (!/^[!#$%&'*+.^_`|~0-9A-Za-z-]+$/.test(item.header))
+    if (headerNameError(item.header))
       throw new Error(`${label}, row ${index + 1}: invalid header name.`)
-    if (/[\r\n]/.test(item.value))
+    if (headerValueError(item.value))
       throw new Error(`${label}, row ${index + 1}: values cannot contain line breaks.`)
     return {
       id: crypto.randomUUID(),

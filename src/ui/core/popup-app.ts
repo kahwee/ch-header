@@ -3,6 +3,7 @@ import '../components/common/checkbox-element'
 import { type CommitOptions, PopupController } from './controller'
 import { queryPopupElements } from './popup-elements'
 import { setupPopupEvents } from './popup-events'
+import { setupApplicationStatus } from './popup-application-status'
 import { PopupStore } from './popup-store'
 import { getPopupTemplate } from './popup-template'
 import { PopupView } from './popup-view'
@@ -32,6 +33,8 @@ export async function mountPopup(document: Document = globalThis.document): Prom
     filtered: [],
     current: null,
   }
+  let controller: PopupController
+  const applicationStatus = setupApplicationStatus(document, state, () => controller.onApply())
 
   function notify(message: string, undo = false): void {
     const notice = document.querySelector<HTMLElement>('#profileNotice')
@@ -43,7 +46,6 @@ export async function mountPopup(document: Document = globalThis.document): Prom
     notice.hidden = false
   }
 
-  let controller: PopupController
   const view = new PopupView(document, elements, state, {
     changeHeader: (id, request, field, value) =>
       controller.onHeaderChange(id, request, field, value),
@@ -53,7 +55,9 @@ export async function mountPopup(document: Document = globalThis.document): Prom
   })
 
   function commit(options?: CommitOptions): void {
-    void store.save(state.profiles, options?.activeProfileId).catch(() => notify(SAVE_FAILURE))
+    void applicationStatus
+      .save(() => store.save(state.profiles, options?.activeProfileId))
+      .catch(() => notify(SAVE_FAILURE))
     if (!options?.listOnly) view.select(state.current?.id ?? null)
     view.renderList()
   }
@@ -97,8 +101,12 @@ export async function mountPopup(document: Document = globalThis.document): Prom
     state,
     view,
   })
-  view.setSelectionChangeHandler(profileAccess.refresh)
+  view.setSelectionChangeHandler(() => {
+    profileAccess.refresh()
+    applicationStatus.render()
+  })
   profileAccess.refresh()
+  applicationStatus.render()
   setProfileEnabled = profileAccess.setProfileEnabled
   setupProfileContextMenu(
     document,
@@ -108,8 +116,7 @@ export async function mountPopup(document: Document = globalThis.document): Prom
   setupPopupEvents({
     apply: async () => {
       try {
-        await store.save(state.profiles)
-        const error = await controller.onApply()
+        const error = await applicationStatus.save(() => store.save(state.profiles, state.activeId))
         if (!error && document.querySelector('#profileNotice span')?.textContent === SAVE_FAILURE)
           document.querySelector<HTMLElement>('#profileNotice')!.hidden = true
         return error
