@@ -103,6 +103,21 @@ Record new checks here with their date, scope, actual results and limits. Earlie
 results are in [the test history](docs/testing-history.md); they are historical
 evidence, not proof that the current checkout passes.
 
+### Popup harness teardown — September 27, 2026
+
+Reproduced three `chrome is not defined` background errors in the passing popup
+and site-access suites with `--silent=false`. Queued application work continued
+after the harness removed the Chrome global. Teardown now awaits `chrome.settle()`
+before removing listeners, DOM and globals; cleanup still runs if settling fails,
+and the failure propagates.
+
+Automated: Node 26.7.0 / pnpm 12.4.2, 43 fast tests and 30 targeted tests passed.
+The targeted run retained console output and no longer logged the teardown errors.
+Two lifecycle regression cases also passed; omitting the drain made their final
+error assertion fail. Full `pnpm check` passed: 498 extension tests, five Worker
+tests, types, Biome, packaging and Storybook. No production behavior changed;
+actual Chrome checks were not repeated. Logs remain under ignored `.local/qa/`.
+
 ### Application feedback, header validation and toolbar badge — September 25, 2026
 
 Added persistent application outcomes, actionable failure/empty-rule messages,

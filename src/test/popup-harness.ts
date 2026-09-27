@@ -1,6 +1,6 @@
 import { afterEach, vi } from 'vitest'
-import { mountPopup } from '../ui/core/popup-app'
 import type { Profile } from '../lib/types'
+import { mountPopup } from '../ui/core/popup-app'
 import { createChromeHarness } from './chrome-harness'
 
 export function localProfile(overrides: Partial<Profile> = {}): Profile {
@@ -17,13 +17,14 @@ export function localProfile(overrides: Partial<Profile> = {}): Profile {
   }
 }
 
-const cleanups: (() => void)[] = []
-afterEach(() => {
-  cleanups.splice(0).forEach((cleanup) => {
-    cleanup()
-  })
-  vi.unstubAllGlobals()
-  vi.resetModules()
+const cleanups: (() => Promise<void>)[] = []
+afterEach(async () => {
+  try {
+    for (const cleanup of cleanups.splice(0)) await cleanup()
+  } finally {
+    vi.unstubAllGlobals()
+    vi.resetModules()
+  }
 })
 
 /** Uses production markup, event wiring, controller, storage and rule generation. */
@@ -40,15 +41,20 @@ export async function createPopupHarness(profiles = [localProfile()]) {
       registered.push(() => target.removeEventListener(type, listener, options))
     })
   })
-  cleanups.push(() => {
-    registered.forEach((remove) => {
-      remove()
-    })
-    spies.forEach((spy) => {
-      spy.mockRestore()
-    })
-    root.body.replaceChildren()
-    delete root.documentElement.dataset.dropdownsReady
+  cleanups.push(async () => {
+    try {
+      // Save continuations and background follow-up events still need Chrome and DOM.
+      await chrome.settle()
+    } finally {
+      registered.forEach((remove) => {
+        remove()
+      })
+      spies.forEach((spy) => {
+        spy.mockRestore()
+      })
+      root.body.replaceChildren()
+      delete root.documentElement.dataset.dropdownsReady
+    }
   })
   root.body.innerHTML = '<div id="root"></div>'
   await mountPopup(root)
