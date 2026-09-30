@@ -136,8 +136,17 @@ export function setupPopupEvents(options: PopupEventOptions): void {
   elements.importFile?.addEventListener('change', async () => {
     const file = elements.importFile?.files?.[0]
     if (!file) return
+    const profileId = state.current?.id
     try {
+      if (!profileId) throw new Error('Select a profile before importing headers.')
+      if (file.size > 1_000_000) throw new Error('Choose a JSON file smaller than 1 MB.')
       const headers = parseHeadersJSON(await file.text())
+      // File reads may finish after selection changes or the original profile is
+      // deleted. Never add credentials to another profile's allowed destinations.
+      if (state.current?.id !== profileId)
+        throw new Error(
+          'Profile changed while reading the file. Select the intended profile and import again.'
+        )
       controller.onImportHeaders(headers)
       notify(`Imported ${headers.length} header${headers.length === 1 ? '' : 's'}.`)
     } catch (error) {

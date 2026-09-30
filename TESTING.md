@@ -103,6 +103,25 @@ Record new checks here with their date, scope, actual results and limits. Earlie
 results are in [the test history](docs/testing-history.md); they are historical
 evidence, not proof that the current checkout passes.
 
+### Delayed file-import safeguards — September 30, 2026
+
+Added production-popup regressions for profile changes/deletion during a header
+file read, oversized header files, reopening the sharing dialog as an export,
+newer pasted JSON, and successful unchanged import flows. Five regression cases
+failed on the original code; all seven cases pass with the guards. The tests check
+saved profiles, generated rules and export contents using demo credentials only.
+
+Automated: Node 26.7.0 / pnpm 12.4.2 frozen-lockfile install, 43 fast tests and
+`pnpm check` passed: 505 extension tests, five Worker tests, types, Biome,
+extension packaging and Storybook. `pnpm audit` reported no known advisories.
+Tests ran with one worker to limit resource use. Actual Chrome toolbar, file-picker
+timing and network checks were not repeated; mocked DNR rules are not proof of
+real network traffic. An isolated cloud Chromium launch with a fresh temporary
+profile and sandbox enabled failed before loading the extension: the environment
+denied process-singleton socket creation. No existing browser profile was used,
+and no sandbox workaround was attempted. No release or remote push was performed.
+Evidence remains under ignored `.local/qa/`.
+
 ### Popup harness teardown — September 27, 2026
 
 Reproduced three `chrome is not defined` background errors in the passing popup

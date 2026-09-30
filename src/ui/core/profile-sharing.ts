@@ -29,6 +29,7 @@ export function setupProfileSharing(root: Document, options: SharingOptions) {
   let mode: 'import' | 'export' = 'export'
   let selectedId: string | undefined
   let restoreFocus: HTMLElement | null = null
+  let fileReadRevision = 0
   const selected = () =>
     scope.value === 'all'
       ? options.profiles()
@@ -68,6 +69,7 @@ export function setupProfileSharing(root: Document, options: SharingOptions) {
     }
   }
   function open(next: 'import' | 'export', id?: string, all = false) {
+    ++fileReadRevision
     mode = next
     selectedId = id ?? options.current()?.id
     scope.value = all || !selectedId ? 'all' : 'selected'
@@ -81,7 +83,11 @@ export function setupProfileSharing(root: Document, options: SharingOptions) {
   }
   query('#sharingClose').addEventListener('click', () => dialog.close())
   dialog.addEventListener('close', () => {
+    ++fileReadRevision
     if (restoreFocus?.isConnected) restoreFocus.focus()
+  })
+  editor.addEventListener('input', () => {
+    ++fileReadRevision
   })
   scope.addEventListener('change', render)
   hide.addEventListener('change', render)
@@ -110,16 +116,24 @@ export function setupProfileSharing(root: Document, options: SharingOptions) {
   query('#sharingChooseFile').addEventListener('click', () => input.click())
   input.addEventListener('change', async () => {
     const file = input.files?.[0]
+    const revision = ++fileReadRevision
+    input.value = ''
     if (!file) return
+    const isCurrentRead = () => revision === fileReadRevision && mode === 'import' && dialog.open
+    if (!isCurrentRead()) return
     try {
       if (file.size > 1_000_000) throw new Error('Choose a JSON file smaller than 1 MB.')
-      editor.value = await file.text()
+      const text = await file.text()
+      // A closed/reopened dialog, new file or paste supersedes the pending read.
+      // In particular, never overwrite a redacted export with raw imported data.
+      if (!isCurrentRead()) return
+      editor.value = text
       error.textContent = ''
       editor.focus()
     } catch (err) {
+      if (!isCurrentRead()) return
       error.textContent = err instanceof Error ? err.message : 'Could not read this file.'
     }
-    input.value = ''
   })
   return {
     open,
