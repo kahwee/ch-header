@@ -66,18 +66,13 @@ rather than growing a catch-all utility module.
 
 ### Where to improve next
 
-Keyboard navigation is covered through the production popup in
-`profile-keyboard-navigation.test.ts`, including filtering, empty results, arrow
-movement, shortcuts and selection without activation. Extend those scenarios when
-changing navigation. When working on sharing, cover clipboard rejection and
-file-read failures through the real dialog. Sharing had lower coverage in the
-September 20 check; use coverage to find missing scenarios, not as a target for
-assertion counts.
-
-If profile commands grow substantially, extract cohesive operations from
-`controller.ts` behind its existing callbacks and prove the same workflow outcomes.
-Keep `popup-app.ts` focused on wiring. A framework migration or wholesale folder
-rename is not needed to make these improvements.
+- Navigation: extend `profile-keyboard-navigation.test.ts` for filtering, empty
+  results, arrow keys, shortcuts and selection without activation.
+- Sharing: test clipboard rejection and file-read failures through the real dialog.
+  Use coverage to find missing scenarios, not to target assertion counts.
+- Profile commands: extract cohesive operations from `controller.ts` only as it
+  grows, preserve its callbacks and workflow outcomes, and keep `popup-app.ts`
+  focused on wiring.
 
 ## Code conventions
 

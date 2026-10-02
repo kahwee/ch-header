@@ -103,107 +103,29 @@ Record new checks here with their date, scope, actual results and limits. Earlie
 results are in [the test history](docs/testing-history.md); they are historical
 evidence, not proof that the current checkout passes.
 
-### Delayed file-import safeguards — September 30, 2026
+### Maintenance release 0.4.6 — October 2, 2026
 
-Added production-popup regressions for profile changes/deletion during a header
-file read, oversized header files, reopening the sharing dialog as an export,
-newer pasted JSON, and successful unchanged import flows. Five regression cases
-failed on the original code; all seven cases pass with the guards. The tests check
-saved profiles, generated rules and export contents using demo credentials only.
+Simplified export selection and HTML escaping; shortened contributor/setup docs
+and moved older verification records into the history without changing results.
 
-Automated: Node 26.7.0 / pnpm 12.4.2 frozen-lockfile install, 43 fast tests and
-`pnpm check` passed: 505 extension tests, five Worker tests, types, Biome,
-extension packaging and Storybook. `pnpm audit` reported no known advisories.
-Tests ran with one worker to limit resource use. Actual Chrome toolbar, file-picker
-timing and network checks were not repeated; mocked DNR rules are not proof of
-real network traffic. An isolated cloud Chromium launch with a fresh temporary
-profile and sandbox enabled failed before loading the extension: the environment
-denied process-singleton socket creation. No existing browser profile was used,
-and no sandbox workaround was attempted. No release or remote push was performed.
-Evidence remains under ignored `.local/qa/`.
+Automated: pinned Node 26.7.0 / pnpm 12.4.2 frozen-lockfile install, 43 fast tests,
+and full `pnpm check` passed: 505 extension tests, five Worker tests, formatting,
+lint, types, extension ZIP and Storybook. Local documentation links, archive
+integrity and ZIP integrity passed. Storybook retains the existing
+`module.register()` deprecation warning.
 
-### Popup harness teardown — September 27, 2026
+Actual Chrome for Testing 154: checked the toolbar popup in light/dark modes,
+malformed then valid JSON import, imported profiles starting off, special characters
+in profile names, selected/all export, sensitive-value redaction, copy feedback,
+and focus returning to Export all. Approved only the localhost demo host. Enabling
+installed one rule; document and fetch requests carried `enabled` and response
+headers read `modified`. Narrowing to `/match/*` changed only `/match/echo`.
+Revoking access turned the profile off and restored absent request headers and
+`original` responses on all three endpoints. Browser appearance was restored.
 
-Reproduced three `chrome is not defined` background errors in the passing popup
-and site-access suites with `--silent=false`. Queued application work continued
-after the harness removed the Chrome global. Teardown now awaits `chrome.settle()`
-before removing listeners, DOM and globals; cleanup still runs if settling fails,
-and the failure propagates.
-
-Automated: Node 26.7.0 / pnpm 12.4.2, 43 fast tests and 30 targeted tests passed.
-The targeted run retained console output and no longer logged the teardown errors.
-Two lifecycle regression cases also passed; omitting the drain made their final
-error assertion fail. Full `pnpm check` passed: 498 extension tests, five Worker
-tests, types, Biome, packaging and Storybook. No production behavior changed;
-actual Chrome checks were not repeated. Logs remain under ignored `.local/qa/`.
-
-### Application feedback, header validation and toolbar badge — September 25, 2026
-
-Added persistent application outcomes, actionable failure/empty-rule messages,
-save acknowledgements, and a toolbar badge based on accepted rules. Apply now
-retries the active profile ID as well as profile data after a failed save. Header
-names validate while typing and save on leaving the field or Enter; invalid drafts
-preserve saved names. Header values reject multiline paste. Storybook's Full Layout
-viewport now matches the actual 744 × 440 popup.
-
-Automated: Node 26.7.0 / pnpm 12.4.2 frozen-lockfile install, 43 fast tests, and
-`pnpm check` passed: Biome, TypeScript, 496 extension tests with coverage, five
-Worker tests, extension ZIP and Storybook. The activation-retry regression was
-verified to fail with the old save call, then pass with the fix. A persisted global
-error regression also passed red/green verification. Coverage includes queued-save
-races, no-op saves, failed cleanup, toolbar/status-write failures, malformed status,
-character-by-character header drafts, repair and multiline paste. Storybook retains
-the existing `module.register()` deprecation warning.
-
-Actual Chrome for Testing 153: checked the real toolbar popup at 744 × 440 in dark
-and light modes, including inline error contrast, scrolling, persistent Apply,
-draft preservation when adding a row, Enter repair and reopening with saved data.
-On localhost, document and fetch requests sent `enabled` and response headers read
-`modified`; after typing an invalid name, the original document header still arrived.
-Confirmed ON badge and profile tooltip, applied-rule count, and removing the last
-URL rule producing an explanation. Disabling/revoking access
-restored absent request headers and `original` responses. The QA profile and unpacked
-extension were disabled; website grants were revoked and temporary browser appearance
-and developer-mode settings restored. Local fixture and preview servers were stopped.
-
-The Full Layout story was also visually checked in both modes at 744 × 440.
-Failure injection, status persistence after rejection, and multiline paste were
-automated harness checks, not injected failures in actual Chrome. No public-domain
-matrix, release or push was performed. Logs and Storybook captures stay in ignored
-`.local/qa/`.
-
-### Documentation and Biome maintenance — September 23, 2026
-
-Updated Biome from 2.5.13 to 2.5.14 with matching schema and lockfile, added
-`pnpm lint:fix`, and aligned the release workflow with CI's `pnpm check`.
-Corrected website-access labels and steps against production markup, clarified
-the local fixture command, and moved September 20–22 records into the history
-without changing their contents.
-
-Automated: Node 26.7.0 / pnpm 12.4.2 frozen-lockfile install and `pnpm check`
-passed: Biome formatting/lint, TypeScript, 442 extension tests, five Worker tests,
-extension ZIP and Storybook. Checked 31 local documentation link/image paths
-and diff whitespace. Storybook retains its existing `module.register()`
-deprecation warning. Check output remains under ignored `.local/qa/`.
-
-No extension runtime changed; actual Chrome checks and release publication were
-not performed for this maintenance pass.
-
-### Keyboard navigation coverage and harness cleanup — September 23, 2026
-
-Added six production-popup navigation cases covering Ctrl/Cmd+K, arrow boundaries,
-filtered and empty results, Enter, Escape, editor focus, and selection without
-changing enabled profiles or applied rules. The popup harness now removes window
-listeners as well as document listeners between tests. A teardown assertion was
-verified to fail without window cleanup: the disposed popup still intercepted
-Ctrl+K. It passes with the fix.
-
-Automated: Node 26.7.0 / pnpm 12.4.2 frozen-lockfile install, the 35-test fast
-baseline, targeted navigation tests, and `pnpm check` passed. The full check ran
-442 extension tests across 27 files with coverage, five Worker tests, Biome,
-TypeScript, extension packaging and Storybook. Storybook still emits the existing
-`module.register()` dependency deprecation warning and builds successfully.
-
-No production runtime or dependency changes were made. These are jsdom checks;
-actual Chrome toolbar, layout and network checks were not repeated. The check log
-is local evidence under ignored `.local/qa/`.
+The Full Layout story was visually checked at 744 × 440 in both modes without
+horizontal overflow. An initial dynamic-import load failed during setup; reload
+and a subsequent reload passed with no console or page errors. Delayed file-read
+races remain automated checks; native file-picker timing and the public HTTPS
+matrix were not repeated. The isolated browser and local servers were closed.
+Logs and captures remain under ignored `.local/qa/`.

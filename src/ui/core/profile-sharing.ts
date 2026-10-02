@@ -50,10 +50,11 @@ export function setupProfileSharing(root: Document, options: SharingOptions) {
     editor.readOnly = !importing
     editor.setAttribute('aria-label', importing ? 'JSON to import' : 'JSON to export')
     if (!importing) {
-      editor.value = exportProfileJSON(selected(), hide.checked)
-      query('#sharingSensitive').hidden = !hasSensitiveValues(selected())
-      query<HTMLButtonElement>('#sharingCopy').disabled = selected().length === 0
-      query<HTMLButtonElement>('#sharingDownload').disabled = selected().length === 0
+      const profiles = selected()
+      editor.value = exportProfileJSON(profiles, hide.checked)
+      query('#sharingSensitive').hidden = !hasSensitiveValues(profiles)
+      query<HTMLButtonElement>('#sharingCopy').disabled = profiles.length === 0
+      query<HTMLButtonElement>('#sharingDownload').disabled = profiles.length === 0
     }
   }
   async function copy(text: string) {

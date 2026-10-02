@@ -97,15 +97,7 @@ Use **Options** to duplicate, export or delete; **Import** accepts JSON.
 
 ## Develop
 
-Use Node from [.node-version](.node-version) and the exact pnpm version in
-[package.json](package.json). Biome handles formatting and linting.
+See [CONTRIBUTING.md](CONTRIBUTING.md) for setup, architecture and checks.
 
-```sh
-pnpm install --frozen-lockfile
-pnpm test:fast
-pnpm check          # format, lint, types, tests, extension ZIP and Storybook
-pnpm dev:extension  # load dist/ unpacked; reload Chrome after edits
-```
-
-[Development and architecture](CONTRIBUTING.md) · [Agent guidance](AGENTS.md) ·
+[Agent guidance](AGENTS.md) ·
 [MIT license](LICENSE) · Copyright 2026 KahWee Teng.

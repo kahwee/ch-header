@@ -1,16 +1,11 @@
-/**
- * Utility functions for UI components
- */
+const HTML_ENTITIES: Readonly<Record<string, string>> = {
+  '&': '&amp;',
+  '<': '&lt;',
+  '>': '&gt;',
+  '"': '&quot;',
+  "'": '&#039;',
+}
 
 export function escapeHtml(s: string): string {
-  return s.replace(/[&<>"']/g, (c) => {
-    const map: Record<string, string> = {
-      '&': '&amp;',
-      '<': '&lt;',
-      '>': '&gt;',
-      '"': '&quot;',
-      "'": '&#039;',
-    }
-    return map[c] || c
-  })
+  return s.replace(/[&<>"']/g, (c) => HTML_ENTITIES[c] || c)
 }
