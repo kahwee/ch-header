@@ -84,8 +84,10 @@ Stop the fixture with Ctrl+C afterward.
 - Import malformed JSON: inline error, no partial import. Paste/file import: new IDs, off.
 - Copy JSON → paste into Import. Download → choose that file. Check one/all export scope
   and sensitive-value masking without changing the stored values.
-- Add/delete rows, scroll, search, change color, reopen and reload. Apply by button
-  and Enter must not navigate or remove rows. Check Chrome's extension Errors page.
+- Add/delete rows, scroll, search, change color, reopen and reload. Enter must save valid header names without navigating or removing rows.
+  No Apply button is shown; Retry stays hidden during normal autosave and appears
+  after a save/application failure. Retry must persist pending edits, disable while
+  running, and disappear on success with focus returned to the status. Check Chrome's extension Errors page.
 - Type an invalid header name character by character. The saved name and live
   rules must stay unchanged, including after leaving the field or adding a row.
   Repair it: leaving the field or Enter saves the valid name. Multiline paste
@@ -129,3 +131,35 @@ and a subsequent reload passed with no console or page errors. Delayed file-read
 races remain automated checks; native file-picker timing and the public HTTPS
 matrix were not repeated. The isolated browser and local servers were closed.
 Logs and captures remain under ignored `.local/qa/`.
+
+### Simpler autosave footer — October 2, 2026
+
+Removed the persistent Apply button. The footer reports saved/application state;
+Retry appears only after failed saves, failed application, or an unconfirmed
+application result. Retry is disabled while pending and returns keyboard focus to
+the status when recovery succeeds. Enter still commits valid header names without
+submitting navigation.
+
+Automated: pinned Node 26.7.0 / pnpm 12.4.2 frozen-lockfile install, 43 fast tests,
+and final `pnpm check` passed: 506 extension tests, five Worker tests, formatting,
+lint, types, extension packaging and Storybook build. Recovery tests cover failed
+writes, failed application acknowledgement, disabled Retry, hiding after success,
+and Chrome's blur-on-disable focus behavior. The existing Storybook
+`module.register()` deprecation warning remains.
+
+Chrome for Testing 154: inspected the actual light-mode toolbar popup, imported a
+localhost-only demo, approved 127.0.0.1, enabled it, edited its name, and pressed
+Enter in a header-name field. The footer reported Saved / Applied without an Apply
+or Retry button. Real document and fetch requests carried `enabled`; response
+headers read `modified`. Revoking access restored absent request headers and
+`original` responses on all three fixture paths. A dark-mode extension-page check
+at 744 × 440 had no horizontal overflow. An injected storage failure in the
+extension page exposed Retry; restoring storage and retrying saved the edit and
+hid Retry. The final keyboard recovery check confirmed focus on applicationStatus.
+Failure injection and dark-mode inspection used the extension page, not the native
+toolbar popup. Public HTTPS and the full matching matrix were not repeated.
+
+Initial browser setup overlapped a build replacing dist and left its background
+worker unavailable; a fresh isolated launch after the build resolved it. Temporary
+permissions were revoked and isolated browsers closed. No user browser settings
+were changed. QA logs remain under ignored `.local/qa/simplify-footer/`.

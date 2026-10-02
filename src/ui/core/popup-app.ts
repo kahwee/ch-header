@@ -1,9 +1,9 @@
 import type { State } from '../../lib/types'
 import '../components/common/checkbox-element'
 import { type CommitOptions, PopupController } from './controller'
+import { setupApplicationStatus } from './popup-application-status'
 import { queryPopupElements } from './popup-elements'
 import { setupPopupEvents } from './popup-events'
-import { setupApplicationStatus } from './popup-application-status'
 import { PopupStore } from './popup-store'
 import { getPopupTemplate } from './popup-template'
 import { PopupView } from './popup-view'
@@ -13,7 +13,7 @@ import { type ProfileAction, setupProfileContextMenu } from './profile-context-m
 import { setupProfileKeyboardNavigation } from './profile-keyboard-navigation'
 import { setupProfileSharing } from './profile-sharing'
 
-const SAVE_FAILURE = 'Changes could not be saved. Keep this popup open and press Apply to retry.'
+const SAVE_FAILURE = 'Changes could not be saved. Keep this popup open and choose Retry.'
 
 /** Mount the real popup in its own document; resolves when storage is loaded. */
 export async function mountPopup(document: Document = globalThis.document): Promise<void> {
@@ -114,7 +114,7 @@ export async function mountPopup(document: Document = globalThis.document): Prom
     profileAction
   )
   setupPopupEvents({
-    apply: async () => {
+    retry: async () => {
       try {
         const error = await applicationStatus.save(() => store.save(state.profiles, state.activeId))
         if (!error && document.querySelector('#profileNotice span')?.textContent === SAVE_FAILURE)

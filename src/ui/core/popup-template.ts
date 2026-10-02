@@ -238,10 +238,10 @@ export function getPopupTemplate(options?: { containerClass?: string }): string 
           <footer class="profile-footer">
             <div class="profile-footer__status">
               <ch-checkbox id="enabled" data-role="enabled" aria-label="Enable this profile" switch></ch-checkbox>
-              <div><strong id="profileEnabledStatus" aria-live="polite">Profile is off</strong><span id="applicationStatus" role="status" aria-live="polite">Checking application status…</span></div>
+              <div><strong id="profileEnabledStatus" aria-live="polite">Profile is off</strong><span id="applicationStatus" tabindex="-1" role="status" aria-live="polite">Checking application status…</span></div>
             </div>
-            <div>
-              ${solidButton({ id: 'apply', text: 'Apply', type: 'submit', variant: 'primary', title: 'Reapply the enabled profile’s saved rules' })}
+            <div id="retryAction" hidden>
+              ${solidButton({ id: 'retry', text: 'Retry', type: 'button', variant: 'secondary', title: 'Retry saving and checking rules' })}
             </div>
           </footer>
         </form>

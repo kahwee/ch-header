@@ -112,7 +112,7 @@ describe('application status ordering', () => {
       const h = setup()
       h.initial.resolve({ [APPLICATION_STATUS_KEY]: value })
       await h.initial.promise
-      expect(h.element.textContent).toBe('Status not confirmed. Press Apply to check.')
+      expect(h.element.textContent).toBe('Status not confirmed. Choose Retry to check.')
       expect(h.element.getAttribute('role')).toBe('status')
       expect(h.element.getAttribute('aria-live')).toBe('polite')
     }
@@ -158,7 +158,7 @@ describe('application status ordering', () => {
     h.initial.resolve({ [APPLICATION_STATUS_KEY]: applied })
     await h.initial.promise
     const error = await h.status.save(async () => {})
-    expect(error).toBe('Could not confirm rule application. Press Apply to retry.')
+    expect(error).toBe('Could not confirm rule application. Choose Retry.')
     expect(h.element.textContent).toBe(error)
     expect(h.element.dataset.state).toBe('error')
   })

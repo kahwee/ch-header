@@ -10,7 +10,7 @@ import type { ProfileAction } from './profile-context-menu'
 import type { setupProfileSharing } from './profile-sharing'
 
 interface PopupEventOptions {
-  apply: () => Promise<string | null>
+  retry: () => Promise<string | null>
   commit: (options?: CommitOptions) => void
   controller: PopupController
   document: Document
@@ -26,7 +26,7 @@ interface PopupEventOptions {
 /** Binds popup DOM events to feature controllers. */
 export function setupPopupEvents(options: PopupEventOptions): void {
   const {
-    apply,
+    retry,
     commit,
     controller,
     document,
@@ -41,7 +41,9 @@ export function setupPopupEvents(options: PopupEventOptions): void {
 
   elements.detailPane?.addEventListener('submit', (event) => {
     event.preventDefault()
-    void apply().then((error) => {
+  })
+  elements.retryButton?.addEventListener('click', () => {
+    void retry().then((error) => {
       if (error) notify(error)
     })
   })

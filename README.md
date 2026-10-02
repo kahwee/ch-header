@@ -90,7 +90,7 @@ profile site list. Each rule can also filter request types.
 Selecting a profile does not enable it. Edits save automatically; header names
 and URL rules save when you leave the field. Enter also saves a header name.
 Invalid drafts keep the last saved rule or header name, with an inline explanation.
-**Apply** retries saving and reapplies saved rules. The footer reports Chrome's
+**Retry** appears only when saving or confirming rule application fails. The footer reports Chrome's
 application result; the toolbar shows **ON** when rules are installed. These are
 not proof that a particular request matched—reload the page to test.
 Use **Options** to duplicate, export or delete; **Import** accepts JSON.

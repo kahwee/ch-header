@@ -21,7 +21,7 @@ read the relevant [TESTING.md](TESTING.md) cases before behavior changes.
 ## Product contracts
 
 - Preserve keyboard focus, labels, contrast, and the 744 × 440 light/dark popup.
-  All buttons except Apply use `type="button"`.
+  All buttons use `type="button"`.
 - Context actions target the invoked profile; selection does not enable it.
   Imports receive new IDs and start off. Parse imports before storage changes.
 - Keep saved colors compatible; new colors use simple names or custom hex.

@@ -16,7 +16,7 @@ export interface PopupElements {
   requestHeaders: HTMLElement | null
   addResponseHeaderButton: HTMLButtonElement | null
   responseHeaders: HTMLElement | null
-  applyButton: HTMLButtonElement | null
+  retryButton: HTMLButtonElement | null
   importFile: HTMLInputElement | null
   noResults: HTMLElement | null
   searchResults: HTMLElement | null
@@ -43,7 +43,7 @@ export function queryPopupElements(root: ParentNode = document): PopupElements {
     requestHeaders: query('#reqHeaders'),
     addResponseHeaderButton: query('#addRes'),
     responseHeaders: query('#resHeaders'),
-    applyButton: query('#apply'),
+    retryButton: query('#retry'),
     importFile: query('#importFile'),
     noResults: query('#noResults'),
     searchResults: query('#searchResults'),

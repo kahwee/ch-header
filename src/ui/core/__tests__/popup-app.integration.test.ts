@@ -34,7 +34,7 @@ describe('real popup through storage to background rules', () => {
     expect(h.chrome.rules()).toEqual([])
   })
 
-  it('adds rows through actual buttons and Apply does not submit navigation or delete rows', async () => {
+  it('adds rows through actual buttons and Enter does not submit navigation or delete rows', async () => {
     const h = await createPopupHarness()
     h.click('#addReq')
     h.click('#addMatcher')
@@ -193,7 +193,7 @@ describe('delayed regex validation', () => {
 })
 
 describe('storage failure recovery', () => {
-  it('reports failed edits and retries persistence before Apply', async () => {
+  it('reports failed edits and retries persistence before retrying', async () => {
     const h = await createPopupHarness()
     h.chrome.api.storage.local.set.mockRejectedValueOnce(new Error('Storage unavailable'))
     h.input('#profileName', 'Retry demo')
@@ -202,7 +202,9 @@ describe('storage failure recovery', () => {
     expect(h.chrome.snapshot().profiles).toEqual(
       expect.arrayContaining([expect.objectContaining({ name: 'Local demo' })])
     )
-    h.query('#detail').dispatchEvent(new Event('submit', { bubbles: true, cancelable: true }))
+    expect(h.query('#retryAction').hidden).toBe(false)
+    h.query('#retry').focus()
+    h.click('#retry')
     await new Promise((resolve) => setTimeout(resolve, 0))
     expect(h.chrome.snapshot().profiles).toEqual(
       expect.arrayContaining([expect.objectContaining({ name: 'Retry demo' })])

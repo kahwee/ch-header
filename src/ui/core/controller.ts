@@ -193,7 +193,7 @@ export class PopupController {
   }
 
   /**
-   * Handle apply/submit button click
+   * Confirm rule application after autosave or an explicit retry
    */
   async onApply(): Promise<string | null> {
     try {
@@ -202,12 +202,11 @@ export class PopupController {
         return (
           response.status?.message ?? 'Could not apply rules. Check application status and retry.'
         )
-      if (response?.ok !== true)
-        return 'Chrome did not confirm application. Try reopening the popup.'
+      if (response?.ok !== true) return 'Chrome did not confirm application. Choose Retry.'
       return null
     } catch (err) {
       console.error('Failed to apply profile:', err)
-      return 'Could not reach Chrome to apply rules. Try reopening the popup.'
+      return 'Could not reach Chrome to apply rules. Choose Retry.'
     }
   }
 

@@ -143,7 +143,7 @@ pnpm check
 ```
 
 For UI changes, also inspect the actual toolbar popup at 744 × 440 and the Full Layout story. Check keyboard
-navigation, dropdowns, profile search, editing controls, the enable toggle, and persistent Apply
+navigation, dropdowns, profile search, editing controls, the enable toggle, and error-only Retry
 action.
 
 ## Extension build

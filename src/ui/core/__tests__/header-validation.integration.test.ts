@@ -52,7 +52,7 @@ describe('header validation through the production popup', () => {
     expect(h.chrome.rules()[0].action.requestHeaders?.[0].header).toBe('X-Repaired')
   })
 
-  it('saves a valid name on Enter before Apply without canceling form submission', async () => {
+  it('saves a valid name on Enter without requiring form submission', async () => {
     const h = await createPopupHarness([localProfile({ enabled: true })])
     h.input('#reqHeaders [data-role="header"]', 'X-Keyboard')
     const enter = new KeyboardEvent('keydown', { key: 'Enter', bubbles: true, cancelable: true })

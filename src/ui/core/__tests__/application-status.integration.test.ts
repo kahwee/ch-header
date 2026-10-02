@@ -3,6 +3,27 @@ import type { Profile } from '../../../lib/types'
 import { createPopupHarness, localProfile } from '../../../test/popup-harness'
 
 describe('application feedback through the production popup', () => {
+  it('autosaves without an Apply button and only offers Retry after a failed acknowledgement', async () => {
+    const h = await createPopupHarness([localProfile({ enabled: true })])
+    await h.chrome.settle()
+    expect(h.root.querySelector('#apply')).toBeNull()
+    expect(h.query('#retryAction').hidden).toBe(true)
+    h.chrome.api.runtime.sendMessage.mockRejectedValueOnce(new Error('Disconnected'))
+    h.input('#profileName', 'Autosaved demo')
+    await vi.waitFor(() => expect(h.query('#retryAction').hidden).toBe(false))
+    await h.chrome.settle()
+    expect(h.query('#retryAction').hidden).toBe(false)
+    h.query('#retry').focus()
+    h.click('#retry')
+    expect(h.query<HTMLButtonElement>('#retry').disabled).toBe(true)
+    // Chrome blurs a button when it becomes disabled; jsdom does not.
+    h.query('#retry').blur()
+    await h.chrome.settle()
+    expect(h.query('#retryAction').hidden).toBe(true)
+    expect(h.root.activeElement).toBe(h.query('#applicationStatus'))
+    expect(h.query('#applicationStatus').textContent).toContain('Saved · Applied')
+  })
+
   it('reports applied rules separately from selection and zero-rule profiles', async () => {
     const h = await createPopupHarness([
       localProfile(),
@@ -33,13 +54,15 @@ describe('application feedback through the production popup', () => {
     await h.chrome.settle()
     expect(h.query('#applicationStatus').textContent).toContain('Not saved')
     expect(h.chrome.snapshot().activeProfileId).toBe('local')
-    h.query('#detail').dispatchEvent(new Event('submit', { bubbles: true, cancelable: true }))
+    expect(h.query('#retryAction').hidden).toBe(false)
+    h.click('#retry')
     await h.chrome.settle()
     expect(h.chrome.snapshot().activeProfileId).toBe('second')
     expect(
       (h.chrome.snapshot().profiles as Profile[]).find((p) => p.id === 'second')?.enabled
     ).toBe(true)
     expect(h.chrome.rules()).toHaveLength(1)
+    expect(h.query('#retryAction').hidden).toBe(true)
     expect(h.query('#applicationStatus').textContent).toContain('Applied ·')
     expect(h.query('#profileNotice').hidden).toBe(true)
   })
@@ -51,7 +74,7 @@ describe('application feedback through the production popup', () => {
     await vi.waitFor(() => expect(h.query('#applicationStatus').textContent).toContain('Applied ·'))
   })
 
-  it('keeps a rule rejection visible after automatic disabling and a later Apply', async () => {
+  it('keeps a rule rejection visible after automatic disabling and a later retry', async () => {
     const h = await createPopupHarness([localProfile({ enabled: true })])
     await h.chrome.settle()
     h.chrome.api.declarativeNetRequest.updateDynamicRules.mockRejectedValueOnce(
@@ -62,7 +85,8 @@ describe('application feedback through the production popup', () => {
     expect(h.chrome.rules()).toEqual([])
     expect(h.query('#applicationStatus').dataset.state).toBe('error')
     expect(h.query('#applicationStatus').textContent).not.toContain('private header value')
-    h.query('#detail').dispatchEvent(new Event('submit', { bubbles: true, cancelable: true }))
+    expect(h.query('#retryAction').hidden).toBe(false)
+    h.click('#retry')
     await h.chrome.settle()
     expect(h.query('#applicationStatus').dataset.state).toBe('error')
     expect(h.query('#applicationStatus').textContent).not.toContain('remain active')

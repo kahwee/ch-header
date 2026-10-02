@@ -1,17 +1,13 @@
-# ChHeader 0.4.6
+# ChHeader 0.4.7
 
-File imports now ignore results that arrive after you switch or delete the target
-profile, close or reopen the sharing dialog, or paste newer JSON. Oversized header
-files are rejected. This prevents delayed reads from changing the wrong profile
-or overwriting a redacted export.
-
-Export rendering reuses one selection snapshot, and HTML escaping reuses a fixed
-entity map. Contributor and testing docs are shorter, with older verification
-records preserved in the test history. Test-harness cleanup now waits for queued
-background work; development dependencies have also been refreshed since 0.4.5.
+The popup now saves edits without a persistent Apply button. The footer reports
+saved and applied status; Retry appears only when saving or confirming application
+fails. Retry stays disabled while recovery runs and returns keyboard focus to the
+status when it succeeds. Header names still save on blur or Enter.
 
 No new permissions or storage-format changes.
 
-Verified with 505 extension tests, five Worker tests, and actual Chrome toolbar
-checks in light/dark modes, including export redaction and localhost request/response
-matching. Full formatting, lint, type, package and Storybook checks passed.
+Verified with 506 extension tests, five Worker tests, formatting, lint, types,
+packaging and Storybook checks. Actual Chrome toolbar checks confirmed autosave,
+Enter handling and localhost request/response headers. Extension-page checks
+covered dark mode at 744 × 440, failed-save recovery and keyboard focus restoration.

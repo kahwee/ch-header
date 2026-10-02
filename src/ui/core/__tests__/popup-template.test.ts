@@ -296,10 +296,11 @@ describe('popup-template', () => {
       expect(html).toContain('id="matchers"')
     })
 
-    it('should have apply button', () => {
+    it('keeps recovery hidden until needed', () => {
       const html = getPopupTemplate()
-      expect(html).toContain('id="apply"')
-      expect(html).toContain('Apply')
+      expect(html).not.toContain('id="apply"')
+      expect(html).toContain('id="retryAction" hidden')
+      expect(html).toContain('id="retry"')
     })
 
     it('should have enable checkbox', () => {
