@@ -25,8 +25,18 @@ jobs:
       - name: Validate release version
         run: node --input-type=module -e 'import p from "./package.json" with {type:"json"}; if (process.env.GITHUB_REF_NAME !== `v${p.version}`) throw new Error("Tag and package version differ")'
       - run: pnpm install --frozen-lockfile
-      - name: Check types, formatting, tests and release builds
-        run: pnpm check
+      # Keep the pnpm check gate: independent source checks, then ordered builds.
+      - parallel:
+          - name: Formatting and lint
+            run: pnpm format:check && pnpm lint
+          - name: Type check
+            run: pnpm typecheck
+          - name: Tests with coverage
+            run: pnpm test:coverage
+          - name: Header echo tests
+            run: pnpm test:echo
+      - name: Build extension and Storybook
+        run: pnpm build:package && pnpm storybook:build
       - name: Publish versioned archive and checksum
         env:
           GH_TOKEN: ${{ github.token }}

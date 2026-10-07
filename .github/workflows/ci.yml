@@ -23,8 +23,18 @@ jobs:
           cache: pnpm
       - run: test ! -e package-lock.json
       - run: pnpm install --frozen-lockfile
-      - name: Check types, formatting, tests and release builds
-        run: pnpm check
+      # Keep the pnpm check gate: independent source checks, then ordered builds.
+      - parallel:
+          - name: Formatting and lint
+            run: pnpm format:check && pnpm lint
+          - name: Type check
+            run: pnpm typecheck
+          - name: Tests with coverage
+            run: pnpm test:coverage
+          - name: Header echo tests
+            run: pnpm test:echo
+      - name: Build extension and Storybook
+        run: pnpm build:package && pnpm storybook:build
       - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
           name: extension-and-coverage
