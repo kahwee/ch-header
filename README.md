@@ -101,3 +101,7 @@ See [CONTRIBUTING.md](CONTRIBUTING.md) for setup, architecture and checks.
 
 [Agent guidance](AGENTS.md) ·
 [MIT license](LICENSE) · Copyright 2026 KahWee Teng.
+
+## CI maintenance
+
+[GitHub Actions maintenance](.github/ACTIONS.md) covers workflows, parallel checks, action versions, and weekly updates.
