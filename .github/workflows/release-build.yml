@@ -23,7 +23,7 @@ jobs:
           node-version-file: .node-version
           cache: pnpm
       - name: Test immutable release asset recovery
-        run: python3 scripts/test_release_assets.py
+        run: python3 scripts/test_release_assets.py -v
 
       - name: Validate release version
         run: node --input-type=module -e 'import p from "./package.json" with {type:"json"}; if (process.env.GITHUB_REF_NAME !== `v${p.version}`) throw new Error("Tag and package version differ")'
