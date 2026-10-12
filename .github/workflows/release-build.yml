@@ -22,6 +22,9 @@ jobs:
         with:
           node-version-file: .node-version
           cache: pnpm
+      - name: Test immutable release asset recovery
+        run: python3 scripts/test_release_assets.py
+
       - name: Validate release version
         run: node --input-type=module -e 'import p from "./package.json" with {type:"json"}; if (process.env.GITHUB_REF_NAME !== `v${p.version}`) throw new Error("Tag and package version differ")'
       - run: pnpm install --frozen-lockfile
@@ -41,8 +44,6 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          if gh release view "$GITHUB_REF_NAME" >/dev/null 2>&1; then
-            gh release upload "$GITHUB_REF_NAME" dist/*.zip dist/*.sha256 --clobber
-          else
-            gh release create "$GITHUB_REF_NAME" dist/*.zip dist/*.sha256 --verify-tag --title "ChHeader $GITHUB_REF_NAME" --notes-file RELEASE_NOTES.md
-          fi
+          mkdir -p release
+          cp dist/*.zip dist/*.sha256 release/
+          python3 scripts/release-assets.py "$GITHUB_REF_NAME" release --title "ChHeader $GITHUB_REF_NAME" --notes-file RELEASE_NOTES.md
