@@ -105,6 +105,18 @@ Record new checks here with their date, scope, actual results and limits. Earlie
 results are in [the test history](docs/testing-history.md); they are historical
 evidence, not proof that the current checkout passes.
 
+### Dependency maintenance — October 24, 2026
+
+Updated Storybook packages to 10.6.3, Vitest and its coverage/UI packages to
+5.0.5, and jsdom to 30.1.3. Added weekly Dependabot package updates, grouping
+compatible minor and patch releases.
+
+With Node 26.11.1 and pnpm 12.4.2, `pnpm check` passed: formatting, lint,
+types, 506 extension tests, five Worker tests, coverage, extension ZIP packaging,
+and the Storybook build. `pnpm audit` reported no vulnerabilities. Actual Chrome
+toolbar behavior and the public HTTPS matrix were not repeated for these
+dependency changes.
+
 ### Maintenance release 0.4.6 — October 2, 2026
 
 Simplified export selection and HTML escaping; shortened contributor/setup docs
