@@ -178,7 +178,6 @@ Local `pnpm check` passed: 415 tests across 23 files, TypeScript, formatting,
 coverage, ZIP packaging and Storybook. A frozen-lockfile install also passed.
 
 Actual macOS Chrome toolbar popup, using Computer Use:
-
 - Right-click on an unselected profile, Duplicate, Delete and Undo passed.
 - Shift+F10, arrow navigation, Escape focus restoration, all-profile export scope,
   and persistence after extension reload passed.
@@ -227,7 +226,6 @@ which profile is enabled. Existing placeholder expectations were updated.
 
 Using Chrome browser control and Computer Use, reloaded the existing unpacked
 `dist/` installation and checked the actual 744 × 440 toolbar popup in light mode:
-
 - Populated editor: persistent header labels, URL scope guidance and footer fit.
 - New profile: empty header guidance disappears when Add creates a row.
 - Name editing, Enter submission, Tab to Options and keyboard menu opening worked.
@@ -264,7 +262,6 @@ regexes, disabling after rejection, and deleting the final rule. Unit coverage
 checks anchored host conversion, explicit ports, ambiguous inputs and old filters.
 
 Actual Chrome toolbar popup, through Chrome and Computer controls:
-
 - Site `127.0.0.1:3002` changed document and all three fetch request/response headers.
 - Regex `[` showed an inline error; prior live localhost rules remained effective.
 - Repair to `^http://127\.0\.0\.1:3002/match/` modified only `/match/echo`.
@@ -284,7 +281,6 @@ editor drafts are not persisted across popup closure or profile switching.
 ## Adversarial editor pass — September 12, 2026
 
 Confirmed and fixed three additional defects:
-
 - Adding a header replaced the URL input, discarding its invalid draft and feedback.
   Reproduced before the fix in Chrome and the real-module harness. Rows now remain
   connected, and unchanged URL rows retain their draft through unrelated additions.
@@ -473,14 +469,14 @@ file matches it. Reloaded that build in Chrome and tested the actual toolbar
 popup with a local HTTP server and three loopback hostnames. No extension API or
 network behavior was mocked. Results:
 
-| Case | Actual Chrome result |
-| --- | --- |
-| No grant / denied grant | Profiles off; headers absent/original. |
-| Grant `qa.localhost`, broad URL rule | Parent and `api.qa.localhost` modified; `outside.localhost` untouched. |
-| Fetch from unapproved `outside.localhost` into approved API | Headers unchanged: the initiating page also needs host access. |
-| Explicitly grant `outside.localhost` via a separate profile | Cross-origin calls into the active profile's allowed hosts work; the outside host itself remains unmodified. |
-| Narrow allowed sites to `api.qa.localhost` | Editing turns the profile off. After re-enabling, only the child is modified, despite retained parent/other grants. |
-| Revoke all access | All profiles off, no granted sites, and every tested request/response back to absent/original. |
+| Case                                                        | Actual Chrome result                                                                                                |
+| ----------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------- |
+| No grant / denied grant                                     | Profiles off; headers absent/original.                                                                              |
+| Grant `qa.localhost`, broad URL rule                        | Parent and `api.qa.localhost` modified; `outside.localhost` untouched.                                              |
+| Fetch from unapproved `outside.localhost` into approved API | Headers unchanged: the initiating page also needs host access.                                                      |
+| Explicitly grant `outside.localhost` via a separate profile | Cross-origin calls into the active profile's allowed hosts work; the outside host itself remains unmodified.        |
+| Narrow allowed sites to `api.qa.localhost`                  | Editing turns the profile off. After re-enabling, only the child is modified, despite retained parent/other grants. |
+| Revoke all access                                           | All profiles off, no granted sites, and every tested request/response back to absent/original.                      |
 
 Usability finding: Chrome closes the popup for a new permission prompt, then
 ChHeader reopens on the previously active profile. Select the newly approved
@@ -509,15 +505,15 @@ Python urllib received a 403 remotely; curl and real Chrome succeeded.
 
 Actual Chrome toolbar popup, rebuilt `dist`, demo values only:
 
-| Case | Observed result |
-| --- | --- |
-| Both HTTPS Workers, profile off | Test request header absent; response header original. |
-| Exact URL pattern for `/headers/match` | Request `X-ChHeader-Test: hello-gecko`; response `X-ChHeader-Response: modified`. |
-| `/headers/other` and `/redirect` → `/headers/other` | Unchanged on both Workers. |
-| Cross-origin fetches in both directions, both hosts approved | Only the exact matching paths changed. |
-| Change enabled request header name to `Bad Header` | Chrome rejected it; profile turned off; previous request and response changes stopped. |
-| Restore valid header and enable again | Matching requests worked again. |
-| Revoke all website access | No grants, all profiles off, both HTTPS Workers unchanged. |
+| Case                                                         | Observed result                                                                        |
+| ------------------------------------------------------------ | -------------------------------------------------------------------------------------- |
+| Both HTTPS Workers, profile off                              | Test request header absent; response header original.                                  |
+| Exact URL pattern for `/headers/match`                       | Request `X-ChHeader-Test: hello-gecko`; response `X-ChHeader-Response: modified`.      |
+| `/headers/other` and `/redirect` → `/headers/other`          | Unchanged on both Workers.                                                             |
+| Cross-origin fetches in both directions, both hosts approved | Only the exact matching paths changed.                                                 |
+| Change enabled request header name to `Bad Header`           | Chrome rejected it; profile turned off; previous request and response changes stopped. |
+| Restore valid header and enable again                        | Matching requests worked again.                                                        |
+| Revoke all website access                                    | No grants, all profiles off, both HTTPS Workers unchanged.                             |
 
 The test profile remains saved but off, with valid demo data and grants revoked.
 The local Wrangler process was stopped; the main tester is left open. No system
@@ -525,7 +521,6 @@ settings were changed. Evidence is ignored under `.local/qa/permission-retest/`.
 No full Chrome restart, incognito, Firefox or Safari testing was performed.
 
 Deployed standalone Workers, without modifying kahwee.com:
-
 - https://chheader-check.kahwee-teng.workers.dev
 - https://chheader-check-peer.kahwee-teng.workers.dev
 

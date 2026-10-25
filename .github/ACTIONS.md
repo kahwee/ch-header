@@ -4,15 +4,14 @@ This guide describes the checked-in workflows. Follow each linked YAML file for 
 
 ## Workflows
 
-| Workflow | Events | Jobs |
-| --- | --- | --- |
-| [ci.yml](workflows/ci.yml) | `push`, `pull_request`, `workflow_dispatch` | `verify` |
-| [release-build.yml](workflows/release-build.yml) | `push`, `workflow_dispatch` | `release` |
+| Workflow                                         | Events                                      | Jobs      |
+| ------------------------------------------------ | ------------------------------------------- | --------- |
+| [ci.yml](workflows/ci.yml)                       | `push`, `pull_request`, `workflow_dispatch` | `verify`  |
+| [release-build.yml](workflows/release-build.yml) | `push`, `workflow_dispatch`                 | `release` |
 
 ## Parallel steps
 
 Independent checks use GitHub Actions [native parallel steps](https://github.blog/changelog/2026-06-25-actions-steps-can-now-be-run-in-parallel/). The following groups run concurrently within a job:
-
 - [ci.yml](workflows/ci.yml), job `verify`: `Formatting and lint`; `Type check`; `Tests with coverage`; `Header echo tests`.
 - [release-build.yml](workflows/release-build.yml), job `release`: `Formatting and lint`; `Type check`; `Tests with coverage`; `Header echo tests`.
 
@@ -22,17 +21,16 @@ Steps after a group wait for it to finish. Keep prerequisites before the group a
 
 Versions below match the current workflow and composite-action references. SHA-pinned actions remain pinned; compare their commit with the upstream stable release when updating.
 
-| Action | Reference |
-| --- | --- |
-| [actions/checkout](https://github.com/actions/checkout) | `3d3c42e5aac5ba805825da76410c181273ba90b1` |
-| [actions/setup-node](https://github.com/actions/setup-node) | `820762786026740c76f36085b0efc47a31fe5020` |
-| [actions/upload-artifact](https://github.com/actions/upload-artifact) | `043fb46d1a93c77aae656e7c1c64a875d1fc6a0a` |
-| [pnpm/action-setup](https://github.com/pnpm/action-setup) | `ea17c68df8912ef543352723c149a84f56e3d413` |
+| Action                                                                | Reference                                  |
+| --------------------------------------------------------------------- | ------------------------------------------ |
+| [actions/checkout](https://github.com/actions/checkout)               | `3d3c42e5aac5ba805825da76410c181273ba90b1` |
+| [actions/setup-node](https://github.com/actions/setup-node)           | `949feb2413d6458794dcd2491c4babbbce0c15c1` |
+| [actions/upload-artifact](https://github.com/actions/upload-artifact) | `cf430e030ddbb5b0abf93d22962f4752f3646cd9` |
+| [pnpm/action-setup](https://github.com/pnpm/action-setup)             | `ea17c68df8912ef543352723c149a84f56e3d413` |
 
 ## Greenkeeping
 
 [Dependabot configuration](dependabot.yml) checks GitHub Actions weekly and groups their updates. Review the upstream release notes, runtime requirements, permissions, and changes to inputs or artifact behavior before merging. Update SHA pins to the release commit, retaining the version comment where present.
-
 1. Update every reference to the affected action, including local composite actions under `.github/actions/`.
 2. Keep frozen dependency installation and the repository’s declared toolchain versions aligned. Cache package downloads with a lockfile-based key; a cache hit does not replace installation or verification.
 3. Check workflow YAML and review shell commands. Older workflow linters may not understand native `parallel`; GitHub execution must verify those groups.

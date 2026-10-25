@@ -43,7 +43,6 @@ Store and video media reproducible.
 
 Open the [HTTPS header tester](https://headers.kahwee.com). Import the
 [ready-made test profile](docs/examples/https-profile.json), or set up one site:
-
 1. Create a profile. Under **Website access**, set the site to `headers.kahwee.com`,
    choose **Save**, then **Approve sites**.
 2. Choose **URL pattern** and enter `|https://headers.kahwee.com/headers/match|`.
@@ -65,7 +64,6 @@ let ChHeader **ask** for hosts you choose; installation grants no website access
 For a page at `app.example.com` calling `api.example.com`, approve both hostnames.
 Choose **URL pattern** `|https://api.example.com/v1/` and **XHR/Fetch** to change
 only those HTTPS API requests. Avoid approving the parent `example.com`.
-
 - **Allowed sites bound the destinations.** Current grants include subdomains,
   HTTP/HTTPS and all ports; URL rules narrow actual changes. Regex cannot escape
   the profile's site list. No URL rules means no changes.

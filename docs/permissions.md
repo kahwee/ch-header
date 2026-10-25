@@ -7,10 +7,10 @@ under **Website access**, then choose **Approve sites**. ChHeader uses Chrome's
 
 ## What each permission does
 
-| Manifest entry | Why it is there |
-| --- | --- |
-| `storage` | Saves profiles and settings in Chrome's local extension storage. No account or sync service. |
-| `declarativeNetRequestWithHostAccess` | Lets Chrome apply header rules where website access has been granted. ChHeader does not inject page scripts to edit headers. |
+| Manifest entry                          | Why it is there                                                                                                                                             |
+| --------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `storage`                               | Saves profiles and settings in Chrome's local extension storage. No account or sync service.                                                                |
+| `declarativeNetRequestWithHostAccess`   | Lets Chrome apply header rules where website access has been granted. ChHeader does not inject page scripts to edit headers.                                |
 | Optional `http://*/*` and `https://*/*` | Lets ChHeader ask for user-chosen development servers and APIs. This declaration is permission to **ask**, not an installation-time grant to every website. |
 
 There are no required host permissions. The extension does not request browsing
@@ -41,7 +41,6 @@ ChHeader updates reset grants and rules while preserving saved profiles.
 ## A narrower setup for an API
 
 Suppose `app.example.com` calls `api.example.com/v1/`:
-
 1. Enter `app.example.com, api.example.com` under **Website access** and choose
    **Save**, then **Approve sites**. Keep the grant limited to those hostnames.
 2. Choose **URL pattern** and enter `|https://api.example.com/v1/`. The leading `|`

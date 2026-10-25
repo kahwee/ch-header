@@ -34,16 +34,16 @@ popup. It starts off and allows only `headers.kahwee.com` and
 Open [the tester](https://headers.kahwee.com) and
 [the second site](https://headers-peer.kahwee.com). Run these cases on both:
 
-| Case | Expected |
-| --- | --- |
-| Off or denied access | Test header absent; response `original`. |
-| On, both test hosts approved | `/headers/match`: `hello-gecko` / `modified`. |
-| Excluded path and redirect | `/headers/other` and `/redirect`: absent / `original`. |
-| Check second site | Same path boundaries on the other domain. |
-| Allow only `headers.kahwee.com` | Primary matching path changes; peer remains unchanged. |
+| Case                                                        | Expected                                                                     |
+| ----------------------------------------------------------- | ---------------------------------------------------------------------------- |
+| Off or denied access                                        | Test header absent; response `original`.                                     |
+| On, both test hosts approved                                | `/headers/match`: `hello-gecko` / `modified`.                                |
+| Excluded path and redirect                                  | `/headers/other` and `/redirect`: absent / `original`.                       |
+| Check second site                                           | Same path boundaries on the other domain.                                    |
+| Allow only `headers.kahwee.com`                             | Primary matching path changes; peer remains unchanged.                       |
 | Restore both domains, type header name `Bad Header` on main | Inline error; draft stays visible; saved name and live rules stay unchanged. |
-| Restore a valid header name and leave the field | Saved name updates; matching path uses the repaired header. |
-| Revoke all website access | Both sites return to baseline; all profiles off. |
+| Restore a valid header name and leave the field             | Saved name updates; matching path uses the repaired header.                  |
+| Revoke all website access                                   | Both sites return to baseline; all profiles off.                             |
 
 Chrome may close the permission prompt: reopen, select this profile, then enable
 it again. Reload both pages after changing access. Failed requests are inconclusive,
@@ -104,6 +104,32 @@ Stop the fixture with Ctrl+C afterward.
 Record new checks here with their date, scope, actual results and limits. Earlier
 results are in [the test history](docs/testing-history.md); they are historical
 evidence, not proof that the current checkout passes.
+
+### Maintenance release 0.4.8 preparation — October 25, 2026
+
+Integrated the compatible-dependency and GitHub Actions updates, aligned the
+Biome 2.6.2 schema, and applied its newly supported Markdown/YAML formatting.
+The generated pnpm lockfile remains package-manager-owned and is excluded from
+Biome; frozen-lockfile installation verifies it. Package and manifest versions
+are 0.4.8. No permissions or storage contracts changed.
+
+With pinned Node 26.7.0 and pnpm 12.4.2, frozen installation, all 43 fast tests,
+formatting, lint, types, 507 extension tests with coverage, five Worker tests,
+and extension ZIP packaging passed. The three immutable-release recovery tests
+also passed. Archive integrity, SHA-256, package/manifest agreement, referenced
+extension assets and unchanged manifest permissions were checked separately.
+
+The local `pnpm check` did **not** fully pass: Storybook was blocked by the cloud
+sandbox's `uv_interface_addresses` operation. An authorized escalation attempt
+failed in the launcher before running the command. Full checks on the exact
+release commit still require CI confirmation before tagging.
+
+Actual Chrome verification was attempted in a disposable cloud profile, but
+Chromium exited before loading the extension because its socket operation was
+blocked. No toolbar, extension-page, localhost network or public HTTPS acceptance
+case ran for this build. No permissions were granted; the temporary profile was
+removed. Prior Chrome records below are historical, not a fresh acceptance pass.
+Logs remain under ignored `.local/qa/release-0.4.8/`.
 
 ### Dependency maintenance — October 24, 2026
 

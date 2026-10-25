@@ -14,7 +14,6 @@ Cloudflare still receives requests even when a field is omitted from the respons
 There is no application logging, analytics, storage, outbound fetch or credentialed
 CORS. Worker observability is disabled; Cloudflare may retain platform metadata.
 Responses use `no-store` and a restrictive CSP. The page renders values as text.
-
 - `/headers/match` and `/headers/other`: demo header JSON; response header
   `X-ChHeader-Response: original` lets you test browser-side response changes.
 - `/redirect`: fixed redirect to `/headers/other`.

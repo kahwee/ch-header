@@ -1,4 +1,3 @@
-
 ## Immutable GitHub release assets
 
 The existing tag release workflow now uses `scripts/release-assets.py`. It verifies

@@ -1,13 +1,11 @@
-# ChHeader 0.4.7
+# ChHeader 0.4.8
 
-The popup now saves edits without a persistent Apply button. The footer reports
-saved and applied status; Retry appears only when saving or confirming application
-fails. Retry stays disabled while recovery runs and returns keyboard focus to the
-status when it succeeds. Header names still save on blur or Enter.
+Header values now reject unsupported ASCII control characters before saving,
+while preserving horizontal tabs and the existing line-break validation. Invalid
+values stay visible for correction without replacing the saved value.
+
+Updated compatible development dependencies and pinned GitHub Actions. Release
+recovery preserves already-published archives and checksums rather than replacing
+them.
 
 No new permissions or storage-format changes.
-
-Verified with 506 extension tests, five Worker tests, formatting, lint, types,
-packaging and Storybook checks. Actual Chrome toolbar checks confirmed autosave,
-Enter handling and localhost request/response headers. Extension-page checks
-covered dark mode at 744 × 440, failed-save recovery and keyboard focus restoration.

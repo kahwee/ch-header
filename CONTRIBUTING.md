@@ -35,22 +35,22 @@ constraints, and how success can be observed. For example:
 
 ## Architecture map
 
-| Location | Responsibility |
-| --- | --- |
-| `src/lib/types.ts` | Saved profile and runtime contracts. |
-| `src/lib/profile-transfer.ts`, `url-rule.ts` | Import/export validation and URL parsing. |
+| Location                                               | Responsibility                                                                |
+| ------------------------------------------------------ | ----------------------------------------------------------------------------- |
+| `src/lib/types.ts`                                     | Saved profile and runtime contracts.                                          |
+| `src/lib/profile-transfer.ts`, `url-rule.ts`           | Import/export validation and URL parsing.                                     |
 | `src/lib/storage.ts`, `site-access.ts`, `dnr-rules.ts` | Storage initialization, Chrome permissions and rule construction/application. |
-| `src/background.ts` | Service-worker events and the ordered read/build/replace rule queue. |
-| `src/ui/core/popup-app.ts` | Composition root: mount and connect popup modules. |
-| `src/ui/core/controller.ts` | Profile commands and state transitions. |
-| `src/ui/core/popup-store.ts` | Snapshot loading and serialized popup writes. |
-| `src/ui/core/popup-view.ts`, `popup-events.ts` | DOM updates and event wiring. |
-| `src/ui/core/profile-*.ts` | Access, sharing, appearance, menus and navigation features. |
-| `src/ui/core/popup-template.ts`, `styles.css` | Production popup markup and shared styling. |
-| `src/ui/components/`, `src/ui/lib/` | Reusable renderers and mounted component lifecycle, respectively. |
-| `src/test/` | Reusable Chrome and production-popup test harnesses. |
-| `tools/header-echo/`, `scripts/header-check.js` | Public HTTPS tester and offline localhost fixture. |
-| `scripts/`, `.github/workflows/` | Packaging/media tools and CI/release jobs. |
+| `src/background.ts`                                    | Service-worker events and the ordered read/build/replace rule queue.          |
+| `src/ui/core/popup-app.ts`                             | Composition root: mount and connect popup modules.                            |
+| `src/ui/core/controller.ts`                            | Profile commands and state transitions.                                       |
+| `src/ui/core/popup-store.ts`                           | Snapshot loading and serialized popup writes.                                 |
+| `src/ui/core/popup-view.ts`, `popup-events.ts`         | DOM updates and event wiring.                                                 |
+| `src/ui/core/profile-*.ts`                             | Access, sharing, appearance, menus and navigation features.                   |
+| `src/ui/core/popup-template.ts`, `styles.css`          | Production popup markup and shared styling.                                   |
+| `src/ui/components/`, `src/ui/lib/`                    | Reusable renderers and mounted component lifecycle, respectively.             |
+| `src/test/`                                            | Reusable Chrome and production-popup test harnesses.                          |
+| `tools/header-echo/`, `scripts/header-check.js`        | Public HTTPS tester and offline localhost fixture.                            |
+| `scripts/`, `.github/workflows/`                       | Packaging/media tools and CI/release jobs.                                    |
 
 The main flow is popup events → controller/access actions → queued storage →
 background events → URL/site-bounded DNR rules. The view reflects selection and
@@ -100,12 +100,12 @@ Biome is the repository's formatter and linter, configured in
 [biome.json](biome.json). Use the pinned dependency through pnpm so local checks
 match CI:
 
-| Command | Purpose |
-| --- | --- |
-| `pnpm format` | Apply formatting. |
-| `pnpm format:check` | Check formatting without changing files. |
-| `pnpm lint` | Report lint diagnostics without changing files. |
-| `pnpm lint:fix` | Apply safe lint fixes; inspect the diff afterward. |
+| Command             | Purpose                                            |
+| ------------------- | -------------------------------------------------- |
+| `pnpm format`       | Apply formatting.                                  |
+| `pnpm format:check` | Check formatting without changing files.           |
+| `pnpm lint`         | Report lint diagnostics without changing files.    |
+| `pnpm lint:fix`     | Apply safe lint fixes; inspect the diff afterward. |
 
 For a focused edit, pass paths directly, for example
 `pnpm exec biome format --write src/test/popup-harness.ts`. Generated output and
@@ -120,13 +120,13 @@ before pushing.
 
 Choose checks by the responsibility changed:
 
-| Change | First checks |
-| --- | --- |
+| Change                                   | First checks                                                                          |
+| ---------------------------------------- | ------------------------------------------------------------------------------------- |
 | Parser, profile contract or rule builder | Relevant `src/lib/__tests__` file with `pnpm test:run <path>`, plus `pnpm test:fast`. |
-| Popup state, persistence or interactions | `pnpm test:fast`, then relevant colocated tests. |
-| Renderer or mounted component | Its colocated tests, production Storybook story, and applicable toolbar cases. |
-| Public header tester | `pnpm test:echo`; `pnpm test:echo:live` only when checking deployed endpoints. |
-| Docs or ignore rules | Diff, repository links, and `git check-ignore` for affected paths. |
+| Popup state, persistence or interactions | `pnpm test:fast`, then relevant colocated tests.                                      |
+| Renderer or mounted component            | Its colocated tests, production Storybook story, and applicable toolbar cases.        |
+| Public header tester                     | `pnpm test:echo`; `pnpm test:echo:live` only when checking deployed endpoints.        |
+| Docs or ignore rules                     | Diff, repository links, and `git check-ignore` for affected paths.                    |
 
 Use small unit tests for boundary values and workflow tests for effects across
 modules. Exercise invalid imports, failed writes, overlapping saves, denied access
