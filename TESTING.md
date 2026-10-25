@@ -175,3 +175,18 @@ Initial browser setup overlapped a build replacing dist and left its background
 worker unavailable; a fresh isolated launch after the build resolved it. Temporary
 permissions were revoked and isolated browsers closed. No user browser settings
 were changed. QA logs remain under ignored `.local/qa/simplify-footer/`.
+
+
+### Header value controls — October 25, 2026
+
+Reject ASCII control characters in header values while preserving horizontal tabs
+and the existing line-break error. The fast harness and full `pnpm check` passed:
+507 extension tests, five Worker tests, formatting, lint, types, extension ZIP
+and Storybook build.
+
+An isolated headless Chromium extension-page check entered an invalid control
+character and confirmed the inline error and preservation of the saved value.
+Correcting the input saved the replacement value. The profile stayed off and no
+dynamic rules were installed. This used the extension page because the native
+toolbar popup was unavailable in headless Chrome. The public HTTPS matrix was
+not repeated. The temporary browser profile was removed after the check.
