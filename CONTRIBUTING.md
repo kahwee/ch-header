@@ -7,6 +7,11 @@ version in `package.json`. Activate those versions with your version manager
 before installing; do not bypass the version checks or regenerate the lockfile
 just to accommodate a different local toolchain.
 
+For dependency maintenance, use stable registry channels and retain pnpm’s
+[default 24-hour release delay](https://pnpm.io/settings/dependency-resolution#minimumreleaseage).
+Keep the existing build allowlist and version-specific exceptions unchanged;
+newer prerelease-channel or age-blocked versions can wait.
+
 ```bash
 pnpm install --frozen-lockfile
 pnpm test:fast
@@ -136,7 +141,8 @@ methods or incidental CSS. The fast suite is deliberately focused; it does not
 replace the full suite.
 
 Run the complete check before pushing and after a cross-module refactor. Both CI
-and the release workflow use this same command:
+and the release workflow run the same checks, with independent source checks
+in parallel and builds afterward (see [.github/ACTIONS.md](.github/ACTIONS.md)):
 
 ```bash
 pnpm check

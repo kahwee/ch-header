@@ -105,6 +105,26 @@ Record new checks here with their date, scope, actual results and limits. Earlie
 results are in [the test history](docs/testing-history.md); they are historical
 evidence, not proof that the current checkout passes.
 
+### Tooling maintenance — October 28, 2026
+
+Updated pnpm to 12.15.0, Biome/schema to 2.6.3, the Storybook family to
+10.6.4, and the optional Linux Rollup binary to 4.65.1. Registry stable channels,
+Node compatibility and all four Action release SHAs were checked; the Action
+pins were already current. Existing parallel checks and ordered builds remain.
+The default 24-hour dependency delay, terser exception and build allowlist are
+unchanged. Storybook 10.6.5 and Chrome types 0.3.7 were still age-blocked.
+
+With pinned Node 26.7.0 and pnpm 12.15.0, frozen installation and full
+`pnpm check` passed: formatting, lint, types, 507 extension tests with coverage,
+five offline Worker tests, extension ZIP packaging and Storybook. The three
+immutable-release recovery tests also passed. Coverage was 90.26% statements,
+80.05% branches, 91.4% functions and 93.38% lines.
+
+This batch changes tooling and documentation only. No actual Chrome toolbar or
+live HTTPS checks ran; automated tests do not prove browser rule acceptance.
+Package/manifest remain 0.4.8, with no runtime, permission or storage changes.
+Logs remain under ignored `.local/qa/maintenance-2026-10-28/`.
+
 ### Maintenance release 0.4.8 preparation — October 25, 2026
 
 Integrated the compatible-dependency and GitHub Actions updates, aligned the
