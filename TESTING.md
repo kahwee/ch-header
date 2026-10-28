@@ -105,6 +105,20 @@ Record new checks here with their date, scope, actual results and limits. Earlie
 results are in [the test history](docs/testing-history.md); they are historical
 evidence, not proof that the current checkout passes.
 
+### Node toolchain maintenance — October 28, 2026
+
+Aligned `.node-version` and `.nvmrc` to [Node 26.12.1](https://nodejs.org/en/blog/release/v26.12.1),
+the latest stable Node 26 release. CI and release checks already read
+`.node-version`. The package minimum remains `>=26.7.0`; extension version,
+runtime behavior and dependency policies are unchanged.
+
+With Node 26.12.1 and pnpm 12.15.0, frozen installation and full `pnpm check`
+passed: formatting, lint, types, 507 extension tests with coverage, five offline
+Worker tests, extension ZIP and Storybook. The three release-recovery tests also
+passed. No Chrome toolbar or live HTTPS checks ran for this toolchain-only
+change. Earlier verification records retain the Node versions actually used.
+Logs remain under ignored `.local/qa/maintenance-2026-10-28/`.
+
 ### Tooling maintenance — October 28, 2026
 
 Updated pnpm to 12.15.0, Biome/schema to 2.6.3, the Storybook family to
