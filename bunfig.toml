@@ -1,0 +1,4 @@
+# Native Bun lint requires a supported canary; existing pnpm checks remain authoritative.
+[lint]
+typeAware = true
+typeCheck = true
