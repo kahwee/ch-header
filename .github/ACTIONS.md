@@ -26,7 +26,7 @@ Versions below match the current workflow and composite-action references. SHA-p
 | [actions/checkout](https://github.com/actions/checkout)               | `3d3c42e5aac5ba805825da76410c181273ba90b1` |
 | [actions/setup-node](https://github.com/actions/setup-node)           | `949feb2413d6458794dcd2491c4babbbce0c15c1` |
 | [actions/upload-artifact](https://github.com/actions/upload-artifact) | `cf430e030ddbb5b0abf93d22962f4752f3646cd9` |
-| [pnpm/action-setup](https://github.com/pnpm/action-setup)             | `ea17c68df8912ef543352723c149a84f56e3d413` |
+| [pnpm/action-setup](https://github.com/pnpm/action-setup)             | `73e46992e05b19abd31f2f3c20e0e7370d762115` |
 
 ## Greenkeeping
 

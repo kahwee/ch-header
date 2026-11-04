@@ -105,6 +105,15 @@ Record new checks here with their date, scope, actual results and limits. Earlie
 results are in [the test history](docs/testing-history.md); they are historical
 evidence, not proof that the current checkout passes.
 
+### GitHub Actions patch — November 4, 2026
+
+Updated both pnpm/action-setup pins from 6.1.0 to 6.1.1. On Node 26.13.0 /
+pnpm 12.16.1, frozen installation and full `pnpm check` passed: 509 extension
+tests, five offline Worker tests, formatting, lint, types, ZIP and Storybook.
+Three release-recovery tests and exact workflow pin-only comparisons passed.
+The action retains its embedded Node 24 runtime; build runtime and release gates
+are unchanged. No release or Chrome acceptance check was run.
+
 ### Node runtime — November 4, 2026
 
 Pinned development and CI to Node 26.13.0 LTS; the package minimum remains
