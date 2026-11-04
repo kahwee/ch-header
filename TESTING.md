@@ -105,6 +105,28 @@ Record new checks here with their date, scope, actual results and limits. Earlie
 results are in [the test history](docs/testing-history.md); they are historical
 evidence, not proof that the current checkout passes.
 
+### Dependency maintenance — November 4, 2026
+
+Updated pnpm to 12.16.1, Biome/schema to 2.6.4, Storybook to 10.6.5,
+Vitest/coverage/UI to 5.1.0, Chrome types to 0.3.7, Node types to 26.6.6,
+the optional Rollup binary to 4.67.4, and compatible locked transitives.
+Stable registry channels and publication dates were checked. Node 26.12.1,
+the default 24-hour release delay, build allowlist and existing exception remain
+unchanged, as do extension version 0.4.8 and permissions.
+
+A clean frozen installation and full `pnpm check` passed: formatting, lint,
+types, 509 extension tests with coverage, five offline Worker tests, extension
+ZIP and Storybook. The targeted security regression set passed 48 tests, and
+three release-recovery tests passed. New negative message tests verify that
+unknown commands have no effects and Apply uses saved state rather than supplied
+profile data. These harness tests do not prove Chrome's sender isolation.
+
+No registry audit submission, actual Chrome toolbar, native picker, Store or live
+HTTPS checks ran. The embedded source-map concern in magicast 0.5.5 remains
+tracked by [upstream issue 184](https://github.com/unjs/magicast/issues/184);
+this update does not establish exploitability or resolve that upstream issue.
+Logs remain under ignored `.local/qa/maintenance-2026-11-04/`.
+
 ### Node toolchain maintenance — October 28, 2026
 
 Aligned `.node-version` and `.nvmrc` to [Node 26.12.1](https://nodejs.org/en/blog/release/v26.12.1),

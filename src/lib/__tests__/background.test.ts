@@ -18,6 +18,40 @@ afterEach(() => {
 })
 
 describe('background rule updates', () => {
+  it('ignores unknown messages without changing profiles, rules or grants', async () => {
+    const h = await setup()
+    await h.settle()
+    const stored = h.snapshot()
+    const rules = h.rules()
+    const respond = vi.fn()
+    h.api.storage.local.set.mockClear()
+    h.api.declarativeNetRequest.updateDynamicRules.mockClear()
+    expect(
+      h.api.runtime.onMessage.emit({ type: 'replaceProfiles', profiles: [] }, {}, respond)
+    ).toEqual([undefined])
+    expect(respond).not.toHaveBeenCalled()
+    expect(h.api.storage.local.set).not.toHaveBeenCalled()
+    expect(h.api.declarativeNetRequest.updateDynamicRules).not.toHaveBeenCalled()
+    expect(h.api.permissions.request).not.toHaveBeenCalled()
+    expect(h.api.permissions.remove).not.toHaveBeenCalled()
+    expect(h.snapshot()).toEqual(stored)
+    expect(h.rules()).toEqual(rules)
+  })
+
+  it('applies saved state rather than profile data supplied in a message', async () => {
+    const h = await setup(false)
+    const profiles = h.snapshot().profiles
+    const result = await h.api.runtime.sendMessage({
+      type: 'applyNow',
+      profiles: [localProfile({ enabled: true })],
+      enabled: true,
+    })
+    expect(result).toMatchObject({ ok: true, status: { state: 'off', ruleCount: 0 } })
+    expect(h.snapshot().profiles).toEqual(profiles)
+    expect(h.rules()).toEqual([])
+    expect(h.api.permissions.request).not.toHaveBeenCalled()
+  })
+
   it('persists successful application and updates the toolbar without claiming a request matched', async () => {
     const h = await setup()
     await h.settle()
