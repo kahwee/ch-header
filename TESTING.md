@@ -105,6 +105,14 @@ Record new checks here with their date, scope, actual results and limits. Earlie
 results are in [the test history](docs/testing-history.md); they are historical
 evidence, not proof that the current checkout passes.
 
+### Node runtime — November 4, 2026
+
+Pinned development and CI to Node 26.13.0 LTS; the package minimum remains
+`>=26.7.0`. Frozen installation and full `pnpm check` passed with pnpm 12.16.1:
+509 extension tests, five offline Worker tests, formatting, lint, types, ZIP
+and Storybook. Three release-recovery tests passed. No dependency, permission,
+Store or live Chrome acceptance changes were made.
+
 ### Dependency maintenance — November 4, 2026
 
 Updated pnpm to 12.16.1, Biome/schema to 2.6.4, Storybook to 10.6.5,
