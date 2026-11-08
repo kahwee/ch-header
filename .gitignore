@@ -25,3 +25,6 @@ private-key.xml
 .wrangler/
 .dev.vars
 .dev.vars.*
+
+# Local agent records can contain credentials.
+.claude/settings.local.json
