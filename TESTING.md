@@ -295,10 +295,10 @@ not repeated. The temporary browser profile was removed after the check.
 Permission-status coverage fix: the popup now asks Chrome whether the saved site
 origins are covered, instead of requiring identical strings in the grant list.
 Three regression cases failed before the fix: parent-grant coverage, API error
-fail-closed behavior, and stale callbacks after scope edits. All pass afterward.
+fail-closed behavior, and stale callbacks after scope edits. All pass afterward. Additional regressions cover profile switching and popup removal.
 
 On macOS with Node 26.13.0 and pnpm 12.16.1, frozen installation and `pnpm check`
-passed: formatting, lint, types, 512 tests with coverage, five echo tests, extension
+passed: formatting, lint, types, 514 tests with coverage, five echo tests, extension
 ZIP build, and Storybook build. Three release-asset recovery tests also passed.
 
 Actual Chrome toolbar acceptance is still pending. Before release, verify a

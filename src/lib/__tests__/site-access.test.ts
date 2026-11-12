@@ -218,6 +218,38 @@ describe('optional site access', () => {
     expect(h.query<HTMLInputElement>('#enabled').disabled).toBe(true)
   })
 
+  it('ignores approval from the previously selected profile', async () => {
+    const h = await createPopupHarness([
+      localProfile(),
+      localProfile({ id: 'second', accessSites: ['example.com'] }),
+    ])
+    const callbacks: Array<(granted: boolean) => void> = []
+    h.chrome.api.permissions.contains.mockImplementation((_request, callback) =>
+      callbacks.push(callback)
+    )
+    h.click('#saveAccessSites')
+    const old = callbacks[callbacks.length - 1]
+    h.click('a[data-id="second"]')
+    callbacks[callbacks.length - 1](false)
+    old(true)
+    expect(h.query('#accessStatusBadge').textContent).toBe('Approval needed')
+    expect(h.query<HTMLInputElement>('#enabled').disabled).toBe(true)
+  })
+
+  it('does not update a disconnected popup after permission lookup', async () => {
+    const h = await createPopupHarness()
+    let complete!: (granted: boolean) => void
+    h.chrome.api.permissions.contains.mockImplementation((_request, callback) => {
+      complete = callback
+    })
+    h.click('#saveAccessSites')
+    const status = h.query('#accessStatus')
+    const badge = h.query('#accessStatusBadge')
+    status.remove()
+    complete(true)
+    expect(badge.textContent).toBe('Approval needed')
+  })
+
   it('saves website scope with the explicit button or Enter without submitting Apply', async () => {
     const h = await createPopupHarness()
     const submit = vi.fn()
