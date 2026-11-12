@@ -289,3 +289,20 @@ Correcting the input saved the replacement value. The profile stayed off and no
 dynamic rules were installed. This used the extension page because the native
 toolbar popup was unavailable in headless Chrome. The public HTTPS matrix was
 not repeated. The temporary browser profile was removed after the check.
+
+## Verification — November 12, 2026
+
+Permission-status coverage fix: the popup now asks Chrome whether the saved site
+origins are covered, instead of requiring identical strings in the grant list.
+Three regression cases failed before the fix: parent-grant coverage, API error
+fail-closed behavior, and stale callbacks after scope edits. All pass afterward.
+
+On macOS with Node 26.13.0 and pnpm 12.16.1, frozen installation and `pnpm check`
+passed: formatting, lint, types, 512 tests with coverage, five echo tests, extension
+ZIP build, and Storybook build. Three release-asset recovery tests also passed.
+
+Actual Chrome toolbar acceptance is still pending. Before release, verify a
+parent-host grant covers a child-host profile without requesting more access,
+then verify denied/revoked access, rapid profile/scope switching, and the Chrome
+matrix above. Mocked API coverage is not evidence of actual browser behavior.
+No permission scope, manifest version, or Store publication changed in this fix.

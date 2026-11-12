@@ -171,6 +171,53 @@ describe('optional site access', () => {
     expect(h.chrome.snapshot().profiles).toEqual([expect.objectContaining({ enabled: false })])
   })
 
+  it('uses Chrome coverage for parent grants without requesting more access', async () => {
+    const h = await createPopupHarness([localProfile({ accessSites: ['api.example.com'] })])
+    h.chrome.api.permissions.getAll.mockImplementation((callback) =>
+      callback({ origins: ['http://*.example.com/*', 'https://*.example.com/*'] })
+    )
+    h.chrome.api.permissions.contains.mockImplementation((_request, callback) => callback(true))
+    h.input('#accessSites', 'api.example.com')
+    h.click('#saveAccessSites')
+    expect(h.query('#accessStatusBadge').textContent).toBe('Approved')
+    expect(h.query<HTMLInputElement>('#enabled').disabled).toBe(false)
+    expect(h.chrome.api.permissions.request).not.toHaveBeenCalled()
+    await h.chrome.settle()
+    expect(h.chrome.snapshot().profiles).toEqual([expect.objectContaining({ enabled: false })])
+    expect(h.chrome.rules()).toEqual([])
+  })
+
+  it('fails closed when Chrome reports a permission check error', async () => {
+    const h = await createPopupHarness()
+    h.chrome.api.permissions.contains.mockImplementation((_request, callback) => {
+      Object.defineProperty(chrome.runtime, 'lastError', {
+        configurable: true,
+        value: { message: 'Failed' },
+      })
+      callback(true)
+      Reflect.deleteProperty(chrome.runtime, 'lastError')
+    })
+    h.click('#saveAccessSites')
+    expect(h.query('#accessStatusBadge').textContent).toBe('Approval needed')
+    expect(h.query<HTMLInputElement>('#enabled').disabled).toBe(true)
+  })
+
+  it('ignores an approval callback after the website scope changes', async () => {
+    const h = await createPopupHarness()
+    const callbacks: Array<(granted: boolean) => void> = []
+    h.chrome.api.permissions.contains.mockImplementation((_request, callback) =>
+      callbacks.push(callback)
+    )
+    h.click('#saveAccessSites')
+    const old = callbacks[callbacks.length - 1]
+    h.input('#accessSites', 'example.com')
+    h.click('#saveAccessSites')
+    callbacks[callbacks.length - 1](false)
+    old(true)
+    expect(h.query('#accessStatusBadge').textContent).toBe('Approval needed')
+    expect(h.query<HTMLInputElement>('#enabled').disabled).toBe(true)
+  })
+
   it('saves website scope with the explicit button or Enter without submitting Apply', async () => {
     const h = await createPopupHarness()
     const submit = vi.fn()
