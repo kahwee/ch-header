@@ -105,6 +105,31 @@ Record new checks here with their date, scope, actual results and limits. Earlie
 results are in [the test history](docs/testing-history.md); they are historical
 evidence, not proof that the current checkout passes.
 
+### Import byte limits and Hermes LSP — November 14, 2026
+
+Both library JSON import paths now enforce the file pickers' 1,000,000-byte
+UTF-8 limit. Six boundary cases cover ASCII, accented text and emoji at exactly
+the limit and one byte over it. The four multibyte rejection cases failed before
+the fix. All six cases pass with the fix.
+
+On pinned Node 26.13.0 and pnpm 12.16.1, frozen installation, baseline fast tests
+(45), final fast tests (51), focused import tests (22), and full `pnpm check`
+passed. Checks covered formatting, lint, TypeScript 7.0.2, 515 extension tests
+with coverage, five offline Worker tests, extension ZIP and Storybook. Packaging
+initially required adding `zip` to the ignored local toolchain. Storybook emits
+its existing `module.register()` deprecation warning.
+
+Native Hermes `write_file` and `patch` edits exercised typescript-language-server
+5.3.0 with its JavaScript TypeScript 6.0.3 SDK. A temporary string-to-number
+assignment produced TS2322 in the patch result. Explicit synchronous LSP checks
+confirmed the corrected probe and both changed TypeScript files were clean.
+The temporary probe was removed. The initial cold diagnostic request timed out.
+Warm checks succeeded, and the repository's native TS7 typecheck passed separately.
+
+Verification covered offline parser behavior. Actual Chrome toolbar, native
+file-picker and live HTTP behavior remain unverified. Logs and LSP evidence are
+under ignored `.local/qa/hermes-lsp/`.
+
 ### GitHub Actions patch — November 4, 2026
 
 Updated both pnpm/action-setup pins from 6.1.0 to 6.1.1. On Node 26.13.0 /

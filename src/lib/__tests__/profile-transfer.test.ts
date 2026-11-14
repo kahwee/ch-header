@@ -66,6 +66,33 @@ describe('header-only imports', () => {
   )
 })
 
+describe.each([
+  {
+    name: 'profile',
+    parse: parseProfileJSON,
+    json: (value: string) => JSON.stringify({ name: 'Size limit', notes: value }),
+  },
+  {
+    name: 'header-only',
+    parse: parseHeadersJSON,
+    json: (value: string) => JSON.stringify({ header: 'X-Demo', value }),
+  },
+])('$name import size limit', ({ parse, json }) => {
+  it.each(['a', 'é', '😀'])('measures the UTF-8 bytes of %s at the limit', (character) => {
+    const encoder = new TextEncoder()
+    const remaining = 1_000_000 - encoder.encode(json('')).byteLength
+    const width = encoder.encode(character).byteLength
+    const value = character.repeat(Math.floor(remaining / width)) + 'a'.repeat(remaining % width)
+    const atLimit = json(value)
+    const overLimit = json(`${value}a`)
+
+    expect(encoder.encode(atLimit).byteLength).toBe(1_000_000)
+    expect(encoder.encode(overLimit).byteLength).toBe(1_000_001)
+    expect(parse(atLimit)).toHaveLength(1)
+    expect(() => parse(overLimit)).toThrow('Choose a JSON file smaller than 1 MB.')
+  })
+})
+
 it('imports the public HTTPS fixture off with explicit demo domains and exact paths', () => {
   const [profile] = parseProfileJSON(JSON.stringify(httpsFixture))
   expect(profile.enabled).toBe(false)

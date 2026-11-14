@@ -35,15 +35,20 @@ function headers(value: unknown, label: string): HeaderOp[] {
   })
 }
 
-/** Parse a header-only JSON file through the same validation used by profile imports. */
-export function parseHeadersJSON(text: string): HeaderOp[] {
-  if (text.length > 1_000_000) throw new Error('Choose a JSON file smaller than 1 MB.')
-  let data: unknown
+function parseImportJSON(text: string): unknown {
+  // Match the file pickers' byte limit, including when JSON is pasted as text.
+  if (text.length > 1_000_000 || new TextEncoder().encode(text).byteLength > 1_000_000)
+    throw new Error('Choose a JSON file smaller than 1 MB.')
   try {
-    data = JSON.parse(text)
+    return JSON.parse(text)
   } catch {
     throw new Error('Invalid JSON. Check commas, quotes and brackets.')
   }
+}
+
+/** Parse a header-only JSON file through the same validation used by profile imports. */
+export function parseHeadersJSON(text: string): HeaderOp[] {
+  const data = parseImportJSON(text)
   const parsed = headers(Array.isArray(data) ? data : [data], 'Request headers')
   if (!parsed.length) throw new Error('Add at least one header.')
   return parsed
@@ -68,13 +73,7 @@ function matchers(value: unknown): Matcher[] {
 
 /** Parse completely before writing any profiles. Imports always get fresh IDs and start off. */
 export function parseProfileJSON(text: string): Profile[] {
-  if (text.length > 1_000_000) throw new Error('Choose a JSON file smaller than 1 MB.')
-  let data: unknown
-  try {
-    data = JSON.parse(text)
-  } catch {
-    throw new Error('Invalid JSON. Check commas, quotes and brackets.')
-  }
+  const data = parseImportJSON(text)
   let items: unknown[]
   if (object(data) && 'profiles' in data) {
     if (data.format !== undefined && data.format !== 'chheader')
