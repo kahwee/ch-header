@@ -20,6 +20,7 @@ interface ProfileAccessOptions {
 export function setupProfileAccess(options: ProfileAccessOptions) {
   const { controller, document, notify, state, view } = options
   let enableAttempt = 0
+  let refreshRevision = 0
   const accessInput = document.querySelector<HTMLInputElement>('#accessSites')!
   const accessStatus = document.querySelector<HTMLElement>('#accessStatus')!
   const accessStatusBadge = document.querySelector<HTMLElement>('#accessStatusBadge')!
@@ -67,21 +68,25 @@ export function setupProfileAccess(options: ProfileAccessOptions) {
   }
 
   function refresh(): void {
+    const revision = ++refreshRevision
+    const profile = state.current
+    const isCurrent = () =>
+      revision === refreshRevision && state.current === profile && accessStatus.isConnected
     chrome.permissions.getAll((grants) => {
-      const origins = grants.origins ?? []
+      if (!isCurrent()) return
+      const origins = chrome.runtime.lastError ? [] : (grants.origins ?? [])
       document.querySelector<HTMLElement>('#emptyRevokeAccess')!.hidden = !origins.length
-      if (!accessStatus.isConnected) return
       revokeAccess.hidden = !origins.length
-
-      let sites: string[] = []
-      try {
-        if (state.current) sites = suggestedAccessSites(state.current)
-      } catch {
-        // The input's validation message handles malformed saved values.
-      }
-      const requiredOrigins = sites.length ? siteOrigins(sites) : []
-      const approved =
-        requiredOrigins.length > 0 && requiredOrigins.every((origin) => origins.includes(origin))
+    })
+    let sites: string[] = []
+    try {
+      if (profile) sites = suggestedAccessSites(profile)
+    } catch {
+      // The input's validation message handles malformed saved values.
+    }
+    const requiredOrigins = sites.length ? siteOrigins(sites) : []
+    const render = (approved: boolean) => {
+      if (!isCurrent()) return
       accessStatus.dataset.state = approved ? 'approved' : sites.length ? 'needed' : 'empty'
       accessStatusBadge.textContent = approved
         ? 'Approved'
@@ -98,7 +103,15 @@ export function setupProfileAccess(options: ProfileAccessOptions) {
       profileEnabled.title = approved
         ? 'Enable this profile'
         : 'Approve this profile’s website access first'
-    })
+    }
+    // Stay disabled while Chrome checks semantic coverage, not exact grant strings.
+    render(false)
+    if (requiredOrigins.length) {
+      chrome.permissions.contains({ origins: requiredOrigins }, (granted) => {
+        const approved = !chrome.runtime.lastError && granted
+        render(approved)
+      })
+    }
   }
 
   refresh()
