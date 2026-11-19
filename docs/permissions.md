@@ -41,6 +41,7 @@ ChHeader updates reset grants and rules while preserving saved profiles.
 ## A narrower setup for an API
 
 Suppose `app.example.com` calls `api.example.com/v1/`:
+
 1. Enter `app.example.com, api.example.com` under **Website access** and choose
    **Save**, then **Approve sites**. Keep the grant limited to those hostnames.
 2. Choose **URL pattern** and enter `|https://api.example.com/v1/`. The leading `|`

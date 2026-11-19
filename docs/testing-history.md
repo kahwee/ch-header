@@ -178,6 +178,7 @@ Local `pnpm check` passed: 415 tests across 23 files, TypeScript, formatting,
 coverage, ZIP packaging and Storybook. A frozen-lockfile install also passed.
 
 Actual macOS Chrome toolbar popup, using Computer Use:
+
 - Right-click on an unselected profile, Duplicate, Delete and Undo passed.
 - Shift+F10, arrow navigation, Escape focus restoration, all-profile export scope,
   and persistence after extension reload passed.
@@ -226,6 +227,7 @@ which profile is enabled. Existing placeholder expectations were updated.
 
 Using Chrome browser control and Computer Use, reloaded the existing unpacked
 `dist/` installation and checked the actual 744 × 440 toolbar popup in light mode:
+
 - Populated editor: persistent header labels, URL scope guidance and footer fit.
 - New profile: empty header guidance disappears when Add creates a row.
 - Name editing, Enter submission, Tab to Options and keyboard menu opening worked.
@@ -262,6 +264,7 @@ regexes, disabling after rejection, and deleting the final rule. Unit coverage
 checks anchored host conversion, explicit ports, ambiguous inputs and old filters.
 
 Actual Chrome toolbar popup, through Chrome and Computer controls:
+
 - Site `127.0.0.1:3002` changed document and all three fetch request/response headers.
 - Regex `[` showed an inline error; prior live localhost rules remained effective.
 - Repair to `^http://127\.0\.0\.1:3002/match/` modified only `/match/echo`.
@@ -281,6 +284,7 @@ editor drafts are not persisted across popup closure or profile switching.
 ## Adversarial editor pass — September 12, 2026
 
 Confirmed and fixed three additional defects:
+
 - Adding a header replaced the URL input, discarding its invalid draft and feedback.
   Reproduced before the fix in Chrome and the real-module harness. Rows now remain
   connected, and unchanged URL rows retain their draft through unrelated additions.
@@ -521,6 +525,7 @@ settings were changed. Evidence is ignored under `.local/qa/permission-retest/`.
 No full Chrome restart, incognito, Firefox or Safari testing was performed.
 
 Deployed standalone Workers, without modifying kahwee.com:
+
 - https://chheader-check.kahwee-teng.workers.dev
 - https://chheader-check-peer.kahwee-teng.workers.dev
 

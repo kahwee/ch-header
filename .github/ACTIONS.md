@@ -12,6 +12,7 @@ This guide describes the checked-in workflows. Follow each linked YAML file for 
 ## Parallel steps
 
 Independent checks use GitHub Actions [native parallel steps](https://github.blog/changelog/2026-06-25-actions-steps-can-now-be-run-in-parallel/). The following groups run concurrently within a job:
+
 - [ci.yml](workflows/ci.yml), job `verify`: `Formatting and lint`; `Type check`; `Tests with coverage`; `Header echo tests`.
 - [release-build.yml](workflows/release-build.yml), job `release`: `Formatting and lint`; `Type check`; `Tests with coverage`; `Header echo tests`.
 
@@ -31,6 +32,7 @@ Versions below match the current workflow and composite-action references. SHA-p
 ## Greenkeeping
 
 [Dependabot configuration](dependabot.yml) checks GitHub Actions weekly and groups their updates. Review the upstream release notes, runtime requirements, permissions, and changes to inputs or artifact behavior before merging. Update SHA pins to the release commit, retaining the version comment where present.
+
 1. Update every reference to the affected action, including local composite actions under `.github/actions/`.
 2. Keep frozen dependency installation and the repository’s declared toolchain versions aligned. Cache package downloads with a lockfile-based key; a cache hit does not replace installation or verification.
 3. Check workflow YAML and review shell commands. Older workflow linters may not understand native `parallel`; GitHub execution must verify those groups.

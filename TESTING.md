@@ -300,7 +300,6 @@ worker unavailable; a fresh isolated launch after the build resolved it. Tempora
 permissions were revoked and isolated browsers closed. No user browser settings
 were changed. QA logs remain under ignored `.local/qa/simplify-footer/`.
 
-
 ### Header value controls — October 25, 2026
 
 Reject ASCII control characters in header values while preserving horizontal tabs
